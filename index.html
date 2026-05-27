@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Rentas — Gestión Inmobiliaria</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#0f0f0f;--s1:#1a1a1a;--s2:#252525;--s3:#2e2e2e;--gold:#D4A843;--gdim:#9A7A2F;--txt:#F0EAD6;--dim:#777;--r:#E05C5C;--g:#5CB87A;--y:#E0B840;--nav:68px;--rad:14px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'DM Sans',sans-serif}
+body{background:var(--bg);color:var(--txt);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;font-size:14px}
+.hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:20;border-bottom:1px solid #1c1c1c}
+.hdr-t{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold)}
+.hdr-s{font-size:11px;color:var(--dim);margin-top:2px}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#111;border-top:1px solid #1c1c1c;display:flex;height:var(--nav);z-index:100}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--dim);font-size:10px;font-weight:500;border:none;background:none;padding:0;position:relative;transition:color .15s}
+.ni.on{color:var(--gold)}
+.ni svg{width:20px;height:20px;stroke-width:1.8}
+.nd{width:7px;height:7px;background:var(--r);border-radius:50%;position:absolute;top:8px;right:calc(50% - 13px);display:none}
+.mc{padding:12px 14px calc(var(--nav) + 14px)}
+.view{display:none}.view.on{display:block}
+.card{background:var(--s1);border-radius:var(--rad);padding:14px;margin-bottom:10px;border:1px solid #222}
+.card.al{border-left:3px solid var(--r)}.card.wa{border-left:3px solid var(--y)}.card.ok{border-left:3px solid var(--g)}.card.gd{border-left:3px solid var(--gold)}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.sc{background:var(--s1);border-radius:var(--rad);padding:13px;border:1px solid #222;text-align:center}
+.sl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.sv{font-family:'Playfair Display',serif;font-size:21px;color:var(--gold)}
+.sv.r{color:var(--r)}.sv.g{color:var(--g)}
+.st{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);margin-bottom:11px;margin-top:4px}
+.ti{background:var(--s1);border-radius:var(--rad);padding:12px 14px;margin-bottom:8px;border:1px solid #222;cursor:pointer;display:flex;align-items:center;gap:11px;transition:background .12s}
+.ti:active{background:var(--s2)}
+.av{width:42px;height:42px;border-radius:50%;background:var(--gdim);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;color:#fff;flex-shrink:0}
+.tn{flex:1;min-width:0}
+.tnm{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ts{font-size:11px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.bge.v{background:#E05C5C22;color:var(--r);border:1px solid #E05C5C44}
+.bge.ok{background:#5CB87A22;color:var(--g);border:1px solid #5CB87A44}
+.bge.ad{background:#88888822;color:var(--dim);border:1px solid #33333366}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .12s;border:none;white-space:nowrap}
+.bg{background:var(--gold);color:#111}.bg:active{background:var(--gdim)}
+.bo{background:transparent;color:var(--gold);border:1px solid var(--gold)}.bo:active{background:#D4A84322}
+.bd{background:#E05C5C22;color:var(--r);border:1px solid #E05C5C44}
+.bs{background:#5CB87A22;color:var(--g);border:1px solid #5CB87A44}
+.bfu{width:100%;text-align:center}
+.bsm{padding:7px 11px;font-size:12px}
+.fg{margin-bottom:12px}
+.fl{font-size:11px;color:var(--dim);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.fi{width:100%;background:var(--s2);border:1px solid #333;border-radius:9px;padding:10px 13px;color:var(--txt);font-size:14px;outline:none;transition:border-color .12s}
+.fi:focus{border-color:var(--gold)}
+select.fi{appearance:none}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:flex-end;backdrop-filter:blur(4px)}
+.ms{background:#161616;border-radius:22px 22px 0 0;padding:18px 18px 30px;width:100%;max-height:88vh;overflow-y:auto;border-top:1px solid #2a2a2a}
+.mh{width:38px;height:4px;background:#333;border-radius:2px;margin:0 auto 14px}
+.mt2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:16px}
+.fab{position:fixed;bottom:calc(var(--nav) + 14px);right:16px;width:52px;height:52px;border-radius:50%;background:var(--gold);color:#111;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(212,168,67,.35);z-index:50;font-size:22px;line-height:1}
+.fab:active{transform:scale(.93)}
+.sep{border:none;border-top:1px solid #1e1e1e;margin:12px 0}
+.pr{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid #1e1e1e}
+.pr:last-child{border-bottom:none}
+.pi{flex:1;min-width:0}
+.pn{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd{font-size:11px;color:var(--dim);margin-top:1px}
+.pa{font-family:'Playfair Display',serif;font-size:15px;color:var(--g);white-space:nowrap}
+.es{text-align:center;padding:36px 20px;color:var(--dim)}
+.ei{font-size:36px;margin-bottom:10px}
+.et{font-size:13px;line-height:1.5}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px}
+.mc2{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:9px;font-size:10px;font-weight:600;cursor:pointer;background:var(--s2);color:var(--dim);border:1px solid #333}
+.mc2.pg{background:#5CB87A22;color:var(--g);border-color:#5CB87A44}
+.mc2.vd{background:#E05C5C22;color:var(--r);border-color:#E05C5C44}
+.mc2.ft{opacity:.3;pointer-events:none}
+.svc{background:var(--s1);border-radius:var(--rad);padding:14px;margin-bottom:10px;border:1px solid #222}
+.slk{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.ro{background:var(--s1);border-radius:var(--rad);padding:14px;margin-bottom:10px;border:1px solid #222;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .12s}
+.ro:active{background:var(--s2)}
+.rtit{font-weight:600;font-size:14px}.rdesc{font-size:12px;color:var(--dim);margin-top:2px}
+.chip{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:var(--s2);color:var(--dim);border:1px solid #2e2e2e;transition:all .12s;flex-shrink:0}
+.chip.on{background:var(--gold);color:#111;border-color:var(--gold)}
+.cr{display:flex;gap:7px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:12px;padding-bottom:2px;scrollbar-width:none}
+.cr::-webkit-scrollbar{display:none}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e1e1e}
+.ir:last-child{border-bottom:none}
+.ik{font-size:12px;color:var(--dim)}.iv{font-size:13px;font-weight:500;text-align:right;max-width:60%}
+.tag-g{color:var(--g)}.tag-r{color:var(--r)}.tag-gd{color:var(--gold)}
+.snk{position:fixed;bottom:calc(var(--nav)+14px);left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:20px;font-size:12px;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.snk.show{opacity:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="splash" style="position:fixed;inset:0;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999">
+    <div style="font-family:'Playfair Display',serif;font-size:30px;color:#D4A843;letter-spacing:1px">Rentas</div>
+    <div style="font-size:11px;color:#444;margin-top:8px;letter-spacing:3px;text-transform:uppercase">Gestión Inmobiliaria</div>
+    <div id="splash-bar" style="width:44px;height:2px;background:#D4A843;border-radius:2px;margin-top:28px;animation:pu 1s infinite alternate"></div>
+    <style>@keyframes pu{from{opacity:.2}to{opacity:1}}</style>
+  </div>
+
+  <header class="hdr" id="hdr">
+    <div><div class="hdr-t" id="hdr-t">Panel de Rentas</div><div class="hdr-s" id="hdr-s"></div></div>
+    <div id="hdr-a" style="display:flex;gap:7px"></div>
+  </header>
+
+  <main class="mc">
+    <div id="v-dash" class="view on"></div>
+    <div id="v-inq" class="view"></div>
+    <div id="v-det" class="view"></div>
+    <div id="v-pag" class="view"></div>
+    <div id="v-svc" class="view"></div>
+    <div id="v-rep" class="view"></div>
+  </main>
+
+  <nav class="nav">
+    <button class="ni on" id="n-dash" onclick="go('dash')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Panel<span class="nd" id="nd-dash"></span>
+    </button>
+    <button class="ni" id="n-inq" onclick="go('inq')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Inquilinos
+    </button>
+    <button class="ni" id="n-pag" onclick="go('pag')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Pagos
+    </button>
+    <button class="ni" id="n-svc" onclick="go('svc')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Servicios
+    </button>
+    <button class="ni" id="n-rep" onclick="go('rep')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Reportes
+    </button>
+  </nav>
+
+  <button class="fab" id="fab" onclick="handleFAB()">+</button>
+  <div id="modal-root"></div>
+  <div class="snk" id="snk"></div>
+</div>
+
+<script>
+// ─── Data ──────────────────────────────────────────────
+let DB={inquilinos:[],pagos:[],servicios:[]};
+let curView='dash',detTenant=null,payFilter='actual';
+const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MF=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const now=new Date();
+const HM=now.getMonth()+1,HA=now.getFullYear(),HD=now.getDate();
+
+// ─── Storage ───────────────────────────────────────────
+function loadDB(){
+  ['inquilinos','pagos','servicios'].forEach(k=>{
+    try{const v=localStorage.getItem('rentas_'+k);if(v)DB[k]=JSON.parse(v)}catch(e){}
+  });
+}
+function saveDB(k){
+  try{localStorage.setItem('rentas_'+k,JSON.stringify(DB[k]))}catch(e){}
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+
+// ─── Utils ─────────────────────────────────────────────
+function fmt(n){return'$'+Number(n||0).toLocaleString('es-MX',{minimumFractionDigits:0})}
+function ini(n){return(n||'?').trim().split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?'}
+function snack(m){const s=document.getElementById('snk');s.textContent=m;s.classList.add('show');setTimeout(()=>s.classList.remove('show'),2500)}
+function getPago(iid,m,a){return DB.pagos.find(p=>p.iid===iid&&p.mes===m&&p.anio===a)}
+function stMes(iid,m,a){
+  if(getPago(iid,m,a))return'pg';
+  if(a>HA||(a===HA&&m>HM))return'ft';
+  const t=DB.inquilinos.find(x=>x.id===iid);
+  const dv=Number(t?.diaV||1);
+  if(a<HA||(a===HA&&m<HM))return'vd';
+  return HD>=dv?'vd':'';
+}
+function stActual(iid){return stMes(iid,HM,HA)}
+function badgeH(st){
+  if(st==='pg')return'<span class="bge ok">✓ Pagada</span>';
+  if(st==='vd')return'<span class="bge v">⚠ Vencida</span>';
+  return'<span class="bge ad">Al día</span>';
+}
+
+// ─── Router ────────────────────────────────────────────
+function go(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  curView=v;
+  if(v==='det'){
+    document.getElementById('v-det').classList.add('on');
+    document.getElementById('hdr-t').textContent=detTenant?.nombre||'Inquilino';
+    document.getElementById('hdr-s').textContent=detTenant?.propiedad||'';
+    document.getElementById('hdr-a').innerHTML=`<button class="btn bo bsm" onclick="openAddTenant('${detTenant?.id}')">✏️ Editar</button>`;
+    document.getElementById('fab').style.display='none';
+    renderDet();return;
+  }
+  const vm={dash:'v-dash',inq:'v-inq',pag:'v-pag',svc:'v-svc',rep:'v-rep'};
+  const nm={dash:'n-dash',inq:'n-inq',pag:'n-pag',svc:'n-svc',rep:'n-rep'};
+  const tt={dash:'Panel de Rentas',inq:'Inquilinos',pag:'Pagos',svc:'Servicios',rep:'Reportes'};
+  document.getElementById(vm[v])?.classList.add('on');
+  document.getElementById(nm[v])?.classList.add('on');
+  document.getElementById('hdr-t').textContent=tt[v]||'';
+  document.getElementById('hdr-s').textContent='';
+  document.getElementById('hdr-a').innerHTML='';
+  const fs={dash:false,inq:true,pag:true,svc:true,rep:false};
+  document.getElementById('fab').style.display=fs[v]?'flex':'none';
+  ({dash:renderDash,inq:renderInq,pag:renderPag,svc:renderSvc,rep:renderRep})[v]?.();
+  updNotif();
+}
+function handleFAB(){
+  if(curView==='inq')openAddTenant();
+  else if(curView==='pag')openAddPayment(null);
+  else if(curView==='svc')openAddService();
+}
+function updNotif(){
+  const n=DB.inquilinos.filter(i=>i.estado==='activo'&&stActual(i.id)==='vd').length;
+  document.getElementById('nd-dash').style.display=n?'block':'none';
+}
+
+// ─── Dashboard ─────────────────────────────────────────
+function renderDash(){
+  const act=DB.inquilinos.filter(i=>i.estado==='activo');
+  const venc=act.filter(i=>stActual(i.id)==='vd');
+  const pagds=act.filter(i=>stActual(i.id)==='pg');
+  const cobMes=DB.pagos.filter(p=>p.mes===HM&&p.anio===HA).reduce((s,p)=>s+Number(p.monto),0);
+  const pend=act.filter(i=>stActual(i.id)!=='pg').reduce((s,i)=>s+Number(i.renta||0),0);
+  let alerts='';
+  venc.forEach(t=>{
+    alerts+=`<div class="card al" style="cursor:pointer" onclick="openDet('${t.id}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div><div style="font-size:12px;font-weight:700;color:var(--r)">⚠️ RENTA VENCIDA</div>
+        <div style="font-size:13px;margin-top:3px;font-weight:600">${t.nombre}</div>
+        <div style="font-size:11px;color:var(--dim)">${t.propiedad} · ${fmt(t.renta)}</div></div>
+        <button class="btn bs bsm" onclick="event.stopPropagation();openAddPayment('${t.id}')">+ Pago</button>
+      </div></div>`;
+  });
+  act.filter(i=>stActual(i.id)===''&&(Number(i.diaV||1)-HD)>=0&&(Number(i.diaV||1)-HD)<=5).forEach(t=>{
+    const d=Number(t.diaV||1)-HD;
+    alerts+=`<div class="card wa"><div style="font-size:12px;font-weight:600;color:var(--y)">${d===0?'⏰ Vence hoy':'⏰ Vence en '+d+' día'+(d!==1?'s':'')}</div>
+      <div style="font-size:13px;margin-top:3px">${t.nombre} · <span style="color:var(--dim)">${fmt(t.renta)}</span></div></div>`;
+  });
+  document.getElementById('v-dash').innerHTML=`
+    <div class="sg">
+      <div class="sc"><div class="sl">Cobrado ${MN[HM-1]}</div><div class="sv g">${fmt(cobMes)}</div></div>
+      <div class="sc"><div class="sl">Por cobrar</div><div class="sv${pend>0?' r':' g'}">${fmt(pend)}</div></div>
+      <div class="sc"><div class="sl">Vencidas</div><div class="sv${venc.length>0?' r':' g'}">${venc.length}</div></div>
+      <div class="sc"><div class="sl">Pagadas este mes</div><div class="sv">${pagds.length}/${act.length}</div></div>
+    </div>
+    ${alerts?`<div class="st">Alertas</div>${alerts}`:''}
+    <div class="st">Estado ${MF[HM-1]} ${HA}</div>
+    ${act.length===0?`<div class="es"><div class="ei">🏠</div><div class="et">Agrega inquilinos desde la pestaña Inquilinos</div></div>`:''}
+    ${act.map(t=>{const st=stActual(t.id);return`
+      <div class="ti" onclick="openDet('${t.id}')">
+        <div class="av">${ini(t.nombre)}</div>
+        <div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.propiedad}</div></div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:12px;font-weight:600;color:var(--gold)">${fmt(t.renta)}</div>
+          <div style="margin-top:4px">${badgeH(st)}</div>
+        </div>
+      </div>`}).join('')}`;
+}
+
+// ─── Inquilinos ────────────────────────────────────────
+function renderInq(){
+  const todos=DB.inquilinos;
+  if(!todos.length){document.getElementById('v-inq').innerHTML=`<div class="es"><div class="ei">👥</div><div class="et">Sin inquilinos registrados.<br>Toca + para agregar.</div></div>`;return;}
+  const act=todos.filter(i=>i.estado==='activo'),inact=todos.filter(i=>i.estado!=='activo');
+  let h='';
+  if(act.length){h+=`<div class="st">Activos (${act.length})</div>`+act.map(tileH).join('');}
+  if(inact.length){h+=`<div class="st" style="margin-top:16px">Inactivos (${inact.length})</div>`+inact.map(tileH).join('');}
+  document.getElementById('v-inq').innerHTML=h;
+}
+function tileH(t){const st=t.estado==='activo'?stActual(t.id):'na';
+  return`<div class="ti" onclick="openDet('${t.id}')">
+    <div class="av" style="background:${t.estado==='activo'?'var(--gdim)':'#444'}">${ini(t.nombre)}</div>
+    <div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.propiedad}</div></div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-size:12px;font-weight:600;color:var(--gold)">${fmt(t.renta)}</div>
+      <div style="margin-top:4px">${t.estado==='activo'?badgeH(st):'<span class="bge ad">Inactivo</span>'}</div>
+    </div></div>`;
+}
+
+// ─── Detalle Inquilino ─────────────────────────────────
+function openDet(id){detTenant=DB.inquilinos.find(i=>i.id===id);if(detTenant)go('det');}
+function renderDet(){
+  const t=detTenant;if(!t){document.getElementById('v-det').innerHTML='';return;}
+  const pagosT=DB.pagos.filter(p=>p.iid===t.id).sort((a,b)=>b.anio-a.anio||b.mes-a.mes);
+  const totPag=pagosT.reduce((s,p)=>s+Number(p.monto),0);
+  const mg=MN.map((mn,i)=>{
+    const m=i+1,a=HA,st=stMes(t.id,m,a);
+    const cl=st==='pg'?'pg':st==='vd'?'vd':m>HM?'ft':'';
+    return`<div class="mc2 ${cl}" onclick="${st!=='pg'&&m<=HM?`openAddPayment('${t.id}',${m},${a})`:'void(0)'}">
+      <span>${mn}</span><span style="font-size:9px;margin-top:1px">${st==='pg'?'✓':st==='vd'?'✗':''}</span></div>`;
+  }).join('');
+  document.getElementById('v-det').innerHTML=`
+    <button class="btn bo bsm" onclick="go('inq')" style="margin-bottom:14px">← Volver</button>
+    <div class="card gd" style="text-align:center;padding:18px 14px">
+      <div class="av" style="margin:0 auto 10px;width:54px;height:54px;font-size:21px">${ini(t.nombre)}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px">${t.nombre}</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:3px">${t.propiedad}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);margin:10px 0 6px">${fmt(t.renta)}<span style="font-size:12px;color:var(--dim)">/mes</span></div>
+      ${t.estado==='activo'?badgeH(stActual(t.id)):'<span class="bge ad">Inactivo</span>'}
+    </div>
+    <div class="card" style="padding:6px 14px">
+      <div class="ir"><span class="ik">Teléfono</span><span class="iv">${t.tel||'—'}</span></div>
+      <div class="ir"><span class="ik">Email</span><span class="iv" style="word-break:break-all">${t.email||'—'}</span></div>
+      <div class="ir"><span class="ik">Día de pago</span><span class="iv">Día ${t.diaV||1} de cada mes</span></div>
+      <div class="ir"><span class="ik">Inicio</span><span class="iv">${t.inicio||'—'}</span></div>
+      <div class="ir"><span class="ik">Fin</span><span class="iv">${t.fin||'—'}</span></div>
+      <div class="ir"><span class="ik">Depósito</span><span class="iv tag-gd">${t.dep?fmt(t.dep):'—'}</span></div>
+      <div class="ir"><span class="ik">Total cobrado</span><span class="iv tag-g">${fmt(totPag)}</span></div>
+      ${t.notas?`<div class="ir"><span class="ik">Notas</span><span class="iv">${t.notas}</span></div>`:''}
+    </div>
+    <div class="st">Seguimiento ${HA}</div>
+    <div class="mg">${mg}</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn bg" style="flex:1" onclick="openAddPayment('${t.id}')">+ Registrar pago</button>
+      <button class="btn bo" onclick="genPDFTenant('${t.id}')">📄 PDF</button>
+    </div>
+    <div class="st">Historial de pagos</div>
+    <div class="card" style="padding:0 14px">
+      ${pagosT.length===0?`<div class="es" style="padding:20px"><div class="et">Sin pagos registrados</div></div>`:''}
+      ${pagosT.map(p=>`<div class="pr">
+        <div class="pi"><div class="pn">${MF[p.mes-1]} ${p.anio}</div>
+        <div class="pd">${p.fecha||''} · ${p.metodo||'efectivo'}${p.notas?' · '+p.notas:''}</div></div>
+        <div style="text-align:right"><div class="pa">${fmt(p.monto)}</div>
+        <button class="btn bd bsm" style="font-size:10px;padding:3px 7px;margin-top:3px" onclick="delPago('${p.id}')">✕</button></div>
+      </div>`).join('')}
+    </div>
+    <button class="btn ${t.estado==='activo'?'bd':'bs'} bfu" style="margin-top:12px" onclick="toggleEst('${t.id}')">${t.estado==='activo'?'Marcar como inactivo':'Reactivar inquilino'}</button>`;
+}
+
+// ─── Pagos ─────────────────────────────────────────────
+function renderPag(){
+  const filtros=[['actual',`${HM}-${HA}`,'Este mes'],...Array.from({length:5},(_,i)=>{
+    const d=new Date(HA,HM-2-i,1);const m=d.getMonth()+1,a=d.getFullYear();
+    return[`${m}-${a}`,`${m}-${a}`,`${MN[m-1]} ${a}`];
+  }),['todos','todos','Todos']];
+  const curKey=payFilter==='actual'?`${HM}-${HA}`:payFilter;
+  const ps=payFilter==='todos'?DB.pagos:DB.pagos.filter(p=>`${p.mes}-${p.anio}`===curKey);
+  const total=ps.reduce((s,p)=>s+Number(p.monto),0);
+  const sorted=[...ps].sort((a,b)=>new Date(b.fecha||0)-new Date(a.fecha||0)||b.anio-a.anio||b.mes-a.mes);
+  document.getElementById('v-pag').innerHTML=`
+    <div class="cr">
+      ${filtros.map(([val,,lab])=>`<span class="chip${payFilter===val?' on':''}" onclick="payFilter='${val}';renderPag()">${lab}</span>`).join('')}
+    </div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Total periodo</div><div class="sv g">${fmt(total)}</div></div>
+      <div class="sc"><div class="sl">Registros</div><div class="sv">${ps.length}</div></div>
+    </div>
+    <div class="st">Historial</div>
+    <div class="card" style="padding:0 14px">
+      ${sorted.length===0?`<div class="es" style="padding:20px"><div class="ei">💳</div><div class="et">Sin pagos en este periodo</div></div>`:''}
+      ${sorted.map(p=>{const t=DB.inquilinos.find(i=>i.id===p.iid);
+        return`<div class="pr">
+          <div class="pi"><div class="pn">${t?.nombre||'(eliminado)'}</div>
+          <div class="pd">${MF[p.mes-1]} ${p.anio} · ${p.metodo||'efectivo'}${p.notas?' · '+p.notas:''}</div></div>
+          <div style="text-align:right"><div class="pa">${fmt(p.monto)}</div>
+          <button class="btn bd bsm" style="font-size:10px;padding:3px 7px;margin-top:3px" onclick="delPago('${p.id}')">✕</button></div>
+        </div>`;}).join('')}
+    </div>`;
+}
+
+// ─── Servicios ─────────────────────────────────────────
+function renderSvc(){
+  const portales={
+    cfe:{n:'⚡ CFE — Electricidad',url:'https://app.cfe.mx/Aplicaciones/CCFE/Temas/Tema1ServiciosLV/ConsultaFactura.aspx'},
+    agua:{n:'💧 Agua — SACMEX',url:'https://www.sacmex.cdmx.gob.mx/servicios-en-linea/adeudo-agua'},
+    predial:{n:'🏛️ Predial CDMX',url:'https://portal.finanzas.cdmx.gob.mx/predial/adeudo'},
+    gas:{n:'🔥 Gas Natural (Naturgy)',url:'https://mgs.naturgy.com.mx'},
+    otro:{n:'🔧 Servicio',url:''}
+  };
+  if(!DB.servicios.length){
+    document.getElementById('v-svc').innerHTML=`<div class="es"><div class="ei">⚡</div><div class="et">Agrega servicios de tus inmuebles para<br>acceder rápido a sus portales de consulta.</div></div>
+    <button class="btn bg bfu" onclick="openAddService()">+ Agregar servicio</button>`;return;
+  }
+  document.getElementById('v-svc').innerHTML=DB.servicios.map(s=>{
+    const p=portales[s.tipo]||portales.otro;
+    return`<div class="svc">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div><div style="font-weight:700;font-size:14px">${p.n}</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:2px">📍 ${s.propiedad}</div></div>
+        <button class="btn bd bsm" onclick="delSvc('${s.id}')">✕</button>
+      </div>
+      ${s.cuenta?`<div style="background:var(--s2);border-radius:9px;padding:9px 12px;margin-top:10px;display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:10px;color:var(--dim)">Número de cuenta / servicio</div>
+        <div style="font-size:13px;font-weight:700;font-family:monospace;letter-spacing:1px;margin-top:3px">${s.cuenta}</div></div>
+        <button class="btn bo bsm" onclick="try{navigator.clipboard.writeText('${s.cuenta}').then(()=>snack('Copiado ✓'))}catch(e){snack('${s.cuenta}')}">Copiar</button>
+      </div>`:''}
+      ${s.notas?`<div style="font-size:11px;color:var(--dim);margin-top:8px">📝 ${s.notas}</div>`:''}
+      <div class="slk">
+        ${p.url?`<a href="${p.url}" target="_blank" rel="noopener" class="btn bg bsm" style="text-decoration:none">Consultar portal →</a>`:''}
+        <button class="btn bo bsm" onclick="openEditSvc('${s.id}')">✏️ Editar</button>
+      </div>
+    </div>`;}).join('');
+}
+
+// ─── Reportes ──────────────────────────────────────────
+function renderRep(){
+  document.getElementById('v-rep').innerHTML=`
+    <div class="st">Generar PDF</div>
+    <div class="ro" onclick="genPDFResumen()"><div style="font-size:26px">📊</div><div><div class="rtit">Resumen Mensual</div><div class="rdesc">Estado de cobros del mes actual</div></div></div>
+    <div class="ro" onclick="selTenant()"><div style="font-size:26px">👤</div><div><div class="rtit">Historial de Inquilino</div><div class="rdesc">Todos los pagos de un inquilino</div></div></div>
+    <div class="ro" onclick="genPDFVenc()"><div style="font-size:26px">⚠️</div><div><div class="rtit">Rentas Vencidas</div><div class="rdesc">Lista de morosos del periodo</div></div></div>
+    <div class="ro" onclick="genPDFGeneral()"><div style="font-size:26px">📈</div><div><div class="rtit">Reporte General</div><div class="rdesc">Todos los inquilinos y situación</div></div></div>
+    <div class="st" style="margin-top:16px">Historial por inquilino</div>
+    ${DB.inquilinos.length===0?`<div class="es"><div class="et">Agrega inquilinos para generar reportes</div></div>`:''}
+    ${DB.inquilinos.map(t=>`<div class="ti" onclick="genPDFTenant('${t.id}')">
+      <div class="av" style="background:${t.estado==='activo'?'var(--gdim)':'#444'}">${ini(t.nombre)}</div>
+      <div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.propiedad}</div></div>
+      <span style="font-size:20px">📄</span>
+    </div>`).join('')}`;
+}
+
+// ─── Modales ───────────────────────────────────────────
+function modal(h){document.getElementById('modal-root').innerHTML=`<div class="mo" onclick="if(event.target.className==='mo')closeM()">${h}</div>`}
+function closeM(){document.getElementById('modal-root').innerHTML=''}
+
+function openAddTenant(id){
+  const t=id?DB.inquilinos.find(x=>x.id===id):{};
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">${id?'Editar Inquilino':'Nuevo Inquilino'}</div>
+    <div class="fg"><label class="fl">Nombre completo *</label><input class="fi" id="m-nom" value="${t?.nombre||''}"></div>
+    <div class="fg"><label class="fl">Propiedad / Inmueble *</label><input class="fi" id="m-prop" value="${t?.propiedad||''}"></div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Renta mensual ($) *</label><input class="fi" type="number" id="m-rent" value="${t?.renta||''}"></div>
+      <div class="fg"><label class="fl">Día de pago</label><input class="fi" type="number" min="1" max="28" id="m-dv" value="${t?.diaV||5}"></div>
+    </div>
+    <div class="fg"><label class="fl">Teléfono</label><input class="fi" type="tel" id="m-tel" value="${t?.tel||''}"></div>
+    <div class="fg"><label class="fl">Email</label><input class="fi" type="email" id="m-eml" value="${t?.email||''}"></div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Inicio contrato</label><input class="fi" type="date" id="m-ini" value="${t?.inicio||''}"></div>
+      <div class="fg"><label class="fl">Fin contrato</label><input class="fi" type="date" id="m-fin" value="${t?.fin||''}"></div>
+    </div>
+    <div class="fg"><label class="fl">Depósito ($)</label><input class="fi" type="number" id="m-dep" value="${t?.dep||''}"></div>
+    <div class="fg"><label class="fl">Notas</label><input class="fi" id="m-not" value="${t?.notas||''}"></div>
+    <div class="fg"><label class="fl">Estado</label>
+      <select class="fi" id="m-est">
+        <option value="activo"${(!t?.estado||t?.estado==='activo')?' selected':''}>Activo</option>
+        <option value="inactivo"${t?.estado==='inactivo'?' selected':''}>Inactivo</option>
+      </select></div>
+    <button class="btn bg bfu" onclick="saveTenant('${id||''}')">Guardar inquilino</button>
+  </div>`);
+}
+
+function saveTenant(id){
+  const nom=document.getElementById('m-nom').value.trim();
+  const prop=document.getElementById('m-prop').value.trim();
+  const rent=document.getElementById('m-rent').value;
+  if(!nom||!prop||!rent){snack('Completa los campos obligatorios');return;}
+  const obj={nombre:nom,propiedad:prop,renta:Number(rent),diaV:Number(document.getElementById('m-dv').value)||5,
+    tel:document.getElementById('m-tel').value.trim(),email:document.getElementById('m-eml').value.trim(),
+    inicio:document.getElementById('m-ini').value,fin:document.getElementById('m-fin').value,
+    dep:Number(document.getElementById('m-dep').value)||0,notas:document.getElementById('m-not').value.trim(),
+    estado:document.getElementById('m-est').value};
+  if(id){Object.assign(DB.inquilinos.find(x=>x.id===id),obj);}
+  else{DB.inquilinos.push({id:uid(),...obj});}
+  saveDB('inquilinos');closeM();snack(id?'Guardado ✓':'Inquilino agregado ✓');
+  if(curView==='inq')renderInq();else if(curView==='dash')renderDash();
+  else if(curView==='det'&&detTenant?.id===id){detTenant=DB.inquilinos.find(x=>x.id===id);renderDet();}
+  updNotif();
+}
+
+function openAddPayment(iid,mes,anio){
+  const tenants=DB.inquilinos.filter(i=>i.estado==='activo');
+  const t=iid?DB.inquilinos.find(i=>i.id===iid):null;
+  const m=mes||HM,a=anio||HA;
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">Registrar Pago</div>
+    <div class="fg"><label class="fl">Inquilino *</label>
+      <select class="fi" id="m-iid">
+        <option value="">— Seleccionar —</option>
+        ${tenants.map(i=>`<option value="${i.id}"${iid===i.id?' selected':''}>${i.nombre} · ${i.propiedad}</option>`).join('')}
+        ${DB.inquilinos.filter(i=>i.estado==='inactivo').map(i=>`<option value="${i.id}"${iid===i.id?' selected':''}>[Inactivo] ${i.nombre}</option>`).join('')}
+      </select></div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Mes</label>
+        <select class="fi" id="m-mes">${MF.map((mn,i)=>`<option value="${i+1}"${i+1===m?' selected':''}>${mn}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Año</label><input class="fi" type="number" id="m-anio" value="${a}" min="2020" max="2035"></div>
+    </div>
+    <div class="fg"><label class="fl">Monto ($) *</label><input class="fi" type="number" id="m-monto" value="${t?.renta||''}"></div>
+    <div class="fg"><label class="fl">Fecha de pago</label><input class="fi" type="date" id="m-fec" value="${new Date().toISOString().slice(0,10)}"></div>
+    <div class="fg"><label class="fl">Método</label>
+      <select class="fi" id="m-met">
+        <option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option>
+        <option value="deposito">Depósito bancario</option><option value="cheque">Cheque</option>
+      </select></div>
+    <div class="fg"><label class="fl">Notas</label><input class="fi" id="m-not" placeholder="Recibo #, pago parcial, etc."></div>
+    <button class="btn bg bfu" onclick="savePago()">Guardar pago</button>
+  </div>`);
+}
+
+function savePago(){
+  const iid=document.getElementById('m-iid').value;
+  const monto=document.getElementById('m-monto').value;
+  if(!iid||!monto){snack('Selecciona inquilino y monto');return;}
+  const mes=Number(document.getElementById('m-mes').value);
+  const anio=Number(document.getElementById('m-anio').value);
+  DB.pagos.push({id:uid(),iid,mes,anio,monto:Number(monto),
+    fecha:document.getElementById('m-fec').value,
+    metodo:document.getElementById('m-met').value,
+    notas:document.getElementById('m-not').value.trim()});
+  saveDB('pagos');closeM();snack('Pago registrado ✓');
+  if(curView==='pag')renderPag();else if(curView==='dash')renderDash();else if(curView==='det')renderDet();
+  updNotif();
+}
+
+function delPago(id){
+  if(!confirm('¿Eliminar este pago?'))return;
+  DB.pagos=DB.pagos.filter(p=>p.id!==id);
+  saveDB('pagos');snack('Eliminado');
+  if(curView==='det')renderDet();else if(curView==='pag')renderPag();else if(curView==='dash')renderDash();
+  updNotif();
+}
+
+function toggleEst(id){
+  const t=DB.inquilinos.find(i=>i.id===id);if(!t)return;
+  t.estado=t.estado==='activo'?'inactivo':'activo';
+  saveDB('inquilinos');snack('Actualizado ✓');renderDet();updNotif();
+}
+
+function openAddService(id){
+  const s=id?DB.servicios.find(x=>x.id===id):{};
+  const props=[...new Set(DB.inquilinos.map(i=>i.propiedad))];
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">${id?'Editar Servicio':'Nuevo Servicio'}</div>
+    <div class="fg"><label class="fl">Propiedad *</label>
+      <input class="fi" id="m-sp" list="pl" value="${s?.propiedad||''}">
+      <datalist id="pl">${props.map(p=>`<option value="${p}">`).join('')}</datalist></div>
+    <div class="fg"><label class="fl">Tipo de servicio *</label>
+      <select class="fi" id="m-st">
+        <option value="cfe"${s?.tipo==='cfe'?' selected':''}>⚡ CFE (Electricidad)</option>
+        <option value="agua"${s?.tipo==='agua'?' selected':''}>💧 Agua (SACMEX)</option>
+        <option value="predial"${s?.tipo==='predial'?' selected':''}>🏛️ Predial CDMX</option>
+        <option value="gas"${s?.tipo==='gas'?' selected':''}>🔥 Gas Natural</option>
+        <option value="otro"${s?.tipo==='otro'?' selected':''}>🔧 Otro</option>
+      </select></div>
+    <div class="fg"><label class="fl">Número de cuenta / servicio</label>
+      <input class="fi" id="m-sc" value="${s?.cuenta||''}" placeholder="Ej: 123456789012"></div>
+    <div class="fg"><label class="fl">Notas</label>
+      <input class="fi" id="m-sn" value="${s?.notas||''}" placeholder="Periodo, fecha límite, etc."></div>
+    <button class="btn bg bfu" onclick="saveSvc('${id||''}')">Guardar servicio</button>
+  </div>`);
+}
+function openEditSvc(id){openAddService(id)}
+
+function saveSvc(id){
+  const prop=document.getElementById('m-sp').value.trim();
+  if(!prop){snack('Indica la propiedad');return;}
+  const obj={propiedad:prop,tipo:document.getElementById('m-st').value,
+    cuenta:document.getElementById('m-sc').value.trim(),notas:document.getElementById('m-sn').value.trim()};
+  if(id){Object.assign(DB.servicios.find(x=>x.id===id),obj);}
+  else{DB.servicios.push({id:uid(),...obj});}
+  saveDB('servicios');closeM();snack('Guardado ✓');renderSvc();
+}
+
+function delSvc(id){
+  if(!confirm('¿Eliminar este servicio?'))return;
+  DB.servicios=DB.servicios.filter(s=>s.id!==id);
+  saveDB('servicios');snack('Eliminado');renderSvc();
+}
+
+function selTenant(){
+  modal(`<div class="ms"><div class="mh"></div><div class="mt2">Selecciona inquilino</div>
+    ${DB.inquilinos.map(t=>`<div class="ti" onclick="closeM();genPDFTenant('${t.id}')">
+      <div class="av">${ini(t.nombre)}</div>
+      <div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.propiedad}</div></div>
+      <span style="font-size:18px">📄</span>
+    </div>`).join('')}
+    ${!DB.inquilinos.length?`<div class="es"><div class="et">Sin inquilinos</div></div>`:''}
+  </div>`);
+}
+
+// ─── PDF ───────────────────────────────────────────────
+function pdfBase(titulo){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  doc.setFillColor(212,168,67);doc.rect(0,0,210,3,'F');
+  doc.setFillColor(18,18,18);doc.rect(0,3,210,35,'F');
+  doc.setTextColor(212,168,67);doc.setFontSize(18);doc.setFont('helvetica','bold');
+  doc.text('GESTIÓN DE RENTAS',14,20);
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text(titulo,14,28);doc.text('Generado: '+new Date().toLocaleDateString('es-MX'),14,34);
+  doc.setFillColor(212,168,67);doc.rect(0,38,210,1,'F');
+  return doc;
+}
+
+function genPDFTenant(id){
+  const t=DB.inquilinos.find(i=>i.id===id);
+  if(!t){snack('No encontrado');return;}
+  const doc=pdfBase('HISTORIAL DE INQUILINO');
+  doc.setTextColor(212,168,67);doc.setFontSize(13);doc.setFont('helvetica','bold');
+  doc.text(t.nombre.toUpperCase(),14,50);
+  doc.setTextColor(80,80,80);doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text(t.propiedad,14,57);
+  doc.setDrawColor(212,168,67);doc.line(14,60,196,60);
+  let y=68;
+  const info=[['Renta mensual',fmt(t.renta)],['Día de pago','Día '+t.diaV],
+    ['Inicio contrato',t.inicio||'—'],['Fin contrato',t.fin||'—'],
+    ['Depósito',t.dep?fmt(t.dep):'—'],['Teléfono',t.tel||'—'],['Email',t.email||'—'],['Estado',t.estado]];
+  info.forEach(([k,v])=>{doc.setFillColor(248,248,248);doc.rect(14,y-4,182,7,'F');
+    doc.setFont('helvetica','bold');doc.setTextColor(60,60,60);doc.text(k+':',16,y);
+    doc.setFont('helvetica','normal');doc.setTextColor(40,40,40);doc.text(String(v),80,y);y+=7;});
+  y+=4;
+  doc.setFillColor(212,168,67);doc.rect(14,y,182,8,'F');
+  doc.setTextColor(15,15,15);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('MES / AÑO',16,y+5.5);doc.text('FECHA',70,y+5.5);doc.text('MÉTODO',110,y+5.5);doc.text('NOTAS',145,y+5.5);doc.text('MONTO',183,y+5.5,'right');
+  y+=10;
+  const pagos=DB.pagos.filter(p=>p.iid===id).sort((a,b)=>b.anio-a.anio||b.mes-a.mes);
+  let total=0;
+  pagos.forEach((p,i)=>{
+    if(y>275){doc.addPage();y=20;}
+    doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);doc.rect(14,y-4,182,8,'F');
+    doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(9);
+    doc.text(MF[p.mes-1]+' '+p.anio,16,y);doc.text(p.fecha||'',70,y);
+    doc.text(p.metodo||'efectivo',110,y);doc.text((p.notas||'').slice(0,18),145,y);
+    doc.setFont('helvetica','bold');doc.setTextColor(40,130,70);
+    doc.text(fmt(p.monto),183,y,'right');total+=Number(p.monto);y+=8;
+  });
+  if(!pagos.length){doc.setTextColor(130,130,130);doc.setFont('helvetica','italic');doc.text('Sin pagos registrados',16,y);}
+  y+=6;doc.setDrawColor(212,168,67);doc.line(14,y,196,y);y+=7;
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(40,40,40);
+  doc.text('TOTAL COBRADO:',14,y);doc.setTextColor(40,130,70);doc.text(fmt(total),183,y,'right');
+  doc.save('historial_'+t.nombre.replace(/\s+/g,'_')+'.pdf');snack('PDF descargado ✓');
+}
+
+function genPDFResumen(){
+  const doc=pdfBase('RESUMEN MENSUAL — '+MF[HM-1].toUpperCase()+' '+HA);
+  const act=DB.inquilinos.filter(i=>i.estado==='activo');
+  const cobMes=DB.pagos.filter(p=>p.mes===HM&&p.anio===HA).reduce((s,p)=>s+Number(p.monto),0);
+  const pend=act.filter(i=>stActual(i.id)!=='pg').reduce((s,i)=>s+Number(i.renta||0),0);
+  let y=50;
+  doc.setFillColor(248,248,248);doc.rect(14,y-4,182,40,'F');
+  doc.setDrawColor(212,168,67);doc.rect(14,y-4,182,40);
+  doc.setTextColor(40,130,70);doc.setFont('helvetica','bold');doc.setFontSize(22);
+  doc.text(fmt(cobMes),100,y+5,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('COBRADO EN EL MES',100,y+13,'center');
+  doc.setTextColor(200,60,60);doc.setFont('helvetica','bold');doc.setFontSize(16);
+  doc.text(fmt(pend),100,y+25,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('PENDIENTE POR COBRAR',100,y+33,'center');
+  y+=50;
+  doc.setFillColor(212,168,67);doc.rect(14,y,182,8,'F');
+  doc.setTextColor(15,15,15);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('INQUILINO',16,y+5.5);doc.text('PROPIEDAD',80,y+5.5);doc.text('RENTA',148,y+5.5,'right');doc.text('STATUS',183,y+5.5,'right');
+  y+=10;
+  act.forEach((t,i)=>{
+    if(y>275){doc.addPage();y=20;}
+    const st=stActual(t.id);
+    doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);doc.rect(14,y-4,182,8,'F');
+    doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(9);
+    doc.text(t.nombre,16,y);doc.text((t.propiedad||'').slice(0,25),80,y);
+    doc.setFont('helvetica','bold');doc.text(fmt(t.renta),148,y,'right');
+    if(st==='pg'){doc.setTextColor(40,130,70);doc.text('PAGADA',183,y,'right');}
+    else if(st==='vd'){doc.setTextColor(200,60,60);doc.text('VENCIDA',183,y,'right');}
+    else{doc.setTextColor(150,150,150);doc.text('AL DÍA',183,y,'right');}
+    y+=8;
+  });
+  doc.save('resumen_'+MN[HM-1]+'_'+HA+'.pdf');snack('PDF descargado ✓');
+}
+
+function genPDFVenc(){
+  const venc=DB.inquilinos.filter(i=>i.estado==='activo'&&stActual(i.id)==='vd');
+  const doc=pdfBase('RENTAS VENCIDAS — '+MF[HM-1].toUpperCase()+' '+HA);
+  let y=50;
+  if(!venc.length){doc.setTextColor(40,130,70);doc.setFontSize(14);doc.setFont('helvetica','bold');
+    doc.text('✓ No hay rentas vencidas. Todo al corriente.',14,y);}
+  else{
+    doc.setFillColor(200,60,60);doc.rect(14,y,182,8,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text('INQUILINO',16,y+5.5);doc.text('PROPIEDAD',80,y+5.5);doc.text('RENTA',155,y+5.5,'right');doc.text('DÍA',183,y+5.5,'right');
+    y+=10;
+    venc.forEach((t,i)=>{
+      doc.setFillColor(i%2===0?255:250,i%2===0?242:242,i%2===0?242:248);doc.rect(14,y-4,182,8,'F');
+      doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text(t.nombre,16,y);doc.text((t.propiedad||'').slice(0,25),80,y);
+      doc.setFont('helvetica','bold');doc.setTextColor(200,60,60);
+      doc.text(fmt(t.renta),155,y,'right');doc.setTextColor(80,80,80);doc.text('Día '+t.diaV,183,y,'right');y+=8;
+    });
+  }
+  doc.save('vencidas_'+MN[HM-1]+'_'+HA+'.pdf');snack('PDF descargado ✓');
+}
+
+function genPDFGeneral(){
+  const doc=pdfBase('REPORTE GENERAL DE INQUILINOS');
+  let y=50;
+  if(!DB.inquilinos.length){doc.setTextColor(100,100,100);doc.text('Sin inquilinos registrados.',14,y);}
+  DB.inquilinos.forEach((t,i)=>{
+    if(y>260){doc.addPage();y=20;}
+    const pagosT=DB.pagos.filter(p=>p.iid===t.id);
+    const totP=pagosT.reduce((s,p)=>s+Number(p.monto),0);
+    const st=t.estado==='activo'?stActual(t.id):'na';
+    doc.setFillColor(25,25,25);doc.rect(14,y-5,182,9,'F');
+    doc.setTextColor(212,168,67);doc.setFont('helvetica','bold');doc.setFontSize(10);
+    doc.text((i+1)+'. '+t.nombre+' — '+t.propiedad,16,y);y+=6;
+    doc.setTextColor(80,80,80);doc.setFont('helvetica','normal');doc.setFontSize(9);
+    const stl=st==='pg'?'PAGADA':st==='vd'?'VENCIDA':'AL DÍA/NA';
+    doc.text('Renta: '+fmt(t.renta)+' · Estado: '+t.estado+' · Mes actual: '+stl,16,y);y+=5;
+    doc.text('Total cobrado: '+fmt(totP)+' · Pagos registrados: '+pagosT.length,16,y);y+=4;
+    doc.setDrawColor(50,50,50);doc.line(14,y,196,y);y+=8;
+  });
+  doc.save('reporte_general_'+HA+'.pdf');snack('PDF descargado ✓');
+}
+
+// ─── Init ──────────────────────────────────────────────
+function init(){
+  loadDB();
+  document.getElementById('splash').style.display='none';
+  renderDash();updNotif();
+}
+init();
+</script>
+</body>
+</html>
