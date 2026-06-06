@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Rentas — Gestión Inmobiliaria</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#0f0f0f;--s1:#1a1a1a;--s2:#252525;--s3:#2e2e2e;--gold:#D4A843;--gdim:#9A7A2F;--txt:#F0EAD6;--dim:#777;--r:#E05C5C;--g:#5CB87A;--y:#E0B840;--b:#5B9BD5;--p:#B074D4;--nav:68px;--rad:14px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'DM Sans',sans-serif}
+body{background:var(--bg);color:var(--txt);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;font-size:14px}
+.hdr{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:20;border-bottom:1px solid #1c1c1c}
+.hdr-t{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold)}
+.hdr-s{font-size:11px;color:var(--dim);margin-top:2px}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#111;border-top:1px solid #1c1c1c;display:flex;height:var(--nav);z-index:100}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--dim);font-size:10px;font-weight:500;border:none;background:none;padding:0;position:relative;transition:color .15s}
+.ni.on{color:var(--gold)}
+.ni svg{width:20px;height:20px;stroke-width:1.8}
+.nd{width:7px;height:7px;background:var(--r);border-radius:50%;position:absolute;top:8px;right:calc(50% - 13px);display:none}
+.mc{padding:12px 14px calc(var(--nav) + 14px)}
+.view{display:none}.view.on{display:block}
+.card{background:var(--s1);border-radius:var(--rad);padding:14px;margin-bottom:10px;border:1px solid #222}
+.card.gd{border-left:3px solid var(--gold)}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:14px}
+.sc{background:var(--s1);border-radius:var(--rad);padding:13px;border:1px solid #222;text-align:center}
+.sl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.sv{font-family:'Playfair Display',serif;font-size:21px;color:var(--gold)}
+.sv.r{color:var(--r)}.sv.g{color:var(--g)}.sv.b{color:var(--b)}
+.svm{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold)}
+.st{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);margin-bottom:11px;margin-top:4px}
+.st-sm{font-size:14px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .12s;border:none;white-space:nowrap}
+.bg{background:var(--gold);color:#111}.bg:active{background:var(--gdim)}
+.bo{background:transparent;color:var(--gold);border:1px solid var(--gold)}.bo:active{background:#D4A84322}
+.bd{background:#E05C5C22;color:var(--r);border:1px solid #E05C5C44}
+.bs{background:#5CB87A22;color:var(--g);border:1px solid #5CB87A44}
+.bb{background:#5B9BD522;color:var(--b);border:1px solid #5B9BD544}
+.bfu{width:100%;text-align:center}
+.bsm{padding:7px 11px;font-size:12px}
+.fg{margin-bottom:12px}
+.fl{font-size:11px;color:var(--dim);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.fi{width:100%;background:var(--s2);border:1px solid #333;border-radius:9px;padding:10px 13px;color:var(--txt);font-size:14px;outline:none;font-family:inherit}
+.fi:focus{border-color:var(--gold)}
+select.fi{appearance:none}
+textarea.fi{resize:vertical;min-height:60px}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:flex-end;backdrop-filter:blur(5px)}
+.ms{background:#161616;border-radius:22px 22px 0 0;padding:18px 18px 30px;width:100%;max-height:92vh;overflow-y:auto;border-top:1px solid #2a2a2a}
+.mh{width:38px;height:4px;background:#333;border-radius:2px;margin:0 auto 14px}
+.mt2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:16px}
+.fab{position:fixed;bottom:calc(var(--nav) + 14px);right:16px;width:52px;height:52px;border-radius:50%;background:var(--gold);color:#111;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(212,168,67,.35);z-index:50;font-size:22px;line-height:1}
+.fab:active{transform:scale(.93)}
+.snk{position:fixed;bottom:calc(var(--nav)+14px);left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:20px;font-size:12px;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:90%}
+.snk.show{opacity:1}
+.cr{display:flex;gap:7px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:12px;padding-bottom:2px;scrollbar-width:none}
+.cr::-webkit-scrollbar{display:none}
+.chip{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--s2);color:var(--dim);border:1px solid #2e2e2e;flex-shrink:0;white-space:nowrap}
+.chip.on{background:var(--gold);color:#111;border-color:var(--gold)}
+.subnav{display:flex;background:var(--s1);border-radius:10px;padding:3px;margin-bottom:14px;border:1px solid #222;gap:2px}
+.subnav button{flex:1;padding:9px 4px;background:none;border:none;color:var(--dim);font-size:11px;font-weight:600;border-radius:8px;cursor:pointer;transition:all .15s}
+.subnav button.on{background:var(--gdim);color:#fff}
+.inm-group{margin-bottom:10px;background:var(--s1);border-radius:12px;border:1px solid #222;overflow:hidden}
+.inm-hd{padding:12px 14px;background:#1f1f1f;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #252525}
+.inm-hd-l{display:flex;align-items:center;gap:8px}
+.inm-nom{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);font-weight:600;letter-spacing:.3px}
+.inm-meta{font-size:10px;color:var(--dim);margin-top:1px}
+.inm-arrow{color:var(--dim);transition:transform .2s;font-size:13px}
+.inm-arrow.open{transform:rotate(90deg)}
+.inm-body{display:none}
+.inm-body.open{display:block}
+.row-inq{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid #1d1d1d;cursor:pointer;transition:background .12s}
+.row-inq:last-child{border-bottom:none}
+.row-inq:active{background:var(--s2)}
+.row-inq.paid{background:#5CB87A0a}
+.row-inq.late{background:#E05C5C0a}
+.chkbox{width:24px;height:24px;border-radius:7px;border:1.5px solid #444;background:#161616;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.chkbox.on{background:var(--g);border-color:var(--g)}
+.chkbox.on::after{content:"✓";color:#fff;font-size:14px;font-weight:700}
+.chkbox.late{border-color:var(--r)}
+.inq-dia{width:32px;text-align:center;font-family:'Playfair Display',serif;font-size:14px;color:var(--gold);font-weight:600;flex-shrink:0}
+.inq-info{flex:1;min-width:0}
+.inq-nom{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inq-sub{font-size:10px;color:var(--dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inq-monto{font-size:12px;font-weight:600;color:var(--gold);text-align:right;flex-shrink:0;white-space:nowrap}
+.inq-tstamp{font-size:9px;color:var(--g);margin-top:2px;text-align:right}
+.confirm-msg{text-align:center;padding:14px 0 20px}
+.confirm-q{font-family:'Playfair Display',serif;font-size:17px;color:var(--txt);margin-bottom:6px}
+.confirm-sub{font-size:12px;color:var(--dim)}
+.confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bk{background:none;border:none;color:var(--gold);font-size:13px;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:3px;margin-bottom:14px}
+.ir{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e1e1e}
+.ir:last-child{border-bottom:none}
+.ik{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px}
+.iv{font-size:13px;font-weight:500;text-align:right;max-width:60%}
+.tag-g{color:var(--g)}.tag-gd{color:var(--gold)}.tag-r{color:var(--r)}
+.bge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.bge.v{background:#E05C5C22;color:var(--r);border:1px solid #E05C5C44}
+.bge.ok{background:#5CB87A22;color:var(--g);border:1px solid #5CB87A44}
+.bge.ad{background:#88888822;color:var(--dim);border:1px solid #33333366}
+.bge.b{background:#5B9BD522;color:var(--b);border:1px solid #5B9BD544}
+.bge.y{background:#E0B84022;color:var(--y);border:1px solid #E0B84044}
+.bge.p{background:#B074D422;color:var(--p);border:1px solid #B074D444}
+.av{width:42px;height:42px;border-radius:50%;background:var(--gdim);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;color:#fff;flex-shrink:0}
+.es{text-align:center;padding:36px 20px;color:var(--dim)}
+.ei{font-size:36px;margin-bottom:10px}
+.et{font-size:13px;line-height:1.5}
+.ti{background:var(--s1);border-radius:var(--rad);padding:12px 14px;margin-bottom:8px;border:1px solid #222;cursor:pointer;display:flex;align-items:center;gap:11px}
+.ti:active{background:var(--s2)}
+.tn{flex:1;min-width:0}
+.tnm{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ts{font-size:11px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid #1e1e1e}
+.pr:last-child{border-bottom:none}
+.pi{flex:1;min-width:0}.pn{font-weight:500;font-size:13px}.pd{font-size:11px;color:var(--dim);margin-top:1px}
+.pa{font-family:'Playfair Display',serif;font-size:15px;color:var(--g);white-space:nowrap}
+.pa.r{color:var(--r)}
+.ro{background:var(--s1);border-radius:var(--rad);padding:14px;margin-bottom:10px;border:1px solid #222;cursor:pointer;display:flex;align-items:center;gap:12px}
+.ro:active{background:var(--s2)}
+.rtit{font-weight:600;font-size:14px}.rdesc{font-size:12px;color:var(--dim);margin-top:2px}
+.progress-bar{height:6px;background:#252525;border-radius:3px;overflow:hidden;margin-top:8px}
+.progress-bar>div{height:100%;background:linear-gradient(90deg,var(--g),var(--gold));transition:width .3s}
+.summary-card{background:linear-gradient(135deg,#1a1a1a,#222);border:1px solid var(--gdim);border-radius:14px;padding:16px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.cat-card{background:var(--s1);border:1px solid #222;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px}
+.cat-icon{font-size:22px;width:36px;text-align:center}
+.cat-info{flex:1;min-width:0}
+.cat-name{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.3px}
+.cat-amt{font-family:'Playfair Display',serif;font-size:16px;color:var(--r);font-weight:600}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.photo-thumb{aspect-ratio:1;border-radius:8px;background-size:cover;background-position:center;border:1px solid #333;position:relative;cursor:pointer}
+.photo-remove{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);border:none;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.photo-add{aspect-ratio:1;border-radius:8px;background:var(--s2);border:1.5px dashed #444;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--dim);cursor:pointer;gap:3px;font-size:10px}
+.photo-add:active{background:var(--s3)}
+.gasto-row{background:var(--s1);border-radius:12px;padding:12px 14px;margin-bottom:8px;border:1px solid #222;display:flex;align-items:center;gap:11px;cursor:pointer}
+.gasto-row:active{background:var(--s2)}
+.gasto-icon{width:38px;height:38px;border-radius:10px;background:#E05C5C22;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.gasto-info{flex:1;min-width:0}
+.gasto-desc{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gasto-meta{font-size:10px;color:var(--dim);margin-top:2px}
+.gasto-amt{font-family:'Playfair Display',serif;font-size:15px;color:var(--r);font-weight:600;white-space:nowrap}
+.lvl-1{color:var(--g);border-color:#5CB87A66}
+.lvl-2{color:var(--y);border-color:#E0B84066}
+.lvl-3{color:#E58A2C;border-color:#E58A2C66}
+.lvl-4{color:var(--r);border-color:#E05C5C66}
+.num-inc{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold);letter-spacing:.5px}
+.modal-img{max-width:100%;border-radius:10px;margin-bottom:8px}
+.full-img{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.full-img img{max-width:100%;max-height:100%;border-radius:8px}
+.full-img button{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="splash" style="position:fixed;inset:0;background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999">
+    <div style="font-family:'Playfair Display',serif;font-size:30px;color:#D4A843;letter-spacing:1px">Rentas</div>
+    <div style="font-size:11px;color:#444;margin-top:8px;letter-spacing:3px;text-transform:uppercase">Gestión Inmobiliaria</div>
+    <div style="width:44px;height:2px;background:#D4A843;border-radius:2px;margin-top:28px;animation:pu 1s infinite alternate"></div>
+    <style>@keyframes pu{from{opacity:.2}to{opacity:1}}</style>
+  </div>
+  <header class="hdr" id="hdr">
+    <div><div class="hdr-t" id="hdr-t">Panel</div><div class="hdr-s" id="hdr-s"></div></div>
+    <div id="hdr-a" style="display:flex;gap:7px"></div>
+  </header>
+  <main class="mc">
+    <div id="v-dash" class="view on"></div>
+    <div id="v-con" class="view"></div>
+    <div id="v-inq" class="view"></div>
+    <div id="v-det" class="view"></div>
+    <div id="v-svc" class="view"></div>
+    <div id="v-rep" class="view"></div>
+  </main>
+  <nav class="nav">
+    <button class="ni on" id="n-dash" onclick="go('dash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Panel<span class="nd" id="nd-dash"></span></button>
+    <button class="ni" id="n-con" onclick="go('con')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="6" cy="6" r="2" fill="currentColor"/><circle cx="14" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg>Conciliación</button>
+    <button class="ni" id="n-inq" onclick="go('inq')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Inquilinos</button>
+    <button class="ni" id="n-svc" onclick="go('svc')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Servicios</button>
+    <button class="ni" id="n-rep" onclick="go('rep')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Reportes</button>
+  </nav>
+  <button class="fab" id="fab" onclick="handleFAB()">+</button>
+  <div id="modal-root"></div>
+  <div class="snk" id="snk"></div>
+</div>
+<script>
+// ─── State ─────────────────────────────────────────────
+let DB={inquilinos:[],pagos:[],servicios:[],gastos:[],obras:[],incidentes:[]};
+let curView='dash',detTenant=null,curMes=null,curAnio=null,conSub='lista',expandedInm={},rangeMode='hoy',rangeStart=null,rangeEnd=null;
+const MN=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const MF=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const CATS_GASTO={carros:{n:'Carros',i:'🚗',c:'#5B9BD5'},mantenimiento:{n:'Mantenimiento',i:'🔧',c:'#D4A843'},mano_obra:{n:'Mano de obra',i:'👷',c:'#E58A2C'},servicios:{n:'Pago de servicios',i:'💡',c:'#E0B840'},otros:{n:'Otros',i:'📋',c:'#888'}};
+const TIPOS_OBRA={pintura:{n:'Pintura',i:'🎨'},plomeria:{n:'Plomería',i:'🚰'},cerrajeria:{n:'Cerrajería',i:'🔐'},limpieza:{n:'Limpieza',i:'🧹'},electrica:{n:'Eléctrica',i:'⚡'},otros:{n:'Otros',i:'🔨'}};
+const NIVELES_INC=[{k:1,n:'Baja',c:'#5CB87A'},{k:2,n:'Media',c:'#E0B840'},{k:3,n:'Alta',c:'#E58A2C'},{k:4,n:'Crítica',c:'#E05C5C'}];
+
+const now=new Date();
+const HM=now.getMonth()+1,HA=now.getFullYear(),HD=now.getDate();
+curMes=HM;curAnio=HA;
+let pendingPhotos=[];
+
+const SEED={"inquilinos":[{"id":"inq001","nombre":"LETICIA CASTILLO RODRIGUEZ","inmueble":"ETEN 595","interior":"3.0","renta":7500.0,"dia":30,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2016-05-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq002","nombre":"COCHES","inmueble":"PATA ROSA","interior":"E","renta":1000.0,"dia":30,"destino":"SANT","servicios":"NO APLICA","estatus":"Al corriente","renovacion":"2017-03-02","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq003","nombre":"RAUL CANDELARIO","inmueble":"XOCO","interior":"3B","renta":9500.0,"dia":30,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2009-04-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq004","nombre":"CRISTINA","inmueble":"XOCO","interior":"4A","renta":7500.0,"dia":30,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2017-03-01","comentarios":"aumento de renta","contrato_vigente":"No","estado":"activo"},{"id":"inq005","nombre":"FERNANDA","inmueble":"XOCO","interior":"8.0","renta":10300.0,"dia":30,"destino":"HSBC","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2025-03-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq006","nombre":"PILAR SANCHEZ ACEVEDO","inmueble":"PATA ROSA","interior":"3.0","renta":7800.0,"dia":30,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Debe","renovacion":"2025-06-01","comentarios":"PAR","contrato_vigente":"Si","estado":"activo"},{"id":"inq007","nombre":"HUMBERTO IVAN VALDEZ","inmueble":"CALLE 24","interior":"4.0","renta":8600.0,"dia":30,"destino":"EFE","servicios":"INTERNOS","estatus":"AL CORRIENTE","renovacion":"2025-05-01","comentarios":"","contrato_vigente":"SI","estado":"activo"},{"id":"inq008","nombre":"ANGEL","inmueble":"AEROLITO","interior":"9.0","renta":10000.0,"dia":30,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-05-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq009","nombre":"FRANCISCO Y JACQUELINE","inmueble":"AEROLITO","interior":"7 & MOTO","renta":8550.0,"dia":1,"destino":"BANORTE","servicios":"1300.0","estatus":"Al corriente","renovacion":"2025-03-01","comentarios":"MAYO, JULIO, SEPTIEMBRE, NOVIEMBRE, ENERO","contrato_vigente":"Si","estado":"activo"},{"id":"inq010","nombre":"RODRIGO \"CHINO\" RUEDA","inmueble":"CALLE 24","interior":"E","renta":10000.0,"dia":1,"destino":"SANT","servicios":"300 de LUZ /INTERNOS","estatus":"Al corriente","renovacion":"2023-07-01","comentarios":"NO PAGO EL ACOMPLETO DE DEPOSITO (TIENE 2 DE 9 MIL)","contrato_vigente":"No","estado":"activo"},{"id":"inq011","nombre":"SARA PODOLOGA","inmueble":"NORTE 5109","interior":"4.0","renta":8140.0,"dia":1,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-06-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq012","nombre":"HAZEL ALVAREZ","inmueble":"NORTE 5124","interior":"6.0","renta":8250.0,"dia":1,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2024-09-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq013","nombre":"HIJOS DE LUVIA","inmueble":"NORTE 5A 4826","interior":"3.0","renta":7000.0,"dia":1,"destino":"EFE","servicios":"-","estatus":"Al corriente","renovacion":"2017-04-17","comentarios":"DEBEN 500 PARA ACOMPLETAR EL DEPOSITO","contrato_vigente":"No","estado":"activo"},{"id":"inq014","nombre":"VICENTE CASTAÑEDA primer pago","inmueble":"XOCO","interior":"5A","renta":3100.0,"dia":1,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2009-07-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq015","nombre":"ILDA XOCO","inmueble":"XOCO","interior":"1.0","renta":7300.0,"dia":1,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2024-06-24","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq016","nombre":"LUIS JAVIER MARTINEZ","inmueble":"XOCO","interior":"3.0","renta":8100.0,"dia":1,"destino":"EFE","servicios":"NO INCLUYE","estatus":"Al corriente","renovacion":"2025-03-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq017","nombre":"AXEL DORSACO GARCIA","inmueble":"CALLE 24","interior":"7.0","renta":6500.0,"dia":1,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"2025-11-25","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq018","nombre":"ISRAEL Y MARIO","inmueble":"CALLE 24","interior":"3.0","renta":7800.0,"dia":2,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2025-02-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq019","nombre":"JOSE RUBEN Y SOFIA YARELI","inmueble":"NORTE 5109","interior":"3.0","renta":9350.0,"dia":2,"destino":"EFE","servicios":"800.0","estatus":"Al corriente","renovacion":"2025-06-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq020","nombre":"PETRA","inmueble":"CALLE 24","interior":"7.0","renta":8850.0,"dia":3,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2024-12-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq021","nombre":"ARQ. ANA KAREN","inmueble":"PATA VERDE","interior":"4.0","renta":8600.0,"dia":3,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"2025-04-25","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq022","nombre":"NAYELI SOLIS","inmueble":"XOCO","interior":"2.0","renta":7480.0,"dia":3,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2024-09-01","comentarios":"se divide la luz con el de arriba","contrato_vigente":"Si","estado":"activo"},{"id":"inq023","nombre":"STEPHANIE TALIA MENDEZ MORALES","inmueble":"PATA ROSA","interior":"1.0","renta":7350.0,"dia":5,"destino":"EFE/BANORTE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-02-05","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq024","nombre":"ANA ELIZABETH JUAREZ MENESES","inmueble":"CALLE 19","interior":"3.0","renta":7050.0,"dia":6,"destino":"EFE","servicios":"SI INCLUYE","estatus":"Al corriente","renovacion":"2025-10-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq025","nombre":"EMILIO","inmueble":"AV 45 METROS","interior":"7.0","renta":3600.0,"dia":7,"destino":"HSBC","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2023-08-22","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq026","nombre":"SANDRA DANIELA DIAZ","inmueble":"CALLE 24","interior":"8.0","renta":8000.0,"dia":9,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2025-05-01","comentarios":"","contrato_vigente":"SI","estado":"activo"},{"id":"inq027","nombre":"MARIANA GIL ELIZALDE","inmueble":"PATA VERDE","interior":"3.0","renta":7300.0,"dia":9,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"2025-05-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq028","nombre":"DANIELA RIOS","inmueble":"NORTE 5A 4826","interior":"4.0","renta":7300.0,"dia":12,"destino":"EFE/MIFIEL","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2024-12-01","comentarios":"PENDIENTE DE FIRMA","contrato_vigente":"Si","estado":"activo"},{"id":"inq029","nombre":"ITZEL Y JESUS","inmueble":"PATA ROSA","interior":"5.0","renta":7130.0,"dia":12,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-01-01","comentarios":"terminación de contrato","contrato_vigente":"Si","estado":"activo"},{"id":"inq030","nombre":"EDUARDO SUZAN","inmueble":"PATA ROSA","interior":"6.0","renta":8000.0,"dia":12,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2024-12-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq031","nombre":"ISAAC SANCHEZ COLIN","inmueble":"AEROLITO","interior":"6.0","renta":9900.0,"dia":13,"destino":"EFE","servicios":"INCLUIDOS*","estatus":"Al corriente","renovacion":"2023-10-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq032","nombre":"MAX","inmueble":"NORTE 5124","interior":"4.0","renta":7500.0,"dia":13,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2018-10-01","comentarios":"PAR","contrato_vigente":"No","estado":"activo"},{"id":"inq033","nombre":"ERNESTO SAN MILLAN VAZQUEZ","inmueble":"AEROLITO","interior":"1.0","renta":8700.0,"dia":14,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-07-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq034","nombre":"FRANSISCO SANCHEZ","inmueble":"AEROLITO","interior":"5.0","renta":7000.0,"dia":15,"destino":"EFE","servicios":"1300.0","estatus":"Con atraso","renovacion":"2025-01-01","comentarios":"DEBE 1000 DEPOSITO","contrato_vigente":"No","estado":"activo"},{"id":"inq035","nombre":"GUSTAVO CRUZ ESPINOS","inmueble":"JASPE","interior":"4.0","renta":8200.0,"dia":15,"destino":"EFE","servicios":"800.0","estatus":"Al corriente","renovacion":"2024-06-24","comentarios":"AGOSTO,OCTUBRE, DICIEMBRE, FEBRERO, ABRIL, JUNIO","contrato_vigente":"Si","estado":"activo"},{"id":"inq036","nombre":"ABRILBARBOSA","inmueble":"NORTE 5109","interior":"5.0","renta":8000.0,"dia":15,"destino":"EFE/BANAMEX","servicios":"500.0","estatus":"Al corriente","renovacion":"2025-07-15","comentarios":"SEPTIEMBRE, NOVIEMBRE, ENERO, MARZO, MAYO, JULIO","contrato_vigente":"Si","estado":"activo"},{"id":"inq037","nombre":"JOSE MANUEL RUTIAGA","inmueble":"NORTE 5109","interior":"1.0","renta":7890.0,"dia":15,"destino":"EFE","servicios":"500.0","estatus":"Al corriente","renovacion":"2024-08-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq038","nombre":"JANET F","inmueble":"NORTE 5109","interior":"2.0","renta":2500.0,"dia":15,"destino":"EFE/ MIFIEL","servicios":"500.0","estatus":"Al corriente","renovacion":"2022-04-01","comentarios":"IMPAR","contrato_vigente":"No","estado":"activo"},{"id":"inq039","nombre":"VICENTE CASTAÑEDA","inmueble":"XOCO","interior":"5A","renta":3100.0,"dia":15,"destino":"EFE","servicios":"INTERNOS","estatus":"Al corriente","renovacion":"2009-07-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq040","nombre":"PRIMO MAURICIO","inmueble":"AV 45 METROS","interior":"3.0","renta":3600.0,"dia":15,"destino":"BANAMEX","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2023-08-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq041","nombre":"YESICA NEGRETE PÉREZ","inmueble":"ZAPATA","interior":"4.0","renta":3500.0,"dia":15,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"2026-12-25","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq042","nombre":"ROBERTO PEREZ GARCÍA","inmueble":"ZAPATA","interior":"2.0","renta":3300.0,"dia":15,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"2026-12-25","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq043","nombre":"RAFEL REYES ROBLES","inmueble":"NORTE 5124","interior":"5.0","renta":8000.0,"dia":17,"destino":"EFE/SANT","servicios":"INCLUIDOS","estatus":"Con atraso","renovacion":"2024-12-01","comentarios":"DEBE DEPOSITO","contrato_vigente":"Si","estado":"activo"},{"id":"inq044","nombre":"MERCEDES ALVAREZ","inmueble":"PATA ROSA","interior":"4.0","renta":7810.0,"dia":17,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-01-01","comentarios":"DEBE DEPOSITO","contrato_vigente":"Si","estado":"activo"},{"id":"inq045","nombre":"ROMAN JANACUA","inmueble":"PATA ROSA","interior":"2.0","renta":8910.0,"dia":18,"destino":"BANORTE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-01-01","comentarios":"DEBE DEPOSITO","contrato_vigente":"Si","estado":"activo"},{"id":"inq046","nombre":"FRANSISCO ARQUI","inmueble":"CALLE 19","interior":"1.0","renta":10000.0,"dia":13,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-07-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq047","nombre":"SUSANA TENORIO","inmueble":"NORTE 5124","interior":"4.0","renta":8100.0,"dia":20,"destino":"EFE","servicios":"NO INCLUYE","estatus":"Al corriente","renovacion":"2024-10-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq048","nombre":"VIANCA  G. ROMERO- ALEXIS","inmueble":"AEROLITO","interior":"A2","renta":8250.0,"dia":22,"destino":"EFE","servicios":"NO INCLUYE","estatus":"Al corriente","renovacion":"2024-05-24","comentarios":"JULIO, SEPTIEMBRE, NOVIEMBRE, ENERO, MARZO","contrato_vigente":"Si","estado":"activo"},{"id":"inq049","nombre":"MISAEL ISSAI","inmueble":"JASPE","interior":"1.0","renta":9300.0,"dia":22,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq050","nombre":"DOLORES XITHE","inmueble":"PATA ROSA","interior":"7.0","renta":6050.0,"dia":23,"destino":"BANORTE","servicios":"800.0","estatus":"Al corriente","renovacion":"2024-03-19","comentarios":"PAR","contrato_vigente":"No","estado":"activo"},{"id":"inq051","nombre":"ANTONIO PUGA","inmueble":"CALLE 19","interior":"2.0","renta":6500.0,"dia":24,"destino":"BANORTE","servicios":"200.0","estatus":"Al corriente","renovacion":"2022-01-01","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq052","nombre":"GUSTAVO ADOLFO VILLANUEVA","inmueble":"JASPE","interior":"8.0","renta":9200.0,"dia":24,"destino":"EFE","servicios":"500.0","estatus":"Al corriente","renovacion":"2023-03-01","comentarios":"LUZ APARTE","contrato_vigente":"Si","estado":"activo"},{"id":"inq053","nombre":"MARIA DEL CARMEN LOPEZ SALAZAR","inmueble":"JASPE","interior":"7.0","renta":6600.0,"dia":24,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2024-03-01","comentarios":"TOPE DE LUZ DE $150","contrato_vigente":"Si","estado":"activo"},{"id":"inq054","nombre":"ALEJANDRO MARTINEZ MORALES- FANNY","inmueble":"JASPE","interior":"2.0","renta":7790.0,"dia":25,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Debe","renovacion":"2024-02-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq055","nombre":"ALEJANDRO GAYTAN","inmueble":"JASPE","interior":"A3","renta":6300.0,"dia":25,"destino":"EFE","servicios":"NO INCLUYE","estatus":"Al corriente","renovacion":"2024-11-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq056","nombre":"LUIS ALBERTO MEDINA","inmueble":"ZAPATA","interior":"4.0","renta":4400.0,"dia":26,"destino":"EFE","servicios":"NO INCLUYE","estatus":"Al corriente","renovacion":"2025-05-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq057","nombre":"JOEL GONZALEZ","inmueble":"CALLE 24","interior":"2.0","renta":6800.0,"dia":26,"destino":"EFE","servicios":"INTERNOS","estatus":"AL CORRIENTE","renovacion":"2025-05-01","comentarios":"","contrato_vigente":"SI","estado":"activo"},{"id":"inq058","nombre":"RICARDO ALVAREZ RAMOS","inmueble":"AEROLITO","interior":"8.0","renta":8600.0,"dia":27,"destino":"EFE","servicios":"INCLUIDOS","estatus":"Al corriente","renovacion":"2025-02-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq059","nombre":"LUIS MANUEL RIVERA","inmueble":"CALLE 24","interior":"8.0","renta":6500.0,"dia":27,"destino":"HSBC","servicios":"INTERNOS","estatus":"Con atraso","renovacion":"2012-11-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq060","nombre":"EMMANUEL ALEJANDRO AVILA","inmueble":"AEROLITO","interior":"4.0","renta":8500.0,"dia":28,"destino":"SANT","servicios":"500.0","estatus":"Al corriente","renovacion":"2024-04-01","comentarios":"VA A PAGAR 500 MÁS CADA MES","contrato_vigente":"Si","estado":"activo"},{"id":"inq061","nombre":"CINDY ANDY FERNANDEZ JARAMILLO","inmueble":"CALLE 19","interior":"4.0","renta":10200.0,"dia":28,"destino":"EFE","servicios":"800.0","estatus":"Al corriente","renovacion":"2024-06-23","comentarios":"OCTUBRE, DICIEMBRE, FEBRERO, ABRIL, JUNIO","contrato_vigente":"Si","estado":"activo"},{"id":"inq062","nombre":"FABIAN GOMEZ TELLEZ","inmueble":"NORTE 5124","interior":"1.0","renta":6000.0,"dia":28,"destino":"EFE","servicios":"300.0","estatus":"Al corriente","renovacion":"2011-03-01","comentarios":"PAR","contrato_vigente":"No","estado":"activo"},{"id":"inq063","nombre":"CLAUDIA RAMIREZ","inmueble":"AEROLITO","interior":"3.0","renta":10000.0,"dia":29,"destino":"EFE","servicios":"LUZ APARTE","estatus":"Al corriente","renovacion":"2025-02-01","comentarios":"","contrato_vigente":"Si","estado":"activo"},{"id":"inq064","nombre":"VACÍO","inmueble":"ETEN 687","interior":"2.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq065","nombre":"VACÍO","inmueble":"ETEN 687","interior":"3.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq066","nombre":"VACÍO","inmueble":"JASPE","interior":"4.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq067","nombre":"VACÍO","inmueble":"NORTE 5124","interior":"2.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq068","nombre":"VACÍO","inmueble":"NORTE 5A 4826","interior":"1.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq069","nombre":"VACÍO","inmueble":"ETEN 595","interior":"2.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq070","nombre":"VACÍO","inmueble":"NORTE 5A 4826","interior":"2.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq071","nombre":"VACÍO","inmueble":"PATA VERDE","interior":"1.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq072","nombre":"VACÍO","inmueble":"PATA VERDE","interior":"2.0","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"},{"id":"inq073","nombre":"VACÍO","inmueble":"NORTE 5109","interior":"AZOTEA","renta":0,"dia":1,"destino":"","servicios":"","estatus":"Al corriente","renovacion":"","comentarios":"","contrato_vigente":"No","estado":"activo"}],"pagos":[{"iid":"inq001","mes":1,"anio":2026,"monto":7500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq003","mes":1,"anio":2026,"monto":9500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq004","mes":1,"anio":2026,"monto":7500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq005","mes":1,"anio":2026,"monto":10300.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq006","mes":1,"anio":2026,"monto":7800.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq007","mes":1,"anio":2026,"monto":8600.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq008","mes":1,"anio":2026,"monto":10000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq009","mes":1,"anio":2026,"monto":8550.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq010","mes":1,"anio":2026,"monto":10000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq011","mes":1,"anio":2026,"monto":8140.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq012","mes":1,"anio":2026,"monto":8250.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq013","mes":1,"anio":2026,"monto":7000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq014","mes":1,"anio":2026,"monto":3100.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq015","mes":1,"anio":2026,"monto":7300.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq016","mes":1,"anio":2026,"monto":8100.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq017","mes":1,"anio":2026,"monto":6500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq019","mes":1,"anio":2026,"monto":9350.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq020","mes":1,"anio":2026,"monto":8850.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq021","mes":1,"anio":2026,"monto":8600.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq022","mes":1,"anio":2026,"monto":7480.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq023","mes":1,"anio":2026,"monto":7350.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq024","mes":1,"anio":2026,"monto":7050.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq025","mes":1,"anio":2026,"monto":3600.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq026","mes":1,"anio":2026,"monto":8000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq027","mes":1,"anio":2026,"monto":7300.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq028","mes":1,"anio":2026,"monto":7300.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq029","mes":1,"anio":2026,"monto":7130.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq030","mes":1,"anio":2026,"monto":8000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq031","mes":1,"anio":2026,"monto":9900.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq032","mes":1,"anio":2026,"monto":7500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq033","mes":1,"anio":2026,"monto":8700.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq034","mes":1,"anio":2026,"monto":7000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq035","mes":1,"anio":2026,"monto":8200.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq036","mes":1,"anio":2026,"monto":8000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq038","mes":1,"anio":2026,"monto":2500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq039","mes":1,"anio":2026,"monto":3100.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq040","mes":1,"anio":2026,"monto":3600.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq041","mes":1,"anio":2026,"monto":3500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq042","mes":1,"anio":2026,"monto":3300.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq043","mes":1,"anio":2026,"monto":8000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq044","mes":1,"anio":2026,"monto":7810.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq045","mes":1,"anio":2026,"monto":8910.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq046","mes":1,"anio":2026,"monto":10000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq048","mes":1,"anio":2026,"monto":8250.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq049","mes":1,"anio":2026,"monto":9300.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq050","mes":1,"anio":2026,"monto":6050.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq051","mes":1,"anio":2026,"monto":6500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq052","mes":1,"anio":2026,"monto":9200.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq053","mes":1,"anio":2026,"monto":6600.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq054","mes":1,"anio":2026,"monto":7790.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq056","mes":1,"anio":2026,"monto":4400.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq057","mes":1,"anio":2026,"monto":6800.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq058","mes":1,"anio":2026,"monto":8600.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq060","mes":1,"anio":2026,"monto":8500.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq061","mes":1,"anio":2026,"monto":10200.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq062","mes":1,"anio":2026,"monto":6000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"},{"iid":"inq063","mes":1,"anio":2026,"monto":10000.0,"pagado":true,"fecha_pago":"2026-01-15T10:00:00"}]};
+
+// ─── Storage ───────────────────────────────────────────
+function loadDB(){
+  let firstRun=true;
+  ["inquilinos","pagos","servicios","gastos","obras","incidentes"].forEach(k=>{
+    try{const v=localStorage.getItem("rentas_"+k);if(v){DB[k]=JSON.parse(v);if(k==="inquilinos"&&DB[k].length>0)firstRun=false;}}catch(e){}
+  });
+  if(firstRun){
+    DB.inquilinos=SEED.inquilinos;
+    DB.pagos=SEED.pagos.map(p=>({...p,id:uid()}));
+    saveDB("inquilinos");saveDB("pagos");
+    setTimeout(()=>snack("Cargados 73 inquilinos iniciales"),800);
+  }
+}
+function saveDB(k){
+  try{localStorage.setItem("rentas_"+k,JSON.stringify(DB[k]))}
+  catch(e){snack("⚠️ Almacenamiento lleno. Borra fotos antiguas.")}
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+
+// ─── Utils ─────────────────────────────────────────────
+function fmt(n){return"$"+Number(n||0).toLocaleString("es-MX",{minimumFractionDigits:0})}
+function ini(n){return(n||"?").trim().split(" ").slice(0,2).map(w=>w[0]||"").join("").toUpperCase()||"?"}
+function snack(m){const s=document.getElementById("snk");s.textContent=m;s.classList.add("show");setTimeout(()=>s.classList.remove("show"),2500)}
+function getPago(iid,m,a){return DB.pagos.find(p=>p.iid===iid&&p.mes===m&&p.anio===a&&p.pagado)}
+function isPagado(iid,m,a){return!!getPago(iid,m,a)}
+function isLate(iid,m,a){
+  if(getPago(iid,m,a))return false;
+  if(a>HA||(a===HA&&m>HM))return false;
+  if(a<HA||(a===HA&&m<HM))return true;
+  const t=DB.inquilinos.find(x=>x.id===iid);return HD>=Number(t?.dia||1);
+}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function nowISO(){return new Date().toISOString()}
+
+// ── Image compression ─────────────
+async function compressImage(file,maxW=1024,q=0.65){
+  return new Promise((resolve)=>{
+    const r=new FileReader();
+    r.onload=(e)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement('canvas');
+        let w=img.width,h=img.height;
+        if(w>maxW){h=h*maxW/w;w=maxW;}
+        c.width=w;c.height=h;
+        const ctx=c.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg',q));
+      };
+      img.src=e.target.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+// ── Incident numbering ────────────
+function nextIncidentNum(){
+  const t=new Date();
+  const pre=String(t.getFullYear()).slice(2)+String(t.getMonth()+1).padStart(2,'0')+String(t.getDate()).padStart(2,'0');
+  const today=DB.incidentes.filter(i=>i.numero&&i.numero.startsWith(pre));
+  return pre+'-'+String(today.length+1).padStart(3,'0');
+}
+
+// ── Date range helpers ────────────
+function getRange(mode){
+  const t=new Date();t.setHours(0,0,0,0);
+  if(mode==='hoy')return{ini:t,fin:new Date(t.getTime()+86400000-1),label:'Hoy '+t.toLocaleDateString('es-MX')};
+  if(mode==='ayer'){const a=new Date(t.getTime()-86400000);return{ini:a,fin:new Date(t.getTime()-1),label:'Ayer '+a.toLocaleDateString('es-MX')};}
+  if(mode==='semana'){const d=t.getDay()||7;const ini=new Date(t.getTime()-(d-1)*86400000);return{ini,fin:new Date(t.getTime()+86400000-1),label:'Esta semana'};}
+  if(mode==='sem_pas'){const d=t.getDay()||7;const ini=new Date(t.getTime()-(d-1+7)*86400000);const fin=new Date(ini.getTime()+7*86400000-1);return{ini,fin,label:'Semana pasada'};}
+  if(mode==='mes')return{ini:new Date(t.getFullYear(),t.getMonth(),1),fin:new Date(t.getFullYear(),t.getMonth()+1,0,23,59,59),label:MF[t.getMonth()]+' '+t.getFullYear()};
+  if(mode==='custom'&&rangeStart&&rangeEnd){const i=new Date(rangeStart);const f=new Date(rangeEnd);f.setHours(23,59,59);return{ini:i,fin:f,label:rangeStart+' a '+rangeEnd};}
+  return{ini:t,fin:new Date(t.getTime()+86400000-1),label:'Hoy'};
+}
+
+// ─── Router ────────────────────────────────────────────
+function go(v){
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".ni").forEach(x=>x.classList.remove("on"));
+  curView=v;
+  const fab=document.getElementById("fab");
+  const hdra=document.getElementById("hdr-a");
+  hdra.innerHTML="";fab.style.display="none";
+  if(v==="det"){
+    document.getElementById("v-det").classList.add("on");
+    document.getElementById("hdr-t").textContent=detTenant?.nombre||"Inquilino";
+    document.getElementById("hdr-s").textContent=detTenant?.inmueble||"";
+    hdra.innerHTML=`<button class="btn bo bsm" onclick="openEditTenant('${detTenant?.id}')">✏️</button>`;
+    renderDet();return;
+  }
+  const vm={dash:"v-dash",con:"v-con",inq:"v-inq",svc:"v-svc",rep:"v-rep"};
+  const nm={dash:"n-dash",con:"n-con",inq:"n-inq",svc:"n-svc",rep:"n-rep"};
+  const tt={dash:"Panel",con:"Conciliación",inq:"Inquilinos",svc:"Servicios",rep:"Reportes"};
+  document.getElementById(vm[v])?.classList.add("on");
+  document.getElementById(nm[v])?.classList.add("on");
+  document.getElementById("hdr-t").textContent=tt[v]||"";
+  document.getElementById("hdr-s").textContent="";
+  if(v==="inq")fab.style.display="flex";
+  if(v==="svc")fab.style.display="flex";
+  if(v==="con"&&conSub==='gastos')fab.style.display="flex";
+  ({dash:renderDash,con:renderCon,inq:renderInq,svc:renderSvc,rep:renderRep})[v]?.();
+  updNotif();
+}
+function handleFAB(){
+  if(curView==="inq")openEditTenant();
+  else if(curView==="svc")openAddService();
+  else if(curView==="con"&&conSub==='gastos')openAddGasto();
+}
+function updNotif(){
+  const n=DB.inquilinos.filter(i=>i.estado==="activo"&&isLate(i.id,HM,HA)).length;
+  document.getElementById("nd-dash").style.display=n?"block":"none";
+}
+
+// ─── Dashboard ─────────────────────────────────────────
+function renderDash(){
+  const act=DB.inquilinos.filter(i=>i.estado==="activo");
+  const venc=act.filter(i=>isLate(i.id,HM,HA));
+  const pagds=act.filter(i=>isPagado(i.id,HM,HA));
+  const cobMes=DB.pagos.filter(p=>p.mes===HM&&p.anio===HA&&p.pagado).reduce((s,p)=>s+Number(p.monto),0);
+  const totalEsp=act.reduce((s,i)=>s+Number(i.renta||0),0);
+  const pct=totalEsp>0?Math.round(cobMes/totalEsp*100):0;
+  const gMes=DB.gastos.filter(g=>{const d=new Date(g.fecha);return d.getMonth()+1===HM&&d.getFullYear()===HA}).reduce((s,g)=>s+Number(g.monto),0);
+  const neto=cobMes-gMes;
+  document.getElementById("v-dash").innerHTML=`
+    <div class="summary-card">
+      <div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px">${MF[HM-1]} ${HA}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:30px;color:var(--gold);margin-top:4px">${fmt(cobMes)}</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:2px">de ${fmt(totalEsp)} esperados (${pct}%)</div>
+      <div class="progress-bar"><div style="width:${pct}%"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;text-align:center">
+        <div><div style="font-size:9px;color:var(--dim)">INGRESOS</div><div style="color:var(--g);font-weight:700">${fmt(cobMes)}</div></div>
+        <div><div style="font-size:9px;color:var(--dim)">GASTOS</div><div style="color:var(--r);font-weight:700">${fmt(gMes)}</div></div>
+        <div><div style="font-size:9px;color:var(--dim)">NETO</div><div style="color:${neto>=0?'var(--g)':'var(--r)'};font-weight:700">${fmt(neto)}</div></div>
+      </div>
+    </div>
+    <div class="sg">
+      <div class="sc"><div class="sl">Vencidas</div><div class="sv${venc.length>0?' r':' g'}">${venc.length}</div></div>
+      <div class="sc"><div class="sl">Pagadas</div><div class="sv g">${pagds.length}/${act.length}</div></div>
+      <div class="sc"><div class="sl">Inmuebles</div><div class="sv">${new Set(act.map(i=>i.inmueble)).size}</div></div>
+      <div class="sc"><div class="sl">Por cobrar</div><div class="sv r">${fmt(totalEsp-cobMes)}</div></div>
+    </div>
+    ${venc.length>0?`<div class="st">⚠️ Vencidas (${venc.length})</div>`:''}
+    ${venc.slice(0,5).map(t=>`<div class="ti" onclick="openDet('${t.id}')"><div class="av">${ini(t.nombre)}</div><div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.inmueble}${t.interior?' · '+t.interior:''} · Día ${t.dia}</div></div><div style="text-align:right"><div style="color:var(--r);font-weight:600">${fmt(t.renta)}</div></div></div>`).join('')}
+    ${venc.length>5?`<button class="btn bo bfu bsm" onclick="go('con')">Ver todas en Conciliación →</button>`:''}
+    ${act.length===0?`<div class="es"><div class="ei">🏠</div><div class="et">Sin inquilinos</div></div>`:''}
+  `;
+}
+
+// ─── CONCILIACIÓN ──────────────────────────────────────
+function renderCon(){
+  document.getElementById("v-con").innerHTML=`
+    <div class="subnav">
+      <button class="${conSub==='lista'?'on':''}" onclick="conSub='lista';document.getElementById('fab').style.display='none';renderCon()">📋 Lista</button>
+      <button class="${conSub==='gastos'?'on':''}" onclick="conSub='gastos';document.getElementById('fab').style.display='flex';renderCon()">💸 Gastos</button>
+      <button class="${conSub==='resumen'?'on':''}" onclick="conSub='resumen';document.getElementById('fab').style.display='none';renderCon()">⚖️ Resumen</button>
+      <button class="${conSub==='hist'?'on':''}" onclick="conSub='hist';document.getElementById('fab').style.display='none';renderCon()">📊 Historial</button>
+    </div>
+    <div id="con-content"></div>`;
+  if(conSub==='lista')renderListaInq();
+  else if(conSub==='gastos')renderGastos();
+  else if(conSub==='resumen')renderResumen();
+  else renderHistorial();
+}
+
+// ── Lista Inquilinaria ────────────
+function renderListaInq(){
+  let chips=`<div class="cr">`;
+  for(let i=0;i<6;i++){
+    const d=new Date(HA,HM-1-i,1);const m=d.getMonth()+1,a=d.getFullYear();
+    const sel=(m===curMes&&a===curAnio);
+    chips+=`<span class="chip${sel?' on':''}" onclick="curMes=${m};curAnio=${a};renderCon()">${MF[m-1]} ${a}</span>`;
+  }
+  chips+=`</div>`;
+  const act=DB.inquilinos.filter(i=>i.estado==="activo");
+  const grupos={};
+  act.forEach(i=>{if(!grupos[i.inmueble])grupos[i.inmueble]=[];grupos[i.inmueble].push(i);});
+  Object.values(grupos).forEach(g=>g.sort((a,b)=>(a.dia||0)-(b.dia||0)||a.nombre.localeCompare(b.nombre)));
+  const totalEsp=act.reduce((s,i)=>s+Number(i.renta),0);
+  const totalCob=act.filter(i=>isPagado(i.id,curMes,curAnio)).reduce((s,i)=>{const p=getPago(i.id,curMes,curAnio);return s+Number(p?.monto||i.renta);},0);
+  const nPag=act.filter(i=>isPagado(i.id,curMes,curAnio)).length;
+  const nVenc=act.filter(i=>isLate(i.id,curMes,curAnio)).length;
+  let html=chips;
+  html+=`<div class="summary-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase">Cobrado ${MF[curMes-1]} ${curAnio}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--g);margin-top:3px">${fmt(totalCob)}</div></div>
+      <button class="btn bo bsm" onclick="exportExcelMes()">📥 Excel</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;font-size:11px">
+      <div><div style="color:var(--dim)">Pagados</div><div style="color:var(--g);font-weight:700;font-size:15px">${nPag}/${act.length}</div></div>
+      <div><div style="color:var(--dim)">Vencidos</div><div style="color:var(--r);font-weight:700;font-size:15px">${nVenc}</div></div>
+      <div><div style="color:var(--dim)">Por cobrar</div><div style="color:var(--gold);font-weight:700;font-size:15px">${fmt(totalEsp-totalCob)}</div></div>
+    </div>
+    <div class="progress-bar" style="margin-top:12px"><div style="width:${totalEsp>0?Math.round(totalCob/totalEsp*100):0}%"></div></div>
+  </div>`;
+  Object.keys(grupos).sort().forEach(inm=>{
+    const items=grupos[inm];const totG=items.reduce((s,i)=>s+Number(i.renta),0);
+    const cobG=items.filter(i=>isPagado(i.id,curMes,curAnio)).reduce((s,i)=>{const p=getPago(i.id,curMes,curAnio);return s+Number(p?.monto||i.renta);},0);
+    const nPagG=items.filter(i=>isPagado(i.id,curMes,curAnio)).length;
+    const open=expandedInm[inm]!==false;
+    html+=`<div class="inm-group"><div class="inm-hd" onclick="toggleInm('${inm}')">
+      <div class="inm-hd-l"><span class="inm-arrow ${open?'open':''}">▶</span>
+      <div><div class="inm-nom">${inm}</div><div class="inm-meta">${nPagG}/${items.length} pagados · ${fmt(cobG)} de ${fmt(totG)}</div></div></div></div>
+      <div class="inm-body ${open?'open':''}">`;
+    items.forEach(t=>{
+      const paid=isPagado(t.id,curMes,curAnio);const late=isLate(t.id,curMes,curAnio);
+      const pago=getPago(t.id,curMes,curAnio);
+      const ts=pago?.fecha_pago?new Date(pago.fecha_pago).toLocaleString('es-MX',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      html+=`<div class="row-inq ${paid?'paid':''} ${late?'late':''}" onclick="confirmTogglePago('${t.id}',${curMes},${curAnio})">
+        <div class="chkbox ${paid?'on':''} ${late?'late':''}"></div>
+        <div class="inq-dia">${t.dia||'—'}</div>
+        <div class="inq-info"><div class="inq-nom">${t.nombre}${t.interior?' <span style="color:var(--dim);font-weight:400">· '+t.interior+'</span>':''}</div>
+        <div class="inq-sub">${t.servicios||t.destino||t.estatus||''}</div></div>
+        <div><div class="inq-monto">${fmt(t.renta)}</div>${ts?`<div class="inq-tstamp">✓ ${ts}</div>`:''}</div></div>`;
+    });
+    html+=`</div></div>`;
+  });
+  if(act.length===0)html+=`<div class="es"><div class="ei">📋</div><div class="et">Sin inquilinos activos</div></div>`;
+  document.getElementById("con-content").innerHTML=html;
+}
+function toggleInm(inm){expandedInm[inm]=expandedInm[inm]===false?true:false;renderListaInq();}
+
+function confirmTogglePago(iid,m,a){
+  const t=DB.inquilinos.find(x=>x.id===iid);if(!t)return;
+  const paid=isPagado(iid,m,a);
+  if(paid){
+    modal(`<div class="ms"><div class="mh"></div>
+      <div class="confirm-msg"><div style="font-size:42px;margin-bottom:8px">↩️</div>
+      <div class="confirm-q">¿Quitar pago?</div>
+      <div class="confirm-sub">${t.nombre}<br>${MF[m-1]} ${a} · ${fmt(t.renta)}</div></div>
+      <div class="confirm-btns"><button class="btn bd" onclick="closeM()">No</button>
+      <button class="btn bs" onclick="doTogglePago('${iid}',${m},${a},false)">Sí, quitar</button></div></div>`);
+  }else{
+    modal(`<div class="ms"><div class="mh"></div>
+      <div class="confirm-msg"><div style="font-size:42px;margin-bottom:8px">💰</div>
+      <div class="confirm-q">¿Confirmar pago recibido?</div>
+      <div class="confirm-sub">${t.nombre}<br>${t.inmueble}${t.interior?' · '+t.interior:''}</div></div>
+      <div class="card" style="text-align:center;margin-bottom:14px;background:var(--s2)">
+      <div style="font-size:11px;color:var(--dim)">Monto a registrar</div>
+      <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--g);margin:4px 0">
+      <input id="confirm-monto" type="number" value="${t.renta}" style="background:none;border:none;color:var(--g);text-align:center;font:inherit;width:100%;outline:none"></div>
+      <div style="font-size:11px;color:var(--dim)">${MF[m-1]} ${a}</div></div>
+      <div class="confirm-btns"><button class="btn bd" onclick="closeM()">No</button>
+      <button class="btn bs" onclick="doTogglePago('${iid}',${m},${a},true)">Sí, pagado</button></div></div>`);
+  }
+}
+
+function doTogglePago(iid,m,a,marcar){
+  if(marcar){
+    const monto=Number(document.getElementById('confirm-monto')?.value||0);
+    const t=DB.inquilinos.find(x=>x.id===iid);
+    DB.pagos=DB.pagos.filter(p=>!(p.iid===iid&&p.mes===m&&p.anio===a));
+    DB.pagos.push({id:uid(),iid,mes:m,anio:a,monto:monto||t.renta,pagado:true,fecha_pago:nowISO(),metodo:'efectivo'});
+    saveDB('pagos');snack(`✓ Pago registrado · ${fmt(monto)}`);
+  }else{
+    DB.pagos=DB.pagos.filter(p=>!(p.iid===iid&&p.mes===m&&p.anio===a));
+    saveDB('pagos');snack('Pago eliminado');
+  }
+  closeM();
+  if(curView==='con')renderCon();else if(curView==='dash')renderDash();else if(curView==='det')renderDet();
+  updNotif();
+}
+
+// ── Historial ────────────
+function renderHistorial(){
+  let chips=`<div class="cr">`;
+  for(let i=0;i<8;i++){
+    const d=new Date(HA,HM-1-i,1);const m=d.getMonth()+1,a=d.getFullYear();
+    const sel=(m===curMes&&a===curAnio);
+    chips+=`<span class="chip${sel?' on':''}" onclick="curMes=${m};curAnio=${a};renderCon()">${MN[m-1]} ${a}</span>`;
+  }
+  chips+=`</div>`;
+  const ps=DB.pagos.filter(p=>p.mes===curMes&&p.anio===curAnio&&p.pagado);
+  const sorted=[...ps].sort((a,b)=>new Date(b.fecha_pago||0)-new Date(a.fecha_pago||0));
+  const total=ps.reduce((s,p)=>s+Number(p.monto),0);
+  let html=chips;
+  html+=`<div class="sg"><div class="sc"><div class="sl">Total cobrado</div><div class="sv g">${fmt(total)}</div></div>
+    <div class="sc"><div class="sl">Registros</div><div class="sv">${ps.length}</div></div></div>`;
+  html+=`<div class="card" style="padding:0 14px">`;
+  if(sorted.length===0)html+=`<div class="es" style="padding:20px"><div class="et">Sin pagos en este periodo</div></div>`;
+  sorted.forEach(p=>{
+    const t=DB.inquilinos.find(i=>i.id===p.iid);
+    const fp=p.fecha_pago?new Date(p.fecha_pago):null;
+    const fStr=fp?fp.toLocaleString('es-MX',{day:'2-digit',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+    html+=`<div class="pr"><div class="pi"><div class="pn">${t?.nombre||'(eliminado)'}</div>
+    <div class="pd">${t?.inmueble||''}${t?.interior?' · '+t.interior:''} · ${fStr}</div></div>
+    <div class="pa">${fmt(p.monto)}</div></div>`;
+  });
+  html+=`</div>`;
+  document.getElementById("con-content").innerHTML=html;
+}
+
+// ── GASTOS ────────────────────────
+function renderGastos(){
+  const r=getRange(rangeMode);
+  let chips=`<div class="cr">
+    <span class="chip${rangeMode==='hoy'?' on':''}" onclick="rangeMode='hoy';renderCon()">Hoy</span>
+    <span class="chip${rangeMode==='ayer'?' on':''}" onclick="rangeMode='ayer';renderCon()">Ayer</span>
+    <span class="chip${rangeMode==='semana'?' on':''}" onclick="rangeMode='semana';renderCon()">Esta semana</span>
+    <span class="chip${rangeMode==='sem_pas'?' on':''}" onclick="rangeMode='sem_pas';renderCon()">Sem. pasada</span>
+    <span class="chip${rangeMode==='mes'?' on':''}" onclick="rangeMode='mes';renderCon()">Este mes</span>
+    <span class="chip${rangeMode==='custom'?' on':''}" onclick="openCustomRange()">📅 Personalizado</span>
+    </div>`;
+  const gs=DB.gastos.filter(g=>{const d=new Date(g.fecha);return d>=r.ini&&d<=r.fin;}).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  const total=gs.reduce((s,g)=>s+Number(g.monto),0);
+  // Por categoría
+  const porCat={};
+  gs.forEach(g=>{porCat[g.categoria]=(porCat[g.categoria]||0)+Number(g.monto)});
+  let html=chips;
+  html+=`<div class="summary-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase">${r.label}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--r);margin-top:3px">${fmt(total)}</div>
+      <div style="font-size:11px;color:var(--dim)">${gs.length} gastos registrados</div></div>
+      <button class="btn bo bsm" onclick="exportExcelMovs()">📥 Excel</button>
+    </div></div>`;
+  // Cards por categoría
+  if(Object.keys(porCat).length>0){
+    html+=`<div class="cat-grid">`;
+    Object.entries(porCat).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+      const c=CATS_GASTO[k]||CATS_GASTO.otros;
+      html+=`<div class="cat-card"><div class="cat-icon">${c.i}</div><div class="cat-info"><div class="cat-name">${c.n}</div><div class="cat-amt">${fmt(v)}</div></div></div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`<div class="st">Movimientos</div>`;
+  if(gs.length===0){html+=`<div class="es"><div class="ei">💸</div><div class="et">Sin gastos en este periodo<br><br><button class="btn bg bsm" onclick="openAddGasto()">+ Agregar gasto</button></div></div>`;}
+  else{
+    gs.forEach(g=>{
+      const c=CATS_GASTO[g.categoria]||CATS_GASTO.otros;
+      const f=new Date(g.fecha).toLocaleDateString('es-MX',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      html+=`<div class="gasto-row" onclick="openAddGasto('${g.id}')">
+        <div class="gasto-icon">${c.i}</div>
+        <div class="gasto-info"><div class="gasto-desc">${g.descripcion||c.n}</div>
+        <div class="gasto-meta">${c.n}${g.inmueble?' · '+g.inmueble:''} · ${f}</div></div>
+        <div class="gasto-amt">-${fmt(g.monto)}</div></div>`;
+    });
+  }
+  document.getElementById("con-content").innerHTML=html;
+}
+
+function openAddGasto(id){
+  const g=id?DB.gastos.find(x=>x.id===id):{};
+  const props=[...new Set(DB.inquilinos.map(i=>i.inmueble))].sort();
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">${id?'Editar Gasto':'Nuevo Gasto'}</div>
+    <div class="fg"><label class="fl">Categoría *</label>
+      <select class="fi" id="g-cat">
+        ${Object.entries(CATS_GASTO).map(([k,v])=>`<option value="${k}"${g?.categoria===k?' selected':''}>${v.i} ${v.n}</option>`).join('')}
+      </select></div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Monto $ *</label><input class="fi" type="number" step="0.01" id="g-monto" value="${g?.monto||''}"></div>
+      <div class="fg"><label class="fl">Fecha *</label><input class="fi" type="date" id="g-fecha" value="${g?.fecha?g.fecha.slice(0,10):todayISO()}"></div>
+    </div>
+    <div class="fg"><label class="fl">Descripción *</label><input class="fi" id="g-desc" value="${g?.descripcion||''}" placeholder="Ej: Pintura para fachada Norte 5109"></div>
+    <div class="fg"><label class="fl">Inmueble (opcional)</label>
+      <input class="fi" id="g-inm" list="props-list-g" value="${g?.inmueble||''}" placeholder="Ej: XOCO">
+      <datalist id="props-list-g">${props.map(p=>`<option value="${p}">`).join('')}</datalist></div>
+    <div class="fg"><label class="fl">Notas</label><input class="fi" id="g-notas" value="${g?.notas||''}"></div>
+    <div style="display:flex;gap:8px">
+      ${id?`<button class="btn bd" onclick="delGasto('${id}')">🗑️ Eliminar</button>`:''}
+      <button class="btn bg bfu" onclick="saveGasto('${id||''}')">Guardar gasto</button>
+    </div></div>`);
+}
+
+function saveGasto(id){
+  const cat=document.getElementById('g-cat').value;
+  const monto=document.getElementById('g-monto').value;
+  const desc=document.getElementById('g-desc').value.trim();
+  const fecha=document.getElementById('g-fecha').value;
+  if(!monto||!desc||!fecha){snack('Completa los campos obligatorios');return;}
+  const obj={
+    categoria:cat,monto:Number(monto),descripcion:desc,
+    fecha:fecha+'T'+new Date().toTimeString().slice(0,8),
+    inmueble:document.getElementById('g-inm').value.trim(),
+    notas:document.getElementById('g-notas').value.trim()
+  };
+  if(id){Object.assign(DB.gastos.find(x=>x.id===id),obj);}
+  else{DB.gastos.push({id:uid(),...obj,creado:nowISO()});}
+  saveDB('gastos');closeM();snack(id?'Gasto actualizado ✓':'Gasto registrado ✓');renderCon();
+}
+
+function delGasto(id){
+  if(!confirm('¿Eliminar este gasto?'))return;
+  DB.gastos=DB.gastos.filter(g=>g.id!==id);
+  saveDB('gastos');closeM();snack('Eliminado');renderCon();
+}
+
+function openCustomRange(){
+  modal(`<div class="ms"><div class="mh"></div><div class="mt2">📅 Rango personalizado</div>
+    <div class="grid2"><div class="fg"><label class="fl">Desde</label><input class="fi" type="date" id="cr-ini" value="${rangeStart||todayISO()}"></div>
+    <div class="fg"><label class="fl">Hasta</label><input class="fi" type="date" id="cr-fin" value="${rangeEnd||todayISO()}"></div></div>
+    <button class="btn bg bfu" onclick="rangeStart=document.getElementById('cr-ini').value;rangeEnd=document.getElementById('cr-fin').value;rangeMode='custom';closeM();renderCon()">Aplicar</button></div>`);
+}
+
+// ── RESUMEN (Ingresos - Gastos) ────────────
+function renderResumen(){
+  const r=getRange(rangeMode);
+  let chips=`<div class="cr">
+    <span class="chip${rangeMode==='hoy'?' on':''}" onclick="rangeMode='hoy';renderCon()">Hoy</span>
+    <span class="chip${rangeMode==='ayer'?' on':''}" onclick="rangeMode='ayer';renderCon()">Ayer</span>
+    <span class="chip${rangeMode==='semana'?' on':''}" onclick="rangeMode='semana';renderCon()">Esta semana</span>
+    <span class="chip${rangeMode==='sem_pas'?' on':''}" onclick="rangeMode='sem_pas';renderCon()">Sem. pasada</span>
+    <span class="chip${rangeMode==='mes'?' on':''}" onclick="rangeMode='mes';renderCon()">Este mes</span>
+    <span class="chip${rangeMode==='custom'?' on':''}" onclick="openCustomRange()">📅 Personalizado</span></div>`;
+  // Pagos en rango
+  const pagos=DB.pagos.filter(p=>{if(!p.fecha_pago||!p.pagado)return false;const d=new Date(p.fecha_pago);return d>=r.ini&&d<=r.fin;});
+  const ingresos=pagos.reduce((s,p)=>s+Number(p.monto),0);
+  const gs=DB.gastos.filter(g=>{const d=new Date(g.fecha);return d>=r.ini&&d<=r.fin;});
+  const gastos=gs.reduce((s,g)=>s+Number(g.monto),0);
+  const neto=ingresos-gastos;
+  const porCat={};
+  gs.forEach(g=>{porCat[g.categoria]=(porCat[g.categoria]||0)+Number(g.monto)});
+  let html=chips;
+  html+=`<div class="summary-card" style="text-align:center">
+    <div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px">${r.label}</div>
+    <div style="font-family:'Playfair Display',serif;font-size:32px;color:${neto>=0?'var(--g)':'var(--r)'};margin-top:6px">${fmt(neto)}</div>
+    <div style="font-size:11px;color:var(--dim);margin-top:2px">Neto del periodo</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+      <div style="background:#5CB87A11;padding:10px;border-radius:10px;border:1px solid #5CB87A33">
+        <div style="font-size:10px;color:var(--g)">+ INGRESOS</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--g);font-weight:700">${fmt(ingresos)}</div>
+        <div style="font-size:10px;color:var(--dim)">${pagos.length} pagos</div></div>
+      <div style="background:#E05C5C11;padding:10px;border-radius:10px;border:1px solid #E05C5C33">
+        <div style="font-size:10px;color:var(--r)">− GASTOS</div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--r);font-weight:700">${fmt(gastos)}</div>
+        <div style="font-size:10px;color:var(--dim)">${gs.length} gastos</div></div>
+    </div></div>`;
+  html+=`<div style="display:flex;gap:8px;margin-bottom:14px">
+    <button class="btn bo" style="flex:1" onclick="exportExcelMovs()">📊 Excel</button>
+    <button class="btn bo" style="flex:1" onclick="genPDFConciliacion()">📄 PDF</button>
+  </div>`;
+  // Desglose gastos
+  if(Object.keys(porCat).length>0){
+    html+=`<div class="st-sm">Gastos por categoría</div>`;
+    Object.entries(porCat).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+      const c=CATS_GASTO[k]||CATS_GASTO.otros;
+      const pct=gastos>0?Math.round(v/gastos*100):0;
+      html+=`<div style="background:var(--s1);padding:11px 13px;border-radius:10px;margin-bottom:7px;border:1px solid #222">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-size:18px">${c.i}</span><span style="font-size:13px;font-weight:600">${c.n}</span></div>
+          <div style="text-align:right"><div style="font-family:'Playfair Display',serif;color:var(--r);font-weight:600">${fmt(v)}</div><div style="font-size:10px;color:var(--dim)">${pct}%</div></div>
+        </div>
+        <div style="height:4px;background:#252525;border-radius:2px;margin-top:7px;overflow:hidden"><div style="height:100%;background:${c.c};width:${pct}%"></div></div></div>`;
+    });
+  }
+  // Ingresos del periodo
+  if(pagos.length>0){
+    html+=`<div class="st-sm">Ingresos detallados</div><div class="card" style="padding:0 14px">`;
+    pagos.sort((a,b)=>new Date(b.fecha_pago)-new Date(a.fecha_pago)).slice(0,15).forEach(p=>{
+      const t=DB.inquilinos.find(i=>i.id===p.iid);
+      const f=new Date(p.fecha_pago).toLocaleString('es-MX',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      html+=`<div class="pr"><div class="pi"><div class="pn">${t?.nombre||'?'}</div><div class="pd">${t?.inmueble||''} · ${f}</div></div><div class="pa">${fmt(p.monto)}</div></div>`;
+    });
+    if(pagos.length>15)html+=`<div style="text-align:center;padding:10px;color:var(--dim);font-size:11px">+ ${pagos.length-15} más...</div>`;
+    html+=`</div>`;
+  }
+  document.getElementById("con-content").innerHTML=html;
+}
+
+// ─── EXPORTS ─────────────────────────────────────
+function exportExcelMes(){
+  const act=DB.inquilinos.filter(i=>i.estado==='activo');
+  const rows=[['Pagado','FECHA','LUGAR','NOMBRE','INT','CANTIDAD','DESTINO','SERVICIOS','ESTATUS','RENOVACIÓN','COMENTARIOS','MEDIDOR DE LUZ','CONTRATO VIGENTE','FECHA DE PAGO']];
+  const grupos={};
+  act.forEach(i=>{if(!grupos[i.inmueble])grupos[i.inmueble]=[];grupos[i.inmueble].push(i);});
+  Object.keys(grupos).sort().forEach(inm=>{
+    grupos[inm].sort((a,b)=>(a.dia||0)-(b.dia||0));
+    grupos[inm].forEach(i=>{
+      const p=getPago(i.id,curMes,curAnio);
+      const dia=i.dia===30?0.3:i.dia;
+      const fp=p?.fecha_pago?new Date(p.fecha_pago).toLocaleString('es-MX'):'';
+      rows.push([p?true:false,dia,i.inmueble,i.nombre,i.interior||'',i.renta,i.destino||'',i.servicios||'',i.estatus||'Al corriente',i.renovacion||'',i.comentarios||'',i.medidor||'',i.contrato_vigente||'',fp]);
+    });
+  });
+  rows.push([]);
+  const totalCob=act.filter(i=>isPagado(i.id,curMes,curAnio)).reduce((s,i)=>{const p=getPago(i.id,curMes,curAnio);return s+Number(p?.monto||0);},0);
+  const totalEsp=act.reduce((s,i)=>s+Number(i.renta),0);
+  rows.push(['','','','TOTAL ESPERADO:','',totalEsp]);
+  rows.push(['','','','TOTAL COBRADO:','',totalCob]);
+  rows.push(['','','','PENDIENTE:','',totalEsp-totalCob]);
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{w:8},{w:8},{w:18},{w:30},{w:8},{w:12},{w:10},{w:18},{w:14},{w:14},{w:25},{w:10},{w:14},{w:20}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,`${MF[curMes-1].toUpperCase()} ${curAnio}`);
+  XLSX.writeFile(wb,`lista_inquilinaria_${MN[curMes-1]}_${curAnio}.xlsx`);
+  snack('📥 Excel descargado');
+}
+
+function exportExcelMovs(){
+  const r=getRange(rangeMode);
+  const wb=XLSX.utils.book_new();
+  // Sheet 1: Ingresos
+  const ingRows=[['FECHA','HORA','INQUILINO','INMUEBLE','INTERIOR','MES PAGADO','MONTO','MÉTODO']];
+  DB.pagos.filter(p=>{if(!p.fecha_pago||!p.pagado)return false;const d=new Date(p.fecha_pago);return d>=r.ini&&d<=r.fin;}).sort((a,b)=>new Date(a.fecha_pago)-new Date(b.fecha_pago)).forEach(p=>{
+    const t=DB.inquilinos.find(i=>i.id===p.iid);const d=new Date(p.fecha_pago);
+    ingRows.push([d.toLocaleDateString('es-MX'),d.toLocaleTimeString('es-MX'),t?.nombre||'',t?.inmueble||'',t?.interior||'',MF[p.mes-1]+' '+p.anio,p.monto,p.metodo||'efectivo']);
+  });
+  const totalIng=DB.pagos.filter(p=>{if(!p.fecha_pago||!p.pagado)return false;const d=new Date(p.fecha_pago);return d>=r.ini&&d<=r.fin;}).reduce((s,p)=>s+Number(p.monto),0);
+  ingRows.push([]);ingRows.push(['','','','','','TOTAL:',totalIng]);
+  const ws1=XLSX.utils.aoa_to_sheet(ingRows);
+  ws1['!cols']=[{w:12},{w:10},{w:30},{w:18},{w:10},{w:16},{w:12},{w:14}];
+  XLSX.utils.book_append_sheet(wb,ws1,'Ingresos');
+  // Sheet 2: Gastos
+  const gRows=[['FECHA','CATEGORÍA','DESCRIPCIÓN','INMUEBLE','MONTO','NOTAS']];
+  const gastos=DB.gastos.filter(g=>{const d=new Date(g.fecha);return d>=r.ini&&d<=r.fin;}).sort((a,b)=>new Date(a.fecha)-new Date(b.fecha));
+  gastos.forEach(g=>{
+    const c=CATS_GASTO[g.categoria]||CATS_GASTO.otros;
+    gRows.push([new Date(g.fecha).toLocaleDateString('es-MX'),c.n,g.descripcion,g.inmueble||'',g.monto,g.notas||'']);
+  });
+  const totalG=gastos.reduce((s,g)=>s+Number(g.monto),0);
+  gRows.push([]);gRows.push(['','','','TOTAL:',totalG]);
+  const ws2=XLSX.utils.aoa_to_sheet(gRows);
+  ws2['!cols']=[{w:12},{w:18},{w:35},{w:18},{w:12},{w:30}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Gastos');
+  // Sheet 3: Resumen
+  const resRows=[['CONCEPTO','MONTO'],['INGRESOS',totalIng],['GASTOS',totalG],['NETO',totalIng-totalG],[],['DESGLOSE GASTOS POR CATEGORÍA','']];
+  const porCat={};gastos.forEach(g=>{porCat[g.categoria]=(porCat[g.categoria]||0)+Number(g.monto)});
+  Object.entries(porCat).forEach(([k,v])=>{const c=CATS_GASTO[k]||CATS_GASTO.otros;resRows.push([c.n,v]);});
+  const ws3=XLSX.utils.aoa_to_sheet(resRows);
+  ws3['!cols']=[{w:35},{w:15}];
+  XLSX.utils.book_append_sheet(wb,ws3,'Resumen');
+  const fn=`movimientos_${r.ini.toISOString().slice(0,10)}_${r.fin.toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(wb,fn);snack('📥 Excel descargado');
+}
+
+// ─── Inquilinos CRUD ───────────────────────────────
+function renderInq(){
+  const todos=DB.inquilinos;
+  if(!todos.length){document.getElementById("v-inq").innerHTML=`<div class="es"><div class="ei">👥</div><div class="et">Sin inquilinos</div></div>`;return;}
+  let html=`<input class="fi" id="search-inq" placeholder="🔍 Buscar..." oninput="renderInqList()" style="margin-bottom:12px"><div id="inq-list"></div>`;
+  document.getElementById("v-inq").innerHTML=html;
+  renderInqList();
+}
+function renderInqList(){
+  const q=(document.getElementById("search-inq")?.value||"").toLowerCase();
+  const todos=DB.inquilinos.filter(i=>!q||i.nombre.toLowerCase().includes(q)||i.inmueble.toLowerCase().includes(q));
+  const act=todos.filter(i=>i.estado==="activo"),inact=todos.filter(i=>i.estado!=="activo");
+  let html="";
+  if(act.length)html+=`<div class="st">Activos (${act.length})</div>`+act.map(tileH).join("");
+  if(inact.length)html+=`<div class="st" style="margin-top:14px">Inactivos (${inact.length})</div>`+inact.map(tileH).join("");
+  document.getElementById("inq-list").innerHTML=html;
+}
+function tileH(t){
+  const lt=t.estado==="activo"?isLate(t.id,HM,HA):false;
+  const pd=t.estado==="activo"?isPagado(t.id,HM,HA):false;
+  return`<div class="ti" onclick="openDet('${t.id}')">
+    <div class="av" style="background:${t.estado==='activo'?'var(--gdim)':'#444'}">${ini(t.nombre)}</div>
+    <div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.inmueble}${t.interior?' · '+t.interior:''} · Día ${t.dia||'—'}</div></div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-size:12px;font-weight:600;color:var(--gold)">${fmt(t.renta)}</div>
+      <div style="margin-top:4px">${t.estado!=='activo'?'<span class="bge ad">Inactivo</span>':pd?'<span class="bge ok">✓</span>':lt?'<span class="bge v">⚠</span>':'<span class="bge ad">·</span>'}</div>
+    </div></div>`;
+}
+
+function openDet(id){detTenant=DB.inquilinos.find(i=>i.id===id);if(detTenant)go("det");}
+function renderDet(){
+  const t=detTenant;if(!t){document.getElementById("v-det").innerHTML="";return;}
+  const pagosT=DB.pagos.filter(p=>p.iid===t.id&&p.pagado).sort((a,b)=>b.anio-a.anio||b.mes-a.mes);
+  const totPag=pagosT.reduce((s,p)=>s+Number(p.monto),0);
+  const mg=MN.map((mn,i)=>{
+    const m=i+1;const paid=isPagado(t.id,m,HA);const late=isLate(t.id,m,HA);
+    const bg=paid?'background:#5CB87A33;color:var(--g);border-color:#5CB87A66':late?'background:#E05C5C33;color:var(--r);border-color:#E05C5C66':m>HM?'opacity:.3':'';
+    return`<div style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:9px;font-size:10px;font-weight:600;cursor:pointer;background:var(--s2);color:var(--dim);border:1px solid #333;${bg}" onclick="${m<=HM?`confirmTogglePago('${t.id}',${m},${HA})`:''}">${mn}<span style="font-size:11px;margin-top:2px">${paid?'✓':late?'✗':''}</span></div>`;
+  }).join("");
+  document.getElementById("v-det").innerHTML=`
+    <button class="bk" onclick="go('inq')">← Volver</button>
+    <div class="card gd" style="text-align:center;padding:18px 14px">
+      <div class="av" style="margin:0 auto 10px;width:54px;height:54px;font-size:21px">${ini(t.nombre)}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px">${t.nombre}</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:3px">${t.inmueble}${t.interior?' · INT '+t.interior:''}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);margin:10px 0 6px">${fmt(t.renta)}<span style="font-size:12px;color:var(--dim)">/mes</span></div>
+      <div>${t.estado==='activo'?(isPagado(t.id,HM,HA)?`<span class="bge ok">✓ Pagado ${MN[HM-1]}</span>`:isLate(t.id,HM,HA)?'<span class="bge v">⚠ Vencida</span>':'<span class="bge ad">Al día</span>'):'<span class="bge ad">Inactivo</span>'}</div>
+    </div>
+    <div class="card" style="padding:6px 14px">
+      <div class="ir"><span class="ik">Día de pago</span><span class="iv">Día ${t.dia||'—'} de cada mes</span></div>
+      <div class="ir"><span class="ik">Destino</span><span class="iv">${t.destino||'—'}</span></div>
+      <div class="ir"><span class="ik">Servicios</span><span class="iv">${t.servicios||'—'}</span></div>
+      <div class="ir"><span class="ik">Estatus</span><span class="iv">${t.estatus||'—'}</span></div>
+      <div class="ir"><span class="ik">Renovación</span><span class="iv">${t.renovacion||'—'}</span></div>
+      <div class="ir"><span class="ik">Contrato vigente</span><span class="iv">${t.contrato_vigente||'—'}</span></div>
+      ${t.comentarios?`<div class="ir"><span class="ik">Comentarios</span><span class="iv">${t.comentarios}</span></div>`:''}
+      <div class="ir"><span class="ik">Total cobrado</span><span class="iv tag-g">${fmt(totPag)}</span></div>
+    </div>
+    <div class="st">Seguimiento ${HA}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px">${mg}</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn bg" style="flex:1" onclick="genPDFTenant('${t.id}')">📄 PDF historial</button>
+      <button class="btn bo" onclick="openEditTenant('${t.id}')">✏️ Editar</button>
+    </div>
+    <div class="st">Historial completo</div>
+    <div class="card" style="padding:0 14px">
+      ${pagosT.length===0?`<div class="es" style="padding:20px"><div class="et">Sin pagos</div></div>`:''}
+      ${pagosT.map(p=>{const fp=p.fecha_pago?new Date(p.fecha_pago):null;
+        const fStr=fp?fp.toLocaleString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+        return`<div class="pr"><div class="pi"><div class="pn">${MF[p.mes-1]} ${p.anio}</div>
+        <div class="pd">Pagado: ${fStr}</div></div><div class="pa">${fmt(p.monto)}</div></div>`;}).join('')}
+    </div>
+    <button class="btn ${t.estado==='activo'?'bd':'bs'} bfu" style="margin-top:14px" onclick="toggleEst('${t.id}')">${t.estado==='activo'?'Marcar inactivo':'Reactivar'}</button>`;
+}
+function toggleEst(id){const t=DB.inquilinos.find(i=>i.id===id);if(!t)return;t.estado=t.estado==="activo"?"inactivo":"activo";saveDB("inquilinos");snack("Actualizado");renderDet();updNotif();}
+
+function modal(h){document.getElementById("modal-root").innerHTML=`<div class="mo" onclick="if(event.target.className==='mo')closeM()">${h}</div>`}
+function closeM(){document.getElementById("modal-root").innerHTML="";pendingPhotos=[];}
+
+function openEditTenant(id){
+  const t=id?DB.inquilinos.find(x=>x.id===id):{};
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">${id?'Editar Inquilino':'Nuevo Inquilino'}</div>
+    <div class="fg"><label class="fl">Nombre *</label><input class="fi" id="m-nom" value="${t?.nombre||''}"></div>
+    <div class="grid2"><div class="fg"><label class="fl">Inmueble *</label><input class="fi" id="m-inm" value="${t?.inmueble||''}"></div>
+    <div class="fg"><label class="fl">Interior</label><input class="fi" id="m-int" value="${t?.interior||''}"></div></div>
+    <div class="grid2"><div class="fg"><label class="fl">Renta $ *</label><input class="fi" type="number" id="m-rent" value="${t?.renta||''}"></div>
+    <div class="fg"><label class="fl">Día pago *</label><input class="fi" type="number" min="1" max="31" id="m-dia" value="${t?.dia||5}"></div></div>
+    <div class="grid2"><div class="fg"><label class="fl">Destino</label><input class="fi" id="m-dest" value="${t?.destino||''}"></div>
+    <div class="fg"><label class="fl">Servicios</label><input class="fi" id="m-srv" value="${t?.servicios||''}"></div></div>
+    <div class="fg"><label class="fl">Estatus</label><input class="fi" id="m-est" value="${t?.estatus||'Al corriente'}"></div>
+    <div class="grid2"><div class="fg"><label class="fl">Renovación</label><input class="fi" type="date" id="m-ren" value="${t?.renovacion||''}"></div>
+    <div class="fg"><label class="fl">Contrato vigente</label><select class="fi" id="m-cv">
+      <option value="Si"${t?.contrato_vigente==='Si'||t?.contrato_vigente==='SI'||t?.contrato_vigente==='Si '?' selected':''}>Sí</option>
+      <option value="No"${t?.contrato_vigente==='No'||!t?.contrato_vigente?' selected':''}>No</option></select></div></div>
+    <div class="fg"><label class="fl">Comentarios</label><input class="fi" id="m-com" value="${t?.comentarios||''}"></div>
+    <div class="fg"><label class="fl">Estado</label><select class="fi" id="m-estado">
+      <option value="activo"${(!t?.estado||t?.estado==='activo')?' selected':''}>Activo</option>
+      <option value="inactivo"${t?.estado==='inactivo'?' selected':''}>Inactivo</option></select></div>
+    <button class="btn bg bfu" onclick="saveTenant('${id||''}')">Guardar</button></div>`);
+}
+
+function saveTenant(id){
+  const nom=document.getElementById('m-nom').value.trim();
+  const inm=document.getElementById('m-inm').value.trim();
+  const rent=document.getElementById('m-rent').value;
+  if(!nom||!inm||!rent){snack('Completa los campos obligatorios');return;}
+  const obj={nombre:nom,inmueble:inm,interior:document.getElementById('m-int').value.trim(),renta:Number(rent),
+    dia:Number(document.getElementById('m-dia').value)||5,destino:document.getElementById('m-dest').value.trim(),
+    servicios:document.getElementById('m-srv').value.trim(),estatus:document.getElementById('m-est').value.trim(),
+    renovacion:document.getElementById('m-ren').value,contrato_vigente:document.getElementById('m-cv').value,
+    comentarios:document.getElementById('m-com').value.trim(),estado:document.getElementById('m-estado').value};
+  if(id){Object.assign(DB.inquilinos.find(x=>x.id===id),obj);}else{DB.inquilinos.push({id:uid(),...obj});}
+  saveDB('inquilinos');closeM();snack(id?'Actualizado ✓':'Agregado ✓');
+  if(curView==='inq')renderInqList();
+  else if(curView==='det'&&detTenant?.id===id){detTenant=DB.inquilinos.find(x=>x.id===id);renderDet();}
+  else if(curView==='con')renderCon();
+  updNotif();
+}
+
+// ─── Servicios ──────────────────────────────────────
+function renderSvc(){
+  const portales={cfe:{n:'⚡ CFE',url:'https://app.cfe.mx/Aplicaciones/CCFE/Temas/Tema1ServiciosLV/ConsultaFactura.aspx'},
+    agua:{n:'💧 Agua (SACMEX)',url:'https://www.sacmex.cdmx.gob.mx/servicios-en-linea/adeudo-agua'},
+    predial:{n:'🏛️ Predial CDMX',url:'https://portal.finanzas.cdmx.gob.mx/predial/adeudo'},
+    gas:{n:'🔥 Gas Natural',url:'https://mgs.naturgy.com.mx'},otro:{n:'🔧 Servicio',url:''}};
+  if(!DB.servicios.length){document.getElementById('v-svc').innerHTML=`<div class="es"><div class="ei">⚡</div><div class="et">Agrega servicios para acceso rápido<br>a CFE, SACMEX, Predial.</div></div><button class="btn bg bfu" onclick="openAddService()">+ Agregar</button>`;return;}
+  document.getElementById('v-svc').innerHTML=DB.servicios.map(s=>{const p=portales[s.tipo]||portales.otro;
+    return`<div class="card"><div style="display:flex;justify-content:space-between"><div><div style="font-weight:700">${p.n}</div><div style="font-size:11px;color:var(--dim)">📍 ${s.propiedad}</div></div><button class="btn bd bsm" onclick="delSvc('${s.id}')">✕</button></div>
+    ${s.cuenta?`<div style="background:var(--s2);border-radius:8px;padding:9px 12px;margin-top:10px;display:flex;justify-content:space-between"><div><div style="font-size:10px;color:var(--dim)">No. cuenta</div><div style="font-family:monospace;font-weight:700">${s.cuenta}</div></div><button class="btn bo bsm" onclick="navigator.clipboard.writeText('${s.cuenta}').then(()=>snack('Copiado ✓'))">Copiar</button></div>`:''}
+    <div style="display:flex;gap:7px;margin-top:10px">${p.url?`<a href="${p.url}" target="_blank" class="btn bg bsm" style="text-decoration:none">Portal →</a>`:''}<button class="btn bo bsm" onclick="openAddService('${s.id}')">✏️</button></div></div>`;}).join('');
+}
+
+function openAddService(id){
+  const s=id?DB.servicios.find(x=>x.id===id):{};
+  const props=[...new Set(DB.inquilinos.map(i=>i.inmueble))];
+  modal(`<div class="ms"><div class="mh"></div><div class="mt2">${id?'Editar':'Nuevo'} servicio</div>
+    <div class="fg"><label class="fl">Propiedad</label><input class="fi" id="m-sp" list="pl" value="${s?.propiedad||''}"><datalist id="pl">${props.map(p=>`<option value="${p}">`).join('')}</datalist></div>
+    <div class="fg"><label class="fl">Tipo</label><select class="fi" id="m-st">
+      <option value="cfe"${s?.tipo==='cfe'?' selected':''}>⚡ CFE</option>
+      <option value="agua"${s?.tipo==='agua'?' selected':''}>💧 Agua</option>
+      <option value="predial"${s?.tipo==='predial'?' selected':''}>🏛️ Predial</option>
+      <option value="gas"${s?.tipo==='gas'?' selected':''}>🔥 Gas</option>
+      <option value="otro"${s?.tipo==='otro'?' selected':''}>🔧 Otro</option></select></div>
+    <div class="fg"><label class="fl">No. cuenta</label><input class="fi" id="m-sc" value="${s?.cuenta||''}"></div>
+    <div class="fg"><label class="fl">Notas</label><input class="fi" id="m-sn" value="${s?.notas||''}"></div>
+    <button class="btn bg bfu" onclick="saveSvc('${id||''}')">Guardar</button></div>`);
+}
+function saveSvc(id){
+  const prop=document.getElementById('m-sp').value.trim();if(!prop){snack('Indica propiedad');return;}
+  const obj={propiedad:prop,tipo:document.getElementById('m-st').value,cuenta:document.getElementById('m-sc').value.trim(),notas:document.getElementById('m-sn').value.trim()};
+  if(id){Object.assign(DB.servicios.find(x=>x.id===id),obj);}else{DB.servicios.push({id:uid(),...obj});}
+  saveDB('servicios');closeM();snack('Guardado');renderSvc();
+}
+function delSvc(id){if(!confirm('¿Eliminar?'))return;DB.servicios=DB.servicios.filter(s=>s.id!==id);saveDB('servicios');renderSvc();}
+
+// ─── REPORTES (vista principal) ──────────────────
+function renderRep(){
+  document.getElementById('v-rep').innerHTML=`
+    <div class="st">📥 Exportar Excel</div>
+    <div class="ro" onclick="exportExcelMes()"><div style="font-size:26px">📊</div><div><div class="rtit">Lista Inquilinaria</div><div class="rdesc">${MF[curMes-1]} ${curAnio} · formato original</div></div></div>
+    <div class="ro" onclick="rangeMode='hoy';exportExcelMovs()"><div style="font-size:26px">💰</div><div><div class="rtit">Movimientos del día</div><div class="rdesc">Ingresos y gastos de hoy</div></div></div>
+    <div class="ro" onclick="rangeMode='semana';exportExcelMovs()"><div style="font-size:26px">📅</div><div><div class="rtit">Movimientos de la semana</div><div class="rdesc">Esta semana — 3 hojas (ingresos, gastos, resumen)</div></div></div>
+    
+    <div class="st" style="margin-top:14px">📄 Generar PDF</div>
+    <div class="ro" onclick="openPDFConfig()"><div style="font-size:26px">📈</div><div><div class="rtit">Conciliación diaria/semanal</div><div class="rdesc">Reporte PDF configurable</div></div></div>
+    <div class="ro" onclick="genPDFResumen()"><div style="font-size:26px">📋</div><div><div class="rtit">Resumen Mensual</div><div class="rdesc">Cobros del mes seleccionado</div></div></div>
+    <div class="ro" onclick="genPDFVenc()"><div style="font-size:26px">⚠️</div><div><div class="rtit">Rentas Vencidas</div><div class="rdesc">Lista actual de morosos</div></div></div>
+    
+    <div class="st" style="margin-top:14px">🏗️ Reportes con fotos</div>
+    <div class="ro" onclick="openObraForm()"><div style="font-size:26px">🔨</div><div><div class="rtit">Nuevo reporte de obra</div><div class="rdesc">Pintura, plomería, cerrajería, limpieza...</div></div></div>
+    <div class="ro" onclick="openIncidenteForm()"><div style="font-size:26px">🚨</div><div><div class="rtit">Nuevo reporte de incidente</div><div class="rdesc">Con número de folio automático</div></div></div>
+    
+    ${DB.obras.length>0?`<div class="st-sm">Obras registradas (${DB.obras.length})</div>`:''}
+    ${DB.obras.slice(-5).reverse().map(o=>{const t=TIPOS_OBRA[o.tipo]||TIPOS_OBRA.otros;
+      return`<div class="ti" onclick="openObraDetail('${o.id}')"><div class="av" style="background:var(--gdim);font-size:18px">${t.i}</div>
+      <div class="tn"><div class="tnm">${t.n}${o.inmueble?' · '+o.inmueble:''}</div><div class="ts">${new Date(o.fecha).toLocaleDateString('es-MX')} · ${fmt(o.costo)}${o.fotos?.length?' · '+o.fotos.length+' fotos':''}</div></div>
+      <span style="font-size:18px">📄</span></div>`;}).join('')}
+    
+    ${DB.incidentes.length>0?`<div class="st-sm">Incidentes (${DB.incidentes.length})</div>`:''}
+    ${DB.incidentes.slice(-5).reverse().map(i=>{const n=NIVELES_INC.find(x=>x.k===i.nivel)||NIVELES_INC[0];
+      return`<div class="ti" onclick="openIncidenteDetail('${i.id}')"><div class="av" style="background:${n.c};font-size:11px">${i.numero?.split('-')[1]||'?'}</div>
+      <div class="tn"><div class="tnm">${i.numero||'?'}</div><div class="ts">${i.lugar||'—'} · ${new Date(i.fecha).toLocaleDateString('es-MX')} · ${n.n}</div></div>
+      <span style="font-size:18px">📄</span></div>`;}).join('')}
+
+    <div class="st" style="margin-top:14px">👤 Historial individual</div>
+    <input class="fi" id="rep-search" placeholder="🔍 Buscar inquilino..." oninput="renderRepInqList()" style="margin-bottom:10px">
+    <div id="rep-inq-list"></div>
+    
+    <div class="st" style="margin-top:14px">⚙️ Datos</div>
+    <div class="ro" onclick="exportFullBackup()"><div style="font-size:24px">💾</div><div><div class="rtit">Respaldo completo</div><div class="rdesc">JSON con todos los datos</div></div></div>
+    <div class="ro" onclick="importJSON()"><div style="font-size:24px">📤</div><div><div class="rtit">Importar respaldo</div><div class="rdesc">Cargar JSON previo</div></div></div>
+    <div class="ro" onclick="resetAll()"><div style="font-size:24px">🗑️</div><div><div class="rtit">Borrar todo</div><div class="rdesc" style="color:var(--r)">Datos locales (irreversible)</div></div></div>`;
+  renderRepInqList();
+}
+
+function renderRepInqList(){
+  const q=(document.getElementById('rep-search')?.value||'').toLowerCase();
+  const list=DB.inquilinos.filter(i=>!q||i.nombre.toLowerCase().includes(q)||i.inmueble.toLowerCase().includes(q)).slice(0,30);
+  document.getElementById('rep-inq-list').innerHTML=list.map(t=>`<div class="ti" onclick="genPDFTenant('${t.id}')">
+    <div class="av" style="background:${t.estado==='activo'?'var(--gdim)':'#444'}">${ini(t.nombre)}</div>
+    <div class="tn"><div class="tnm">${t.nombre}</div><div class="ts">${t.inmueble}</div></div>
+    <span style="font-size:18px">📄</span></div>`).join('');
+}
+
+// ─── REPORTE DE OBRA ─────────────────────────────
+function openObraForm(id){
+  const o=id?DB.obras.find(x=>x.id===id):{};
+  pendingPhotos=o.fotos?[...o.fotos]:[];
+  const props=[...new Set(DB.inquilinos.map(i=>i.inmueble))].sort();
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">🔨 ${id?'Editar':'Nuevo'} Reporte de Obra</div>
+    <div class="fg"><label class="fl">Tipo de obra *</label>
+      <select class="fi" id="o-tipo">
+        ${Object.entries(TIPOS_OBRA).map(([k,v])=>`<option value="${k}"${o?.tipo===k?' selected':''}>${v.i} ${v.n}</option>`).join('')}
+      </select></div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Fecha *</label><input class="fi" type="date" id="o-fecha" value="${o?.fecha?o.fecha.slice(0,10):todayISO()}"></div>
+      <div class="fg"><label class="fl">Costo $ *</label><input class="fi" type="number" step="0.01" id="o-costo" value="${o?.costo||''}"></div>
+    </div>
+    <div class="fg"><label class="fl">Inmueble *</label>
+      <input class="fi" id="o-inm" list="props-obra" value="${o?.inmueble||''}" placeholder="Ej: XOCO">
+      <datalist id="props-obra">${props.map(p=>`<option value="${p}">`).join('')}</datalist></div>
+    <div class="fg"><label class="fl">Descripción del trabajo *</label>
+      <textarea class="fi" id="o-desc" rows="3" placeholder="Detalle del trabajo realizado...">${o?.descripcion||''}</textarea></div>
+    <div class="fg"><label class="fl">Encargado / trabajador</label><input class="fi" id="o-trab" value="${o?.trabajador||''}" placeholder="Freddy, plomero externo..."></div>
+    <div class="fg"><label class="fl">Fotos (1-6) — antes/durante/después</label>
+      <input type="file" accept="image/*" capture="environment" multiple id="o-fotos-inp" style="display:none" onchange="handlePhotos(event,6)">
+      <div class="photo-grid" id="o-photos-grid"></div>
+      <button class="btn bo bsm" onclick="document.getElementById('o-fotos-inp').click()">📷 Agregar fotos</button>
+      <div style="font-size:10px;color:var(--dim);margin-top:6px">Las fotos se comprimen automáticamente.</div></div>
+    <div class="fg"><label class="fl">¿Registrar también como gasto?</label>
+      <select class="fi" id="o-gasto"><option value="si"${o?.gastoVinculado!==false?' selected':''}>Sí (recomendado)</option><option value="no">No</option></select></div>
+    <div style="display:flex;gap:8px">
+      ${id?`<button class="btn bd" onclick="delObra('${id}')">🗑️</button>`:''}
+      <button class="btn bg bfu" onclick="saveObra('${id||''}')">Guardar reporte</button>
+    </div></div>`);
+  renderPendingPhotos('o-photos-grid');
+}
+
+async function handlePhotos(e,max){
+  const files=Array.from(e.target.files).slice(0,max-pendingPhotos.length);
+  if(pendingPhotos.length+files.length>max){snack('Máx '+max+' fotos');return;}
+  for(const f of files){
+    try{
+      const b64=await compressImage(f);
+      pendingPhotos.push(b64);
+    }catch(err){snack('Error procesando foto')}
+  }
+  e.target.value='';
+  // Find which grid is open
+  if(document.getElementById('o-photos-grid'))renderPendingPhotos('o-photos-grid');
+  if(document.getElementById('i-photos-grid'))renderPendingPhotos('i-photos-grid');
+}
+
+function renderPendingPhotos(gridId){
+  const grid=document.getElementById(gridId);
+  if(!grid)return;
+  let html='';
+  pendingPhotos.forEach((p,idx)=>{
+    html+=`<div class="photo-thumb" style="background-image:url('${p}')" onclick="viewFullImg('${idx}','pending')"><button class="photo-remove" onclick="event.stopPropagation();removePending(${idx},'${gridId}')">×</button></div>`;
+  });
+  grid.innerHTML=html;
+}
+
+function removePending(idx,gridId){
+  pendingPhotos.splice(idx,1);
+  renderPendingPhotos(gridId);
+}
+
+function viewFullImg(idx,src){
+  let img='';
+  if(src==='pending')img=pendingPhotos[idx];
+  else img=idx;
+  const ov=document.createElement('div');
+  ov.className='full-img';
+  ov.innerHTML=`<img src="${img}"><button onclick="this.parentElement.remove()">✕</button>`;
+  ov.onclick=(e)=>{if(e.target===ov)ov.remove();};
+  document.body.appendChild(ov);
+}
+
+function saveObra(id){
+  const tipo=document.getElementById('o-tipo').value;
+  const fecha=document.getElementById('o-fecha').value;
+  const costo=document.getElementById('o-costo').value;
+  const inm=document.getElementById('o-inm').value.trim();
+  const desc=document.getElementById('o-desc').value.trim();
+  if(!fecha||!costo||!inm||!desc){snack('Completa los campos obligatorios');return;}
+  const obj={
+    tipo,fecha:fecha+'T'+new Date().toTimeString().slice(0,8),
+    costo:Number(costo),inmueble:inm,descripcion:desc,
+    trabajador:document.getElementById('o-trab').value.trim(),
+    fotos:[...pendingPhotos],
+    gastoVinculado:document.getElementById('o-gasto').value==='si'
+  };
+  if(id){
+    const ex=DB.obras.find(x=>x.id===id);
+    // Remove existing linked gasto if any
+    if(ex.gastoId)DB.gastos=DB.gastos.filter(g=>g.id!==ex.gastoId);
+    Object.assign(ex,obj);
+  }else{
+    DB.obras.push({id:uid(),...obj,creado:nowISO()});
+  }
+  // Crear gasto vinculado
+  if(obj.gastoVinculado){
+    const tn=TIPOS_OBRA[tipo]?.n||'Obra';
+    const gastoId=uid();
+    DB.gastos.push({
+      id:gastoId,categoria:'mano_obra',monto:Number(costo),
+      descripcion:`${tn} — ${desc.slice(0,40)}`,
+      fecha:obj.fecha,inmueble:inm,notas:'Vinculado a reporte de obra',
+      creado:nowISO(),obraId:id||DB.obras[DB.obras.length-1].id
+    });
+    if(id){DB.obras.find(x=>x.id===id).gastoId=gastoId;}
+    else{DB.obras[DB.obras.length-1].gastoId=gastoId;}
+    saveDB('gastos');
+  }
+  saveDB('obras');
+  closeM();snack(id?'Obra actualizada ✓':'Reporte de obra creado ✓');
+  pendingPhotos=[];
+  renderRep();
+}
+
+function openObraDetail(id){
+  const o=DB.obras.find(x=>x.id===id);if(!o)return;
+  const t=TIPOS_OBRA[o.tipo]||TIPOS_OBRA.otros;
+  let photosHtml='';
+  if(o.fotos?.length){
+    photosHtml=`<div class="photo-grid">`+o.fotos.map((p,i)=>`<div class="photo-thumb" style="background-image:url('${p}')" onclick="viewFullImg('${p}','direct')"></div>`).join('')+`</div>`;
+  }
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">${t.i} ${t.n} — ${o.inmueble}</div>
+    <div class="card" style="padding:6px 14px;margin-bottom:14px">
+      <div class="ir"><span class="ik">Fecha</span><span class="iv">${new Date(o.fecha).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</span></div>
+      <div class="ir"><span class="ik">Costo</span><span class="iv tag-gd">${fmt(o.costo)}</span></div>
+      <div class="ir"><span class="ik">Trabajador</span><span class="iv">${o.trabajador||'—'}</span></div>
+    </div>
+    <div class="st-sm">Descripción</div>
+    <div class="card"><div style="font-size:13px;line-height:1.5">${o.descripcion}</div></div>
+    ${photosHtml?`<div class="st-sm">Fotos (${o.fotos.length})</div>${photosHtml}`:''}
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn bg" style="flex:1" onclick="genPDFObra('${o.id}')">📄 PDF</button>
+      <button class="btn bo" onclick="closeM();openObraForm('${o.id}')">✏️ Editar</button>
+      <button class="btn bd" onclick="delObra('${o.id}')">🗑️</button>
+    </div></div>`);
+}
+
+function delObra(id){
+  if(!confirm('¿Eliminar este reporte de obra?'))return;
+  const o=DB.obras.find(x=>x.id===id);
+  if(o?.gastoId)DB.gastos=DB.gastos.filter(g=>g.id!==o.gastoId);
+  DB.obras=DB.obras.filter(x=>x.id!==id);
+  saveDB('obras');saveDB('gastos');closeM();snack('Eliminado');renderRep();
+}
+
+// ─── REPORTE DE INCIDENTE ─────────────────────────
+function openIncidenteForm(id){
+  const i=id?DB.incidentes.find(x=>x.id===id):{};
+  pendingPhotos=i.fotos?[...i.fotos]:[];
+  const numero=id?i.numero:nextIncidentNum();
+  const props=[...new Set(DB.inquilinos.map(x=>x.inmueble))].sort();
+  const inqs=DB.inquilinos.filter(x=>x.estado==='activo');
+  const now=new Date();
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">🚨 ${id?'Editar':'Nuevo'} Reporte de Incidente</div>
+    <div class="card gd" style="margin-bottom:14px;text-align:center;padding:10px">
+      <div style="font-size:10px;color:var(--dim);text-transform:uppercase">Número de folio</div>
+      <div class="num-inc" style="font-size:22px;margin-top:3px">${numero}</div></div>
+    <div class="grid2">
+      <div class="fg"><label class="fl">Fecha *</label><input class="fi" type="date" id="i-fecha" value="${i?.fecha?i.fecha.slice(0,10):todayISO()}"></div>
+      <div class="fg"><label class="fl">Hora *</label><input class="fi" type="time" id="i-hora" value="${i?.hora||now.toTimeString().slice(0,5)}"></div>
+    </div>
+    <div class="fg"><label class="fl">Lugar / Inmueble *</label>
+      <input class="fi" id="i-lugar" list="props-inc" value="${i?.lugar||''}" placeholder="Ej: XOCO 4A">
+      <datalist id="props-inc">${props.map(p=>`<option value="${p}">`).join('')}</datalist></div>
+    <div class="fg"><label class="fl">Inquilino relacionado</label>
+      <select class="fi" id="i-inq"><option value="">— Ninguno —</option>
+      ${inqs.map(x=>`<option value="${x.id}"${i?.inqId===x.id?' selected':''}>${x.nombre} — ${x.inmueble}${x.interior?' '+x.interior:''}</option>`).join('')}</select></div>
+    <div class="fg"><label class="fl">Nivel de importancia *</label>
+      <select class="fi" id="i-nivel">
+        ${NIVELES_INC.map(n=>`<option value="${n.k}"${(i?.nivel||2)===n.k?' selected':''}>${n.k===1?'🟢':n.k===2?'🟡':n.k===3?'🟠':'🔴'} ${n.n}</option>`).join('')}
+      </select></div>
+    <div class="fg"><label class="fl">Descripción del incidente *</label>
+      <textarea class="fi" id="i-desc" rows="4" placeholder="Qué pasó, contexto, acciones tomadas...">${i?.descripcion||''}</textarea></div>
+    <div class="fg"><label class="fl">Acción tomada / resolución</label>
+      <textarea class="fi" id="i-accion" rows="2">${i?.accion||''}</textarea></div>
+    <div class="fg"><label class="fl">Fotos (1-2)</label>
+      <input type="file" accept="image/*" capture="environment" multiple id="i-fotos-inp" style="display:none" onchange="handlePhotos(event,2)">
+      <div class="photo-grid" id="i-photos-grid"></div>
+      <button class="btn bo bsm" onclick="document.getElementById('i-fotos-inp').click()">📷 Agregar fotos</button></div>
+    <div style="display:flex;gap:8px">
+      ${id?`<button class="btn bd" onclick="delIncidente('${id}')">🗑️</button>`:''}
+      <button class="btn bg bfu" onclick="saveIncidente('${id||''}','${numero}')">Guardar incidente</button>
+    </div></div>`);
+  renderPendingPhotos('i-photos-grid');
+}
+
+function saveIncidente(id,numero){
+  const fecha=document.getElementById('i-fecha').value;
+  const hora=document.getElementById('i-hora').value;
+  const lugar=document.getElementById('i-lugar').value.trim();
+  const desc=document.getElementById('i-desc').value.trim();
+  if(!fecha||!hora||!lugar||!desc){snack('Completa los campos obligatorios');return;}
+  const obj={
+    numero,fecha:fecha+'T'+hora+':00',hora,lugar,
+    inqId:document.getElementById('i-inq').value,
+    nivel:Number(document.getElementById('i-nivel').value),
+    descripcion:desc,accion:document.getElementById('i-accion').value.trim(),
+    fotos:[...pendingPhotos]
+  };
+  if(id){Object.assign(DB.incidentes.find(x=>x.id===id),obj);}
+  else{DB.incidentes.push({id:uid(),...obj,creado:nowISO()});}
+  saveDB('incidentes');closeM();snack(id?'Actualizado ✓':'Incidente #'+numero+' guardado ✓');
+  pendingPhotos=[];renderRep();
+}
+
+function openIncidenteDetail(id){
+  const i=DB.incidentes.find(x=>x.id===id);if(!i)return;
+  const n=NIVELES_INC.find(x=>x.k===i.nivel)||NIVELES_INC[0];
+  const inq=i.inqId?DB.inquilinos.find(x=>x.id===i.inqId):null;
+  let photosHtml='';
+  if(i.fotos?.length)photosHtml=`<div class="photo-grid">`+i.fotos.map(p=>`<div class="photo-thumb" style="background-image:url('${p}')" onclick="viewFullImg('${p}','direct')"></div>`).join('')+`</div>`;
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="card gd" style="text-align:center;padding:14px;margin-bottom:14px">
+      <div style="font-size:10px;color:var(--dim);text-transform:uppercase">Folio</div>
+      <div class="num-inc" style="font-size:22px">${i.numero}</div>
+      <div style="margin-top:6px"><span class="bge" style="background:${n.c}33;color:${n.c};border-color:${n.c}66">${n.n}</span></div>
+    </div>
+    <div class="card" style="padding:6px 14px;margin-bottom:14px">
+      <div class="ir"><span class="ik">Fecha</span><span class="iv">${new Date(i.fecha).toLocaleString('es-MX',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</span></div>
+      <div class="ir"><span class="ik">Lugar</span><span class="iv">${i.lugar}</span></div>
+      ${inq?`<div class="ir"><span class="ik">Inquilino</span><span class="iv">${inq.nombre}</span></div>`:''}
+    </div>
+    <div class="st-sm">Descripción</div>
+    <div class="card"><div style="font-size:13px;line-height:1.5">${i.descripcion}</div></div>
+    ${i.accion?`<div class="st-sm">Acción tomada</div><div class="card"><div style="font-size:13px;line-height:1.5">${i.accion}</div></div>`:''}
+    ${photosHtml?`<div class="st-sm">Evidencia (${i.fotos.length})</div>${photosHtml}`:''}
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn bg" style="flex:1" onclick="genPDFIncidente('${i.id}')">📄 PDF</button>
+      <button class="btn bo" onclick="closeM();openIncidenteForm('${i.id}')">✏️</button>
+      <button class="btn bd" onclick="delIncidente('${i.id}')">🗑️</button>
+    </div></div>`);
+}
+
+function delIncidente(id){
+  if(!confirm('¿Eliminar este incidente?'))return;
+  DB.incidentes=DB.incidentes.filter(x=>x.id!==id);
+  saveDB('incidentes');closeM();snack('Eliminado');renderRep();
+}
+
+// ─── BACKUP / RESET ──────────────────────────────
+function exportFullBackup(){
+  const data={inquilinos:DB.inquilinos,pagos:DB.pagos,servicios:DB.servicios,gastos:DB.gastos,obras:DB.obras,incidentes:DB.incidentes,fecha:nowISO()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`respaldo_rentas_${todayISO()}.json`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);snack('💾 Respaldo descargado');
+}
+
+function importJSON(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{const d=JSON.parse(ev.target.result);
+        if(!confirm(`¿Reemplazar datos actuales?\nInquilinos: ${d.inquilinos?.length||0}\nPagos: ${d.pagos?.length||0}\nGastos: ${d.gastos?.length||0}\nObras: ${d.obras?.length||0}\nIncidentes: ${d.incidentes?.length||0}`))return;
+        ['inquilinos','pagos','servicios','gastos','obras','incidentes'].forEach(k=>{if(d[k])DB[k]=d[k];saveDB(k);});
+        snack('✓ Importado');renderRep();
+      }catch(err){snack('Error: '+err.message)}
+    };r.readAsText(f);
+  };inp.click();
+}
+
+function resetAll(){
+  if(!confirm('¿Borrar TODOS los datos locales? Esta acción NO se puede deshacer.\n\nSe recomienda hacer respaldo primero.'))return;
+  if(!confirm('¿Estás completamente seguro?'))return;
+  ['inquilinos','pagos','servicios','gastos','obras','incidentes'].forEach(k=>localStorage.removeItem('rentas_'+k));
+  location.reload();
+}
+
+// ─── PDF GENERATION ──────────────────────────────
+function pdfBase(titulo,subtitulo){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  doc.setFillColor(212,168,67);doc.rect(0,0,210,3,'F');
+  doc.setFillColor(18,18,18);doc.rect(0,3,210,35,'F');
+  doc.setTextColor(212,168,67);doc.setFontSize(18);doc.setFont('helvetica','bold');
+  doc.text('GESTIÓN DE RENTAS',14,20);
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text(titulo,14,28);
+  if(subtitulo)doc.text(subtitulo,14,32);
+  doc.text('Generado: '+new Date().toLocaleString('es-MX'),14,subtitulo?36:34);
+  doc.setFillColor(212,168,67);doc.rect(0,38,210,1,'F');
+  return doc;
+}
+
+function genPDFTenant(id){
+  const t=DB.inquilinos.find(i=>i.id===id);if(!t)return;
+  const doc=pdfBase('HISTORIAL DE INQUILINO');
+  doc.setTextColor(212,168,67);doc.setFontSize(13);doc.setFont('helvetica','bold');
+  doc.text(t.nombre.toUpperCase(),14,50);
+  doc.setTextColor(80,80,80);doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text(t.inmueble+(t.interior?' · INT '+t.interior:''),14,57);
+  doc.setDrawColor(212,168,67);doc.line(14,60,196,60);
+  let y=68;
+  const info=[['Renta mensual',fmt(t.renta)],['Día de pago','Día '+t.dia],['Destino',t.destino||'—'],['Servicios',t.servicios||'—'],['Estatus',t.estatus||'—'],['Renovación',t.renovacion||'—'],['Contrato vigente',t.contrato_vigente||'—'],['Comentarios',t.comentarios||'—']];
+  info.forEach(([k,v])=>{doc.setFillColor(248,248,248);doc.rect(14,y-4,182,7,'F');
+    doc.setFont('helvetica','bold');doc.setTextColor(60,60,60);doc.text(k+':',16,y);
+    doc.setFont('helvetica','normal');doc.setTextColor(40,40,40);doc.text(String(v).slice(0,80),65,y);y+=7;});
+  y+=4;
+  doc.setFillColor(212,168,67);doc.rect(14,y,182,8,'F');
+  doc.setTextColor(15,15,15);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('MES / AÑO',16,y+5.5);doc.text('FECHA Y HORA DE PAGO',75,y+5.5);doc.text('MONTO',183,y+5.5,'right');
+  y+=10;
+  const pagos=DB.pagos.filter(p=>p.iid===id&&p.pagado).sort((a,b)=>b.anio-a.anio||b.mes-a.mes);
+  let total=0;
+  pagos.forEach((p,i)=>{
+    if(y>275){doc.addPage();y=20;}
+    doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);doc.rect(14,y-4,182,8,'F');
+    doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(9);
+    doc.text(MF[p.mes-1]+' '+p.anio,16,y);
+    const fp=p.fecha_pago?new Date(p.fecha_pago).toLocaleString('es-MX'):'—';
+    doc.text(fp,75,y);
+    doc.setFont('helvetica','bold');doc.setTextColor(40,130,70);
+    doc.text(fmt(p.monto),183,y,'right');total+=Number(p.monto);y+=8;
+  });
+  if(!pagos.length){doc.setTextColor(130,130,130);doc.setFont('helvetica','italic');doc.text('Sin pagos registrados',16,y);}
+  y+=6;doc.setDrawColor(212,168,67);doc.line(14,y,196,y);y+=7;
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(40,40,40);
+  doc.text('TOTAL COBRADO:',14,y);doc.setTextColor(40,130,70);doc.text(fmt(total),183,y,'right');
+  doc.save('historial_'+t.nombre.replace(/\s+/g,'_')+'.pdf');snack('PDF descargado');
+}
+
+function openPDFConfig(){
+  modal(`<div class="ms"><div class="mh"></div>
+    <div class="mt2">📄 Configurar reporte PDF</div>
+    <div class="fg"><label class="fl">Periodo</label>
+      <select class="fi" id="pdf-rango">
+        <option value="hoy">Hoy</option>
+        <option value="ayer">Ayer</option>
+        <option value="semana" selected>Esta semana</option>
+        <option value="sem_pas">Semana pasada</option>
+        <option value="mes">Este mes</option>
+        <option value="custom">Personalizado</option>
+      </select></div>
+    <div id="pdf-custom" style="display:none">
+      <div class="grid2">
+        <div class="fg"><label class="fl">Desde</label><input class="fi" type="date" id="pdf-ini" value="${todayISO()}"></div>
+        <div class="fg"><label class="fl">Hasta</label><input class="fi" type="date" id="pdf-fin" value="${todayISO()}"></div>
+      </div></div>
+    <div class="fg"><label class="fl">Incluir</label>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="pdf-ing" checked> Ingresos del periodo</label>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="pdf-gas" checked> Gastos por categoría</label>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="pdf-det" checked> Detalle de movimientos</label>
+      </div>
+    <button class="btn bg bfu" onclick="genPDFConciliacionConfig()">Generar PDF</button></div>`);
+  document.getElementById('pdf-rango').addEventListener('change',function(){
+    document.getElementById('pdf-custom').style.display=this.value==='custom'?'block':'none';
+  });
+}
+
+function genPDFConciliacionConfig(){
+  const r=document.getElementById('pdf-rango').value;
+  if(r==='custom'){rangeStart=document.getElementById('pdf-ini').value;rangeEnd=document.getElementById('pdf-fin').value;rangeMode='custom';}
+  else rangeMode=r;
+  const incIng=document.getElementById('pdf-ing').checked;
+  const incGas=document.getElementById('pdf-gas').checked;
+  const incDet=document.getElementById('pdf-det').checked;
+  closeM();
+  genPDFConciliacion(incIng,incGas,incDet);
+}
+
+function genPDFConciliacion(incIng=true,incGas=true,incDet=true){
+  const r=getRange(rangeMode);
+  const doc=pdfBase('CONCILIACIÓN — '+r.label.toUpperCase());
+  const pagos=DB.pagos.filter(p=>{if(!p.fecha_pago||!p.pagado)return false;const d=new Date(p.fecha_pago);return d>=r.ini&&d<=r.fin;});
+  const ingresos=pagos.reduce((s,p)=>s+Number(p.monto),0);
+  const gs=DB.gastos.filter(g=>{const d=new Date(g.fecha);return d>=r.ini&&d<=r.fin;});
+  const gastos=gs.reduce((s,g)=>s+Number(g.monto),0);
+  const neto=ingresos-gastos;
+  let y=50;
+  // Resumen visual
+  doc.setFillColor(248,248,248);doc.rect(14,y-4,182,46,'F');
+  doc.setDrawColor(212,168,67);doc.rect(14,y-4,182,46);
+  doc.setTextColor(neto>=0?40:200,neto>=0?130:60,neto>=0?70:60);doc.setFont('helvetica','bold');doc.setFontSize(22);
+  doc.text(fmt(neto),105,y+8,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('NETO DEL PERIODO',105,y+15,'center');
+  doc.setTextColor(40,130,70);doc.setFontSize(13);doc.setFont('helvetica','bold');doc.text('+ '+fmt(ingresos),55,y+28,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('INGRESOS ('+pagos.length+')',55,y+34,'center');
+  doc.setTextColor(200,60,60);doc.setFontSize(13);doc.setFont('helvetica','bold');doc.text('− '+fmt(gastos),155,y+28,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('GASTOS ('+gs.length+')',155,y+34,'center');
+  y+=54;
+  // Gastos por categoría
+  if(incGas&&gs.length>0){
+    doc.setTextColor(212,168,67);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('GASTOS POR CATEGORÍA',14,y);y+=6;
+    const porCat={};gs.forEach(g=>{porCat[g.categoria]=(porCat[g.categoria]||0)+Number(g.monto)});
+    Object.entries(porCat).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+      const c=CATS_GASTO[k]||CATS_GASTO.otros;
+      if(y>270){doc.addPage();y=20;}
+      doc.setFillColor(250,250,250);doc.rect(14,y-3,182,7,'F');
+      doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(10);
+      doc.text(c.n,18,y+1);doc.setFont('helvetica','bold');doc.setTextColor(200,60,60);
+      doc.text(fmt(v),183,y+1,'right');y+=8;
+    });
+    y+=4;
+  }
+  // Detalle ingresos
+  if(incIng&&incDet&&pagos.length>0){
+    if(y>250){doc.addPage();y=20;}
+    doc.setTextColor(40,130,70);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('INGRESOS DEL PERIODO',14,y);y+=6;
+    doc.setFillColor(40,130,70);doc.rect(14,y,182,7,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+    doc.text('FECHA',16,y+5);doc.text('INQUILINO',45,y+5);doc.text('INMUEBLE',105,y+5);doc.text('MONTO',183,y+5,'right');y+=9;
+    pagos.sort((a,b)=>new Date(a.fecha_pago)-new Date(b.fecha_pago)).forEach((p,i)=>{
+      if(y>275){doc.addPage();y=20;}
+      const t=DB.inquilinos.find(x=>x.id===p.iid);
+      doc.setFillColor(i%2===0?248:255,i%2===0?252:255,i%2===0?248:255);doc.rect(14,y-3,182,7,'F');
+      doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+      doc.text(new Date(p.fecha_pago).toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit'}),16,y+1);
+      doc.text((t?.nombre||'?').slice(0,28),45,y+1);doc.text((t?.inmueble||'').slice(0,28),105,y+1);
+      doc.setFont('helvetica','bold');doc.setTextColor(40,130,70);doc.text(fmt(p.monto),183,y+1,'right');y+=7;
+    });
+    y+=4;
+  }
+  // Detalle gastos
+  if(incGas&&incDet&&gs.length>0){
+    if(y>250){doc.addPage();y=20;}
+    doc.setTextColor(200,60,60);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('GASTOS DEL PERIODO',14,y);y+=6;
+    doc.setFillColor(200,60,60);doc.rect(14,y,182,7,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+    doc.text('FECHA',16,y+5);doc.text('CATEGORÍA',45,y+5);doc.text('DESCRIPCIÓN',85,y+5);doc.text('MONTO',183,y+5,'right');y+=9;
+    gs.sort((a,b)=>new Date(a.fecha)-new Date(b.fecha)).forEach((g,i)=>{
+      if(y>275){doc.addPage();y=20;}
+      const c=CATS_GASTO[g.categoria]||CATS_GASTO.otros;
+      doc.setFillColor(i%2===0?255:252,i%2===0?248:255,i%2===0?248:255);doc.rect(14,y-3,182,7,'F');
+      doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+      doc.text(new Date(g.fecha).toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit'}),16,y+1);
+      doc.text(c.n.slice(0,16),45,y+1);doc.text((g.descripcion||'').slice(0,40),85,y+1);
+      doc.setFont('helvetica','bold');doc.setTextColor(200,60,60);doc.text(fmt(g.monto),183,y+1,'right');y+=7;
+    });
+  }
+  doc.save('conciliacion_'+r.ini.toISOString().slice(0,10)+'_'+r.fin.toISOString().slice(0,10)+'.pdf');
+  snack('📄 PDF descargado');
+}
+
+function genPDFResumen(){
+  const doc=pdfBase('RESUMEN — '+MF[curMes-1].toUpperCase()+' '+curAnio);
+  const act=DB.inquilinos.filter(i=>i.estado==='activo');
+  const cobMes=DB.pagos.filter(p=>p.mes===curMes&&p.anio===curAnio&&p.pagado).reduce((s,p)=>s+Number(p.monto),0);
+  const totalEsp=act.reduce((s,i)=>s+Number(i.renta),0);
+  let y=50;
+  doc.setFillColor(248,248,248);doc.rect(14,y-4,182,40,'F');
+  doc.setDrawColor(212,168,67);doc.rect(14,y-4,182,40);
+  doc.setTextColor(40,130,70);doc.setFont('helvetica','bold');doc.setFontSize(20);
+  doc.text(fmt(cobMes),105,y+5,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('COBRADO',105,y+12,'center');
+  doc.setTextColor(200,60,60);doc.setFont('helvetica','bold');doc.setFontSize(14);
+  doc.text(fmt(totalEsp-cobMes),105,y+24,'center');
+  doc.setTextColor(100,100,100);doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('PENDIENTE',105,y+31,'center');
+  y+=50;
+  doc.setFillColor(212,168,67);doc.rect(14,y,182,8,'F');
+  doc.setTextColor(15,15,15);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('INQUILINO',16,y+5.5);doc.text('INMUEBLE',75,y+5.5);doc.text('RENTA',148,y+5.5,'right');doc.text('STATUS',183,y+5.5,'right');
+  y+=10;
+  act.forEach((t,i)=>{
+    if(y>275){doc.addPage();y=20;}
+    const paid=isPagado(t.id,curMes,curAnio);
+    doc.setFillColor(i%2===0?248:255,i%2===0?248:255,i%2===0?248:255);doc.rect(14,y-4,182,7,'F');
+    doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+    doc.text(t.nombre.slice(0,30),16,y);doc.text((t.inmueble||'').slice(0,28),75,y);
+    doc.setFont('helvetica','bold');doc.text(fmt(t.renta),148,y,'right');
+    if(paid){doc.setTextColor(40,130,70);doc.text('PAGADA',183,y,'right');}
+    else{doc.setTextColor(200,60,60);doc.text('PENDIENTE',183,y,'right');}
+    y+=7;
+  });
+  doc.save('resumen_'+MN[curMes-1]+'_'+curAnio+'.pdf');snack('PDF descargado');
+}
+
+function genPDFVenc(){
+  const venc=DB.inquilinos.filter(i=>i.estado==='activo'&&isLate(i.id,HM,HA));
+  const doc=pdfBase('RENTAS VENCIDAS — '+MF[HM-1].toUpperCase()+' '+HA);
+  let y=50;
+  if(!venc.length){doc.setTextColor(40,130,70);doc.setFontSize(14);doc.setFont('helvetica','bold');doc.text('✓ No hay rentas vencidas.',14,y);}
+  else{
+    doc.setFillColor(200,60,60);doc.rect(14,y,182,8,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text('INQUILINO',16,y+5.5);doc.text('INMUEBLE',75,y+5.5);doc.text('DÍA',150,y+5.5,'right');doc.text('RENTA',183,y+5.5,'right');y+=10;
+    venc.forEach((t,i)=>{if(y>275){doc.addPage();y=20;}
+      doc.setFillColor(255,250,250);doc.rect(14,y-4,182,7,'F');
+      doc.setTextColor(40,40,40);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text(t.nombre.slice(0,30),16,y);doc.text((t.inmueble||'').slice(0,28),75,y);
+      doc.text(String(t.dia),150,y,'right');doc.setFont('helvetica','bold');doc.setTextColor(200,60,60);
+      doc.text(fmt(t.renta),183,y,'right');y+=7;});
+  }
+  doc.save('vencidas_'+MN[HM-1]+'_'+HA+'.pdf');snack('PDF descargado');
+}
+
+function genPDFObra(id){
+  const o=DB.obras.find(x=>x.id===id);if(!o)return;
+  const t=TIPOS_OBRA[o.tipo]||TIPOS_OBRA.otros;
+  const doc=pdfBase('REPORTE DE OBRA — '+t.n.toUpperCase(),o.inmueble);
+  let y=50;
+  doc.setFillColor(248,248,248);doc.rect(14,y-4,182,7,'F');
+  doc.setFont('helvetica','bold');doc.setTextColor(60,60,60);doc.setFontSize(10);doc.text('Tipo:',16,y);
+  doc.setFont('helvetica','normal');doc.setTextColor(40,40,40);doc.text(t.n,65,y);y+=7;
+  doc.setFillColor(255,255,255);doc.rect(14,y-4,182,7,'F');
+  doc.setFont('helvetica','bold');doc.text('Inmueble:',16,y);doc.setFont('helvetica','normal');doc.text(o.inmueble,65,y);y+=7;
+  doc.setFillColor(248,248,248);doc.rect(14,y-4,182,7,'F');
+  doc.setFont('helvetica','bold');doc.text('Fecha:',16,y);doc.setFont('helvetica','normal');doc.text(new Date(o.fecha).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),65,y);y+=7;
+  doc.setFillColor(255,255,255);doc.rect(14,y-4,182,7,'F');
+  doc.setFont('helvetica','bold');doc.text('Costo:',16,y);doc.setFont('helvetica','bold');doc.setTextColor(200,60,60);doc.text(fmt(o.costo),65,y);y+=7;
+  doc.setFillColor(248,248,248);doc.rect(14,y-4,182,7,'F');
+  doc.setFont('helvetica','bold');doc.setTextColor(60,60,60);doc.text('Trabajador:',16,y);doc.setFont('helvetica','normal');doc.setTextColor(40,40,40);doc.text(o.trabajador||'—',65,y);y+=10;
+  // Descripción
+  doc.setTextColor(212,168,67);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('DESCRIPCIÓN',14,y);y+=5;
+  doc.setTextColor(40,40,40);doc.setFontSize(10);doc.setFont('helvetica','normal');
+  const lines=doc.splitTextToSize(o.descripcion,180);
+  lines.forEach(l=>{doc.text(l,14,y);y+=5;});
+  y+=4;
+  // Fotos
+  if(o.fotos?.length){
+    if(y>200){doc.addPage();y=20;}
+    doc.setTextColor(212,168,67);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('EVIDENCIA FOTOGRÁFICA',14,y);y+=6;
+    const cols=2;const photoW=85;const photoH=64;const gap=4;
+    o.fotos.forEach((p,i)=>{
+      const col=i%cols;const row=Math.floor(i/cols);
+      const x=14+col*(photoW+gap);
+      if(col===0&&y+photoH>275){doc.addPage();y=20;}
+      try{doc.addImage(p,'JPEG',x,y,photoW,photoH);}catch(e){}
+      if(col===cols-1||i===o.fotos.length-1){y+=photoH+gap;}
+    });
+  }
+  doc.save('obra_'+t.n+'_'+o.inmueble.replace(/\s+/g,'_')+'_'+o.fecha.slice(0,10)+'.pdf');
+  snack('PDF descargado');
+}
+
+function genPDFIncidente(id){
+  const i=DB.incidentes.find(x=>x.id===id);if(!i)return;
+  const n=NIVELES_INC.find(x=>x.k===i.nivel)||NIVELES_INC[0];
+  const inq=i.inqId?DB.inquilinos.find(x=>x.id===i.inqId):null;
+  const doc=pdfBase('REPORTE DE INCIDENTE','Folio: '+i.numero);
+  let y=50;
+  // Folio destacado
+  doc.setFillColor(20,20,20);doc.rect(14,y-4,182,18,'F');
+  doc.setTextColor(212,168,67);doc.setFont('helvetica','bold');doc.setFontSize(16);
+  doc.text(i.numero,105,y+6,'center');
+  doc.setTextColor(180,180,180);doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text('NÚMERO DE FOLIO',105,y+11,'center');
+  y+=22;
+  // Nivel
+  const rc=[200,60,60];if(n.k===1){rc[0]=40;rc[1]=130;rc[2]=70;}else if(n.k===2){rc[0]=220;rc[1]=180;rc[2]=60;}else if(n.k===3){rc[0]=229;rc[1]=138;rc[2]=44;}
+  doc.setFillColor(rc[0],rc[1],rc[2]);doc.rect(14,y-4,182,8,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+  doc.text('NIVEL DE IMPORTANCIA: '+n.n.toUpperCase(),105,y+2,'center');y+=12;
+  // Info
+  const info=[['Fecha',new Date(i.fecha).toLocaleString('es-MX',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})],['Lugar',i.lugar],['Inquilino',inq?inq.nombre:'No asociado']];
+  info.forEach(([k,v],idx)=>{
+    doc.setFillColor(idx%2===0?248:255,idx%2===0?248:255,idx%2===0?248:255);doc.rect(14,y-4,182,7,'F');
+    doc.setFont('helvetica','bold');doc.setTextColor(60,60,60);doc.setFontSize(10);doc.text(k+':',16,y);
+    doc.setFont('helvetica','normal');doc.setTextColor(40,40,40);doc.text(String(v),50,y);y+=7;
+  });
+  y+=4;
+  doc.setTextColor(212,168,67);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('DESCRIPCIÓN',14,y);y+=5;
+  doc.setTextColor(40,40,40);doc.setFontSize(10);doc.setFont('helvetica','normal');
+  const lines=doc.splitTextToSize(i.descripcion,180);lines.forEach(l=>{doc.text(l,14,y);y+=5;});y+=4;
+  if(i.accion){
+    doc.setTextColor(212,168,67);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('ACCIÓN TOMADA',14,y);y+=5;
+    doc.setTextColor(40,40,40);doc.setFontSize(10);doc.setFont('helvetica','normal');
+    const al=doc.splitTextToSize(i.accion,180);al.forEach(l=>{doc.text(l,14,y);y+=5;});y+=4;
+  }
+  if(i.fotos?.length){
+    if(y>200){doc.addPage();y=20;}
+    doc.setTextColor(212,168,67);doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('EVIDENCIA',14,y);y+=6;
+    i.fotos.forEach((p,idx)=>{
+      const x=14+(idx%2)*89;
+      if(idx>0&&idx%2===0)y+=68;
+      if(y+64>275){doc.addPage();y=20;}
+      try{doc.addImage(p,'JPEG',x,y,85,64);}catch(e){}
+    });
+  }
+  doc.save('incidente_'+i.numero+'.pdf');snack('PDF descargado');
+}
+
+// ─── Init ──────────────────────────────────────────────
+function init(){
+  loadDB();
+  document.getElementById("splash").style.display="none";
+  renderDash();updNotif();
+}
+init();
+</script>
+</body>
+</html>
