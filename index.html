@@ -312,6 +312,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 // ⚠️ CONFIGURA AQUÍ TU FIREBASE (ver instrucciones al final del archivo README)
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC1jmF2t1Qz0rywNAJ5SdLmKICEkNig3VY",
@@ -324,28 +329,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// ---------- INIT FIREBASE ----------
-async function init() {
-  const cfgOK = firebaseConfig.apiKey && firebaseConfig.apiKey !== "TU_API_KEY";
-  if (cfgOK) {
-    try {
-      const app = initializeApp(firebaseConfig);
-      db = getFirestore(app);
-      firebaseOK = true;
-      $("status").textContent = "☁ Sincronizado con Firebase";
-      $("status").className = "status ok";
-
-      // Sembrar si la colección está vacía
-      const snap = await getDocs(collection(db, COLECCION));
-      if (snap.empty) {
-        $("status").textContent = "Cargando datos iniciales…";
-        for (const c of SEED) {
-          await setDoc(doc(db, COLECCION, c.id), c);
-        }
-        $("status").textContent = "☁ Sincronizado con Firebase";
-      }
-
       // Escuchar cambios en tiempo real
       onSnapshot(collection(db, COLECCION), (snap) => {
         contactos = snap.docs.map(d => d.data());
