@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Firebase · CRM</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: #0f172a; color: #e2e8f0; padding: 20px;
+    max-width: 780px; margin: 0 auto; font-size: 14px; line-height: 1.5;
+  }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { color: #94a3b8; font-size: 12px; margin-bottom: 18px; }
+  .card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+  label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 6px; }
+  textarea {
+    width: 100%; height: 180px; background: #0f172a; color: #e2e8f0;
+    border: 1px solid #334155; border-radius: 8px; padding: 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; resize: vertical;
+  }
+  button {
+    background: #f8fafc; color: #0f172a; border: none; border-radius: 8px;
+    padding: 12px 20px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px;
+  }
+  button:active { opacity: 0.8; }
+  .log { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; }
+  .line { padding: 7px 10px; border-radius: 6px; margin-bottom: 5px; display: flex; gap: 8px; align-items: flex-start; }
+  .line .icon { flex-shrink: 0; }
+  .ok  { background: rgba(22,163,74,0.15);  border-left: 3px solid #16a34a; }
+  .err { background: rgba(220,38,38,0.15);  border-left: 3px solid #dc2626; }
+  .info{ background: rgba(59,130,246,0.12); border-left: 3px solid #3b82f6; }
+  .warn{ background: rgba(234,179,8,0.15);  border-left: 3px solid #eab308; }
+  .fix { background: #422006; border: 1px solid #a16207; border-radius: 8px; padding: 10px 12px; margin-top: 6px; font-size: 13px; color: #fde68a; }
+  code { background: #0f172a; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>🔍 Diagnóstico Firebase — CRM Social</h1>
+  <div class="sub">Pega tu firebaseConfig y presiona el botón. Cada prueba tiene límite de 12 s para que nada se cuelgue.</div>
+
+  <div class="card">
+    <label>Tu firebaseConfig (pégalo completo)</label>
+    <textarea id="cfg" placeholder='const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "crm-social-478d1.firebaseapp.com",
+  projectId: "crm-social-478d1",
+  storageBucket: "crm-social-478d1.appspot.com",
+  messagingSenderId: "525557577876",
+  appId: "1:..."
+};'></textarea>
+    <button id="run">Ejecutar diagnóstico</button>
+  </div>
+
+  <div class="log" id="log"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+const logEl = document.getElementById("log");
+function log(type, msg, fix) {
+  const icons = { ok: "✅", err: "❌", info: "ℹ️", warn: "⚠️" };
+  const div = document.createElement("div");
+  div.className = "line " + type;
+  div.innerHTML = `<span class="icon">${icons[type]}</span><span>${msg}</span>`;
+  logEl.appendChild(div);
+  if (fix) {
+    const f = document.createElement("div");
+    f.className = "fix";
+    f.innerHTML = "🛠️ <b>Cómo arreglarlo:</b> " + fix;
+    logEl.appendChild(f);
+  }
+  logEl.scrollIntoView({ block: "end" });
+}
+
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, rej) => setTimeout(() => rej(new Error(`TIMEOUT: "${label}" tardó más de ${ms/1000}s`)), ms))
+  ]);
+}
+
+function parseConfig(text) {
+  // Extrae el objeto {...} del texto pegado
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("No se encontró un objeto { ... } en el texto.");
+  let body = match[0];
+  // Convertir a JSON válido: quitar comentarios, comillas a las llaves
+  body = body.replace(/\/\/.*$/gm, "");
+  // claves sin comillas -> con comillas
+  body = body.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+  // comillas simples -> dobles
+  body = body.replace(/'/g, '"');
+  // quitar comas colgantes
+  body = body.replace(/,(\s*[}\]])/g, "$1");
+  return JSON.parse(body);
+}
+
+document.getElementById("run").onclick = async () => {
+  logEl.innerHTML = "";
+  const raw = document.getElementById("cfg").value.trim();
+
+  // 1. Parsear config
+  let cfg;
+  if (!raw) { log("err", "No pegaste ninguna configuración."); return; }
+  try {
+    cfg = parseConfig(raw);
+    log("ok", "Config leída correctamente.");
+  } catch (e) {
+    log("err", "No pude leer tu config: " + e.message,
+      "Copia el bloque tal cual te lo da Firebase (Configuración del proyecto → Tus apps → SDK).");
+    return;
+  }
+
+  // 2. Validar campos
+  const req = ["apiKey", "authDomain", "projectId", "appId"];
+  const faltan = req.filter(k => !cfg[k] || String(cfg[k]).includes("TU_"));
+  if (faltan.length) {
+    log("err", "Faltan o están sin llenar: " + faltan.join(", "),
+      "Asegúrate de copiar el config real, no el que trae <code>TU_API_KEY</code>.");
+    return;
+  }
+  log("ok", `Proyecto detectado: <code>${cfg.projectId}</code>`);
+  if (cfg.storageBucket && cfg.storageBucket.includes(".firebasestorage.app")) {
+    log("warn", "Tu storageBucket usa <code>.firebasestorage.app</code> (formato nuevo, está bien).");
+  }
+
+  // 3. Inicializar app
+  let app, db;
+  try {
+    app = initializeApp(cfg);
+    db = getFirestore(app);
+    log("ok", "Firebase inicializó sin errores.");
+  } catch (e) {
+    log("err", "Falló initializeApp: " + e.message);
+    return;
+  }
+
+  // 4. Dominio autorizado (informativo)
+  log("info", `Estás abriendo esto desde: <code>${location.hostname || "archivo local"}</code>`);
+
+  // 5. Leer la colección (la prueba clave)
+  try {
+    log("info", "Intentando LEER la colección <code>crm_social_contactos</code>…");
+    const snap = await withTimeout(getDocs(collection(db, "crm_social_contactos")), 12000, "getDocs");
+    log("ok", `Lectura exitosa. Documentos existentes: <b>${snap.size}</b>.`);
+    if (snap.size === 0) log("info", "La colección está vacía — la app la sembrará con los 39 contactos en la primera carga.");
+  } catch (e) {
+    const m = e.message || "";
+    if (m.startsWith("TIMEOUT")) {
+      log("err", m,
+        "Casi siempre significa que <b>la base de datos Firestore no está creada todavía</b>. Ve a Firebase → Firestore Database → <b>Crear base de datos</b> (modo Producción, región nam5). Este es el error más común de página trabada.");
+    } else if (m.includes("permission") || m.includes("PERMISSION")) {
+      log("err", "Permiso denegado por las reglas: " + m,
+        "Ve a Firestore → pestaña <b>Reglas</b> y pega:<br><code>match /crm_social_contactos/{doc} { allow read, write: if true; }</code><br>Luego <b>Publicar</b>.");
+    } else if (m.includes("not been used") || m.includes("disabled") || m.includes("SERVICE_DISABLED")) {
+      log("err", "La API de Firestore no está habilitada aún: " + m,
+        "Entra a Firestore Database y créala. Espera 1-2 minutos tras crearla y reintenta.");
+    } else if (m.includes("api-key") || m.includes("API key") || m.includes("invalid")) {
+      log("err", "API key inválida: " + m,
+        "Revisa que copiaste bien el <code>apiKey</code>. Vuelve a copiarlo de Configuración del proyecto.");
+    } else {
+      log("err", "Error al leer: " + m,
+        "Revisa que Firestore Database exista y que las reglas estén publicadas.");
+    }
+    return;
+  }
+
+  // 6. Prueba de ESCRITURA (y limpieza)
+  try {
+    log("info", "Probando ESCRIBIR un documento de prueba…");
+    const testRef = doc(db, "crm_social_contactos", "__diagnostico_temp__");
+    await withTimeout(setDoc(testRef, { test: true, ts: Date.now() }), 12000, "setDoc");
+    log("ok", "Escritura exitosa.");
+    await deleteDoc(testRef);
+    log("ok", "Documento de prueba borrado. Todo limpio.");
+  } catch (e) {
+    log("err", "Falló la escritura: " + (e.message || e),
+      "Tus reglas permiten leer pero no escribir. Asegúrate que diga <code>allow read, write: if true;</code> y publica.");
+    return;
+  }
+
+  log("ok", "🎉 TODO FUNCIONA. Tu app debería sincronizar sin problemas. Recarga el index con Ctrl/Cmd+Shift+R.");
+};
+</script>
+</body>
+</html>
