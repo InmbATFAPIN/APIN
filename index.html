@@ -178,6 +178,8 @@
     justify-content: center; font-size: 11px; font-weight: 700;
   }
   .tip.final .tip-num { background: #dc2626; color: white; }
+  .tip.sosf .tip-num { background: #2563eb; color: white; }
+  .tip.sosf { background: rgba(37,99,235,0.08); border-radius: 8px; padding: 8px 8px; }
   .tip-txt { flex: 1; padding-top: 2px; }
 
   /* Barra de acciones globales */
@@ -213,6 +215,37 @@
     font-size: 13px; font-weight: 600; color: var(--ink-soft); cursor: pointer; font-family: inherit;
   }
   .view-switch button.active { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
+  /* Notas recientes */
+  .recientes-panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 12px;
+  }
+  .recientes-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-mute); font-weight: 600; margin-bottom: 8px; }
+  .reciente {
+    display: flex; gap: 8px; align-items: flex-start; padding: 6px 0;
+    border-bottom: 1px dashed var(--line); cursor: pointer;
+  }
+  .reciente:last-child { border-bottom: none; }
+  .reciente:active { opacity: 0.6; }
+  .reciente-info { flex: 1; min-width: 0; }
+  .reciente-top { display: flex; justify-content: space-between; gap: 8px; }
+  .reciente-nombre { font-weight: 600; font-size: 13px; }
+  .reciente-fecha { font-size: 10px; color: var(--ink-mute); flex-shrink: 0; }
+  .reciente-texto { font-size: 12px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reciente-empty { font-size: 12px; color: var(--ink-mute); padding: 4px 0; }
+
+  /* Grafo de red */
+  .red-hint { font-size: 12px; color: var(--ink-soft); margin-bottom: 10px; }
+  .red-wrap {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden;
+  }
+  #grafo { width: 100%; height: 68vh; display: block; touch-action: none; cursor: grab; }
+  #grafo:active { cursor: grabbing; }
+  .node-label { font-size: 7px; fill: var(--ink); pointer-events: none; font-weight: 600; }
+  .node-circle { cursor: pointer; stroke: #fff; stroke-width: 1.5; }
+  .edge { stroke: #cbd5e1; stroke-width: 0.6; }
 
   @media (min-width: 640px) {
     .field-row-3 { grid-template-columns: 1fr 1fr 1fr; }
@@ -264,6 +297,7 @@
     <div class="tip"><span class="tip-num">7</span><span class="tip-txt">"¿Qué pensamiento surge en ti después de lo que te dije?"</span></div>
     <div class="tip"><span class="tip-num">8</span><span class="tip-txt">Sonríe y asiente tres veces.</span></div>
     <div class="tip"><span class="tip-num">9</span><span class="tip-txt">Piensa en qué te gustaría obtener de esa conversación o con qué conclusión te quedas.</span></div>
+    <div class="tip sosf"><span class="tip-num">◆</span><span class="tip-txt"><b>Marco SOSF</b> para conversaciones profundas:<br><b>S</b>entimientos — ¿cómo te hace sentir?<br><b>O</b>rigen — ¿de dónde viene eso?<br><b>S</b>eguir — ¿qué sigue / cómo avanzar?<br><b>F</b>uturo — ¿cómo lo ves hacia adelante?</span></div>
     <div class="tip final"><span class="tip-num">★</span><span class="tip-txt"><b>Cierre siempre:</b> quedar en estar en contacto después.</span></div>
   </div>
 </div>
@@ -277,13 +311,21 @@
 <!-- Switch vista -->
 <div class="view-switch">
   <button id="vwContactos" class="active">Contactos</button>
-  <button id="vwTimeline">Timeline de notas</button>
+  <button id="vwTimeline">Timeline</button>
+  <button id="vwRed">Red 🕸</button>
 </div>
 
 <!-- Vista contactos -->
 <div id="viewContactos">
   <input type="text" class="search" id="search" placeholder="Buscar por nombre o apellido…" autocomplete="off">
   <div class="filter-chips" id="chips"></div>
+
+  <!-- Notas recientes -->
+  <div class="recientes-panel" id="recientesPanel">
+    <div class="recientes-title">🕑 Notas recientes</div>
+    <div id="recientesBody"></div>
+  </div>
+
   <div class="list" id="list"></div>
 </div>
 
@@ -291,6 +333,15 @@
 <div id="viewTimeline" style="display:none">
   <input type="text" class="search" id="searchTL" placeholder="Buscar en notas…" autocomplete="off" style="margin-bottom:12px">
   <div id="timeline"></div>
+</div>
+
+<!-- Vista red -->
+<div id="viewRed" style="display:none">
+  <div class="red-hint">Cada nodo es un contacto, coloreado por categoría y unido a ti. El tamaño refleja la fuerza de la relación. Toca un nodo para abrir su perfil.</div>
+  <div class="red-wrap">
+    <svg id="grafo" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+  <div class="legend" id="legendRed" style="margin-top:10px"></div>
 </div>
 
 <!-- Modal perfil -->
@@ -345,6 +396,7 @@ let contactos = [];
 let filtroCat = "todos";
 let currentModalId = null;
 let firebaseOK = false;
+let redVisible = false;
 
 const $ = id => document.getElementById(id);
 
@@ -453,16 +505,67 @@ async function guardarContacto(c) {
   }
 }
 
+// ---------- ELIMINAR UN CONTACTO ----------
+async function eliminarContacto(id) {
+  contactos = contactos.filter(x => x.id !== id);
+  if (firebaseOK) {
+    try {
+      await deleteDoc(doc(db, COLECCION, id));
+    } catch (e) {
+      console.error(e);
+      toast("Error al eliminar en Firebase");
+    }
+  } else {
+    guardarLocal();
+    render();
+  }
+}
+
 // ---------- RENDER ----------
 function render() {
   renderPanel();
   renderChips();
   renderLista();
+  renderRecientes();
   renderTimeline();
+  if (redVisible) renderGrafo();
   if (currentModalId) {
     const c = contactos.find(x => x.id === currentModalId);
     if (c) renderModal(c);
   }
+}
+
+// ---------- NOTAS RECIENTES (dashboard) ----------
+function renderRecientes() {
+  const body = $("recientesBody");
+  if (!body) return;
+  const items = [];
+  contactos.forEach(c => (c.notas || []).forEach(n => items.push({
+    contactoId: c.id, nombre: c.nombre, categoria: c.categoria, fecha: n.fecha, texto: n.texto
+  })));
+  items.sort((a,b) => b.fecha.localeCompare(a.fecha));
+  const top = items.slice(0, 4);
+  if (top.length === 0) {
+    body.innerHTML = '<div class="reciente-empty">Sin notas todavía. Abre un contacto y añade la primera.</div>';
+    return;
+  }
+  body.innerHTML = "";
+  top.forEach(item => {
+    const color = CATS[item.categoria]?.color || INACTIVO_COLOR;
+    const el = document.createElement("div");
+    el.className = "reciente";
+    el.innerHTML = `
+      <span class="dot" style="background:${color};margin-top:4px"></span>
+      <div class="reciente-info">
+        <div class="reciente-top">
+          <span class="reciente-nombre">${escapeHtml(item.nombre)}</span>
+          <span class="reciente-fecha">${item.fecha}</span>
+        </div>
+        <div class="reciente-texto">${escapeHtml(item.texto)}</div>
+      </div>`;
+    el.onclick = () => abrirModal(item.contactoId);
+    body.appendChild(el);
+  });
 }
 
 function renderPanel() {
@@ -702,6 +805,7 @@ function renderModal(c) {
       <button class="btn btn-secondary" id="btnCerrar">Cerrar</button>
       <button class="btn btn-primary" id="btnGuardar">Guardar cambios</button>
     </div>
+    <button class="btn btn-danger" id="btnEliminar" style="width:100%;margin-top:8px">🗑 Eliminar contacto</button>
   `;
 
   // Listeners
@@ -725,6 +829,13 @@ function renderModal(c) {
     };
     await guardarContacto(upd);
     toast("Guardado ✓");
+    cerrarModal();
+  };
+
+  $("btnEliminar").onclick = async () => {
+    if (!confirm(`¿Eliminar a "${c.nombre}" por completo? Esta acción no se puede deshacer.`)) return;
+    await eliminarContacto(c.id);
+    toast("Contacto eliminado");
     cerrarModal();
   };
 
@@ -826,19 +937,119 @@ $("btnExport").onclick = () => {
 };
 
 // ---------- SWITCH DE VISTA ----------
-$("vwContactos").onclick = () => {
-  $("vwContactos").classList.add("active");
-  $("vwTimeline").classList.remove("active");
-  $("viewContactos").style.display = "";
-  $("viewTimeline").style.display = "none";
-};
-$("vwTimeline").onclick = () => {
-  $("vwTimeline").classList.add("active");
-  $("vwContactos").classList.remove("active");
-  $("viewTimeline").style.display = "";
-  $("viewContactos").style.display = "none";
-  renderTimeline();
-};
+function setView(v) {
+  const views = { contactos: "viewContactos", timeline: "viewTimeline", red: "viewRed" };
+  const btns  = { contactos: "vwContactos",   timeline: "vwTimeline",   red: "vwRed" };
+  Object.entries(views).forEach(([k, id]) => $(id).style.display = (k === v ? "" : "none"));
+  Object.entries(btns).forEach(([k, id]) => $(id).classList.toggle("active", k === v));
+  redVisible = (v === "red");
+  if (v === "timeline") renderTimeline();
+  if (v === "red") renderGrafo();
+}
+$("vwContactos").onclick = () => setView("contactos");
+$("vwTimeline").onclick  = () => setView("timeline");
+$("vwRed").onclick       = () => setView("red");
+
+// ---------- GRAFO DE RED (force-directed simple) ----------
+let grafoNodos = [];
+let grafoAnim = null;
+function renderGrafo() {
+  const svg = $("grafo");
+  if (!svg) return;
+  const W = 400, H = 400, CX = W/2, CY = H/2;
+
+  // Nodo central "Yo" + contactos activos
+  const activos = contactos.filter(c => c.activo !== false);
+
+  // Inicializar posiciones si cambió el conjunto
+  const ids = activos.map(c => c.id).join(",");
+  if (!grafoNodos._ids || grafoNodos._ids !== ids) {
+    grafoNodos = activos.map((c, i) => {
+      const ang = (i / Math.max(activos.length,1)) * Math.PI * 2;
+      return {
+        id: c.id, nombre: c.nombre, categoria: c.categoria,
+        fuerza: parseFloat(c.fuerza) || 5,
+        x: CX + Math.cos(ang) * 120 + (Math.random()-0.5)*20,
+        y: CY + Math.sin(ang) * 120 + (Math.random()-0.5)*20,
+        vx: 0, vy: 0
+      };
+    });
+    grafoNodos._ids = ids;
+    // correr simulación
+    if (grafoAnim) cancelAnimationFrame(grafoAnim);
+    simular(0);
+  } else {
+    pintarGrafo();
+  }
+
+  function simular(step) {
+    // Fuerzas: repulsión entre nodos, atracción al centro según fuerza de relación
+    for (let a of grafoNodos) {
+      let fx = 0, fy = 0;
+      // repulsión
+      for (let b of grafoNodos) {
+        if (a === b) continue;
+        let dx = a.x - b.x, dy = a.y - b.y;
+        let d2 = dx*dx + dy*dy + 0.01;
+        let f = 380 / d2;
+        fx += dx * f; fy += dy * f;
+      }
+      // atracción al centro (Yo): más fuerte = más cerca
+      let dxc = CX - a.x, dyc = CY - a.y;
+      let distIdeal = 150 - (a.fuerza * 9); // fuerza 10 → ~60px, fuerza 1 → ~140px
+      let dc = Math.sqrt(dxc*dxc + dyc*dyc) || 1;
+      let pull = (dc - distIdeal) * 0.012;
+      fx += (dxc/dc) * pull * dc;
+      fy += (dyc/dc) * pull * dc;
+
+      a.vx = (a.vx + fx) * 0.82;
+      a.vy = (a.vy + fy) * 0.82;
+    }
+    for (let a of grafoNodos) {
+      a.x += Math.max(-8, Math.min(8, a.vx));
+      a.y += Math.max(-8, Math.min(8, a.vy));
+      a.x = Math.max(20, Math.min(W-20, a.x));
+      a.y = Math.max(20, Math.min(H-20, a.y));
+    }
+    pintarGrafo();
+    if (step < 120 && redVisible) grafoAnim = requestAnimationFrame(() => simular(step+1));
+  }
+
+  function pintarGrafo() {
+    let edges = "", nodes = "";
+    // aristas al centro
+    for (let n of grafoNodos) {
+      edges += `<line class="edge" x1="${CX}" y1="${CY}" x2="${n.x.toFixed(1)}" y2="${n.y.toFixed(1)}"/>`;
+    }
+    // nodo central
+    nodes += `<circle cx="${CX}" cy="${CY}" r="10" fill="#0f172a" stroke="#fff" stroke-width="2"/>`;
+    nodes += `<text x="${CX}" y="${CY+22}" text-anchor="middle" class="node-label" style="font-size:8px;font-weight:700">YO</text>`;
+    // nodos contacto
+    for (let n of grafoNodos) {
+      const color = CATS[n.categoria]?.color || "#94a3b8";
+      const r = 3.5 + n.fuerza * 0.55;
+      const first = n.nombre.split(" ")[0];
+      nodes += `<circle class="node-circle" data-id="${n.id}" cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r.toFixed(1)}" fill="${color}"/>`;
+      nodes += `<text x="${n.x.toFixed(1)}" y="${(n.y - r - 2).toFixed(1)}" text-anchor="middle" class="node-label">${escapeHtml(first)}</text>`;
+    }
+    svg.innerHTML = edges + nodes;
+    svg.querySelectorAll(".node-circle").forEach(el => {
+      el.onclick = () => abrirModal(el.dataset.id);
+    });
+  }
+
+  // Leyenda de red
+  const lg = $("legendRed");
+  lg.innerHTML = "";
+  Object.entries(CATS).forEach(([k, meta]) => {
+    const count = activos.filter(c => c.categoria === k).length;
+    if (count === 0) return;
+    const el = document.createElement("div");
+    el.className = "legend-item";
+    el.innerHTML = `<span class="swatch" style="background:${meta.color};${meta.stroke?'border-color:'+meta.stroke:''}"></span>${meta.label} ${count}`;
+    lg.appendChild(el);
+  });
+}
 
 // ---------- TIMELINE ----------
 function renderTimeline() {
