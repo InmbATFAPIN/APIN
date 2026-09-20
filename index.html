@@ -3,28 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#1e3a5f">
 <title>CRM Social · Gerardo</title>
 <link rel="manifest" href="manifest.json">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --ink: #0f172a;
-    --ink-soft: #475569;
-    --ink-mute: #94a3b8;
-    --line: #e2e8f0;
-    --accent: #0f172a;
+    --bg: #dbe3ef;
+    --card: #f4f7fb;
+    --ink: #12233f;
+    --ink-soft: #3d5378;
+    --ink-mute: #7788a4;
+    --line: #c6d2e4;
+    --accent: #1e3a5f;
+    --navy: #1e3a5f;
     --cide: #16a34a;
     --tepeyac: #dc2626;
     --semov: #881337;
-    --ciecas: #f1f5f9;
-    --ciecas-stroke: #cbd5e1;
+    --ciecas: #e8eef7;
+    --ciecas-stroke: #b9c6dc;
     --inmobiliaria: #2563eb;
     --personal: #ec4899;
     --otro: #9333ea;
-    --inactivo: #94a3b8;
+    --inactivo: #7788a4;
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
@@ -79,7 +80,7 @@
     background: var(--card); border: 1px solid var(--line); border-radius: 10px;
     padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer;
   }
-  .contact:active { background: #f1f5f9; }
+  .contact:active { background: #e3e9f3; }
   .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
   .contact-info { flex: 1; min-width: 0; }
   .contact-name { font-weight: 600; font-size: 15px; }
@@ -103,7 +104,7 @@
   @keyframes slideup { from { transform: translateY(100%); } to { transform: translateY(0); } }
   .modal-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
   .modal-name { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; flex: 1; }
-  .modal-close { background: #f1f5f9; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; color: var(--ink-soft); }
+  .modal-close { background: #e3e9f3; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; color: var(--ink-soft); }
   .modal-cat-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; font-size: 12px; color: var(--ink-soft); flex-wrap: wrap; }
 
   .field { margin-bottom: 12px; }
@@ -120,7 +121,7 @@
 
   .notas-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
   .nota {
-    background: #f8fafc; border-left: 3px solid var(--accent); border-radius: 6px;
+    background: #e8eef7; border-left: 3px solid var(--accent); border-radius: 6px;
     padding: 8px 10px; display: flex; gap: 8px; align-items: flex-start;
   }
   .nota-body { flex: 1; }
@@ -132,15 +133,15 @@
     width: 100%; padding: 10px; border: 1px dashed var(--line); background: transparent;
     border-radius: 8px; color: var(--ink-soft); font-size: 13px; cursor: pointer; margin-bottom: 8px;
   }
-  .btn-add-nota:active { background: #f1f5f9; }
+  .btn-add-nota:active { background: #e3e9f3; }
 
   .modal-actions { display: flex; gap: 8px; margin-top: 16px; position: sticky; bottom: 0; background: var(--card); padding-top: 10px; }
   .btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
   .btn-primary { background: var(--ink); color: white; }
-  .btn-secondary { background: #f1f5f9; color: var(--ink); }
+  .btn-secondary { background: #e3e9f3; color: var(--ink); }
   .btn-danger { background: transparent; color: var(--tepeyac); border: 1px solid var(--line); }
 
-  .inactivo-badge { background: #f1f5f9; color: var(--ink-mute); padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+  .inactivo-badge { background: #e3e9f3; color: var(--ink-mute); padding: 2px 8px; border-radius: 6px; font-size: 11px; }
 
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -192,7 +193,7 @@
     cursor: pointer; font-family: inherit; display: flex; align-items: center;
     justify-content: center; gap: 6px;
   }
-  .action-btn:active { background: #f1f5f9; }
+  .action-btn:active { background: #e3e9f3; }
   .action-btn.primary { background: var(--ink); color: white; border-color: var(--ink); }
 
   /* Timeline */
@@ -208,7 +209,7 @@
   .timeline-texto { font-size: 13px; color: var(--ink-soft); white-space: pre-wrap; word-wrap: break-word; padding-left: 18px; }
 
   .view-switch {
-    display: flex; background: #f1f5f9; border-radius: 10px; padding: 3px; margin-bottom: 12px;
+    display: flex; background: #e3e9f3; border-radius: 10px; padding: 3px; margin-bottom: 12px;
   }
   .view-switch button {
     flex: 1; padding: 8px; border: none; background: transparent; border-radius: 7px;
@@ -252,14 +253,193 @@
     .modal { border-radius: 16px; margin-bottom: 20px; }
     .modal-bg { align-items: center; }
   }
+  /* ===== Navegación de módulos ===== */
+  .module-nav { display: flex; gap: 8px; margin-bottom: 14px; }
+  .module-btn {
+    flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); font-size: 15px; font-weight: 700; color: var(--ink-soft);
+    cursor: pointer; font-family: inherit;
+  }
+  .module-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ===== Módulo Tiempo ===== */
+  .t-datebar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .t-datelabel { flex: 1; text-align: center; font-weight: 700; font-size: 16px; text-transform: capitalize; }
+  .t-navday { background: var(--card); border: 1px solid var(--line); border-radius: 10px; width: 40px; height: 40px; font-size: 20px; color: var(--ink); cursor: pointer; }
+  .t-navday:active { background: #e3e9f3; }
+
+  .t-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .t-card-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .t-plan { background: linear-gradient(135deg,#eff6ff,#dbeafe); border-color:#bfdbfe; }
+
+  .t-label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-mute); font-weight:600; margin:8px 0 4px; }
+  .t-input { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; color:var(--ink); background:var(--card); outline:none; margin-bottom:6px; resize:vertical; }
+  .t-input:focus { border-color: var(--accent); }
+
+  .t-btn { width:100%; padding:11px; border:none; border-radius:10px; background:var(--ink); color:#fff; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .t-btn:active { opacity:.85; }
+  .t-btn-2 { background:#2563eb; margin-top:8px; }
+  .t-btn-save { background:#16a34a; margin-bottom:20px; }
+  .t-hint { font-size:11.5px; color:var(--ink-mute); margin-top:6px; }
+
+  /* Agenda items */
+  .t-block { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px dashed var(--line); }
+  .t-block:last-child { border-bottom:none; }
+  .t-block-time { font-size:12px; font-variant-numeric:tabular-nums; color:var(--ink-soft); flex-shrink:0; width:82px; font-weight:600; }
+  .t-block-body { flex:1; }
+  .t-block-name { font-size:14px; font-weight:600; }
+  .t-block-tag { display:inline-block; font-size:10px; padding:1px 7px; border-radius:999px; color:#fff; margin-top:2px; }
+  .t-empty { font-size:13px; color:var(--ink-mute); padding:8px 0; }
+  .t-block-edit { background:none;border:none;color:var(--ink-mute);cursor:pointer;font-size:14px; }
+
+  /* Hábitos */
+  .t-habito { display:flex; align-items:center; gap:10px; padding:7px 0; cursor:pointer; }
+  .t-habito input { width:18px; height:18px; accent-color:#16a34a; }
+  .t-habito span { font-size:14px; }
+
+  /* Plan importado */
+  .t-plan-agenda { display:flex; gap:8px; padding:6px 0; border-bottom:1px dashed var(--line); font-size:13px; }
+  .t-plan-sug { padding:6px 0; font-size:13px; border-bottom:1px dashed var(--line); }
+  .t-plan-alerta { background:#fef2f2; border-left:3px solid #dc2626; padding:8px 10px; border-radius:6px; font-size:13px; color:#7f1d1d; margin-top:8px; }
+  .t-plan-woop { background:#f0fdf4; border-left:3px solid #16a34a; padding:8px 10px; border-radius:6px; font-size:13px; margin-top:8px; }
+
+  /* Bloque horario item */
+  .t-hblock { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; display:flex; gap:10px; align-items:center; }
+  .t-hblock-info { flex:1; min-width:0; }
+  .t-hblock-name { font-weight:600; font-size:14px; }
+  .t-hblock-meta { font-size:11.5px; color:var(--ink-mute); }
+
+  .dias-row { display:flex; gap:4px; margin-bottom:6px; }
+  .dia-btn { flex:1; padding:8px 0; border:1px solid var(--line); background:var(--card); border-radius:8px; font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer; font-family:inherit; }
+  .dia-btn.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+  /* ROTI */
+  .roti-bar { display:flex; height:22px; border-radius:8px; overflow:hidden; background:#e3e9f3; margin-bottom:8px; }
+  .roti-seg { display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; font-weight:700; min-width:0; }
+  .roti-legend { display:flex; flex-wrap:wrap; gap:10px; font-size:11.5px; color:var(--ink-soft); margin-bottom:8px; }
+  .roti-legend .swatch { width:10px; height:10px; border-radius:2px; display:inline-block; margin-right:4px; vertical-align:middle; }
+  .roti-insight { font-size:12.5px; padding:8px 10px; border-radius:8px; }
+  .roti-insight.warn { background:#fffbeb; border-left:3px solid #f59e0b; color:#78350f; }
+  .roti-insight.ok { background:#f0fdf4; border-left:3px solid #16a34a; color:#14532d; }
+  .t-block { border-left:3px solid transparent; padding-left:8px; }
+
+  /* Alimentación */
+  .macro-row { display:flex; gap:16px; margin-bottom:10px; }
+  .macro { text-align:center; flex:1; }
+  .macro-num { font-size:28px; font-weight:700; letter-spacing:-0.02em; }
+  .macro-lbl { font-size:11px; color:var(--ink-mute); }
+  .macro-bar { height:8px; background:#e3e9f3; border-radius:99px; overflow:hidden; }
+  .macro-bar-fill { height:100%; width:0%; border-radius:99px; transition:width .3s; }
+
+  .agua-row { display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:10px; }
+  .agua-btn { width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--card); font-size:22px; cursor:pointer; color:var(--ink); }
+  .agua-btn:active { background:#e3e9f3; }
+  .agua-count { font-size:24px; font-weight:700; }
+  .agua-vasos { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; }
+  .vaso { font-size:20px; }
+
+  .sup-item { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed var(--line); }
+  .sup-item:last-child { border-bottom:none; }
+  .sup-item input[type=checkbox] { width:18px; height:18px; accent-color:#16a34a; }
+  .sup-item span { flex:1; font-size:14px; }
+  .sup-del { background:none; border:none; color:var(--ink-mute); cursor:pointer; font-size:15px; }
+
+  .banco-grupo { margin-bottom:12px; }
+  .banco-grupo h4 { font-size:12px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-mute); margin-bottom:6px; }
+  .banco-item { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--line); font-size:13px; }
+  .banco-item .macros { color:var(--ink-mute); font-size:12px; flex-shrink:0; }
+
+  .sem-day { margin-bottom:12px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px; }
+  .sem-day h4 { font-size:13px; margin-bottom:6px; }
+  .sem-day select { width:100%; padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:12.5px; margin-bottom:5px; font-family:inherit; color:var(--ink); background:var(--card); }
+  .sem-prot { font-size:11px; color:var(--ink-mute); }
+
+  .compra-store { font-size:12px; font-weight:700; margin:10px 0 4px; }
+  .compra-item { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:13px; }
+  .compra-item input { width:16px; height:16px; accent-color:#16a34a; }
+  .compra-item .precio { margin-left:auto; color:var(--ink-mute); font-size:12px; }
+  .compra-total { font-weight:700; font-size:14px; margin-top:8px; padding-top:8px; border-top:1px solid var(--line); }
+
+  /* Real vs plan */
+  .real-form { margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); }
+  .real-item { display:flex; gap:8px; align-items:flex-start; padding:7px 0; border-bottom:1px dashed var(--line); }
+  .real-item:last-child { border-bottom:none; }
+  .real-time { font-size:12px; font-weight:600; color:var(--ink-soft); width:82px; flex-shrink:0; font-variant-numeric:tabular-nums; }
+  .real-body { flex:1; }
+  .real-name { font-size:14px; }
+  .real-del { background:none; border:none; color:var(--ink-mute); cursor:pointer; font-size:14px; }
+  .cmp-label { font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-mute); font-weight:600; margin-bottom:4px; }
+
+  /* Finanzas */
+  .fin-resumen { display:flex; gap:12px; }
+  .fin-metric { flex:1; text-align:center; }
+  .fin-num { font-size:20px; font-weight:700; letter-spacing:-0.02em; }
+  .fin-item { display:flex; gap:10px; align-items:center; padding:10px 0; border-bottom:1px dashed var(--line); }
+  .fin-item:last-child { border-bottom:none; }
+  .fin-info { flex:1; min-width:0; }
+  .fin-nombre { font-weight:600; font-size:14px; }
+  .fin-obj { font-size:12px; color:var(--ink-mute); }
+  .fin-saldo { font-weight:700; font-size:15px; font-variant-numeric:tabular-nums; flex-shrink:0; }
+  .fin-corte { font-size:10px; color:var(--ink-mute); }
+  .fin-empty { font-size:13px; color:var(--ink-mute); padding:6px 0; }
+
+  /* Área de planeación */
+  .recalc-banner { background:#eff6ff; border:1px solid #bfdbfe; border-left:4px solid #2563eb; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:13px; color:#1e3a5f; }
+  .semana-nav { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .pg-semana { display:flex; flex-direction:column; gap:6px; }
+  .pg-dia { border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
+  .pg-dia.hoy { border-color:var(--navy); box-shadow:0 0 0 1px var(--navy); }
+  .pg-dia-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .pg-dia-nombre { font-weight:700; font-size:13px; text-transform:capitalize; }
+  .pg-dia-roti { font-size:10px; color:var(--ink-mute); }
+  .pg-mini { display:flex; flex-wrap:wrap; gap:3px; }
+  .pg-chip { font-size:10px; padding:2px 6px; border-radius:5px; color:#fff; white-space:nowrap; }
+  .pg-chip.sug { background:transparent; color:var(--navy); border:1px dashed var(--navy); font-weight:600; }
+  .pg-dia-empty { font-size:11px; color:var(--ink-mute); }
+
+  .pd-range { width:100%; accent-color:var(--navy); }
+  .pend-form { margin-bottom:12px; }
+  .pg-matriz { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .pg-quad { border-radius:8px; padding:8px; border:1px solid var(--line); }
+  .pg-quad h5 { font-size:11px; margin-bottom:6px; text-transform:uppercase; letter-spacing:.03em; }
+  .pg-q1 { background:#fef2f2; } .pg-q1 h5 { color:#b91c1c; }
+  .pg-q2 { background:#f0fdf4; } .pg-q2 h5 { color:#15803d; }
+  .pg-q3 { background:#fffbeb; } .pg-q3 h5 { color:#b45309; }
+  .pg-q4 { background:#f8fafc; } .pg-q4 h5 { color:#64748b; }
+  .pend-item { display:flex; gap:6px; align-items:flex-start; font-size:12px; padding:4px 0; border-bottom:1px dashed rgba(0,0,0,.06); }
+  .pend-item:last-child { border-bottom:none; }
+  .pend-txt { flex:1; }
+  .pend-txt.done { text-decoration:line-through; color:var(--ink-mute); }
+  .pend-slot { font-size:10px; color:var(--navy); font-weight:600; }
+  .pend-del { background:none; border:none; color:var(--ink-mute); cursor:pointer; font-size:12px; padding:0; }
+  .pend-chk { width:15px; height:15px; accent-color:#16a34a; margin-top:1px; }
+
+  .ajuste-dia { border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:8px; background:var(--card); }
+  .ajuste-dia h5 { font-size:12px; margin-bottom:5px; text-transform:capitalize; }
+  .ajuste-row { font-size:12px; padding:3px 0; display:flex; gap:8px; }
+  .ajuste-row .hora { font-weight:600; color:var(--navy); min-width:80px; font-variant-numeric:tabular-nums; }
+  .ajuste-nuevo { color:#15803d; }
+  .ajuste-note { font-size:12px; color:var(--ink-soft); background:#eff6ff; border-radius:8px; padding:8px 10px; margin-bottom:10px; }
+
 </style>
 </head>
 <body>
 
 <header>
-  <h1>CRM Social <span>Gerardo</span></h1>
+  <h1 id="appTitle">Cockpit <span>Gerardo</span></h1>
   <div class="status" id="status">Cargando…</div>
 </header>
+
+<!-- Navegación de MÓDULOS -->
+<div class="module-nav">
+  <button id="modSocialBtn" class="module-btn active">👥 Social</button>
+  <button id="modTiempoBtn" class="module-btn">⏱ Tiempo</button>
+  <button id="modComidaBtn" class="module-btn">🍎 Comida</button>
+  <button id="modFinBtn" class="module-btn">💰 Finanzas</button>
+</div>
+
+<!-- ===================== MÓDULO SOCIAL (CRM) ===================== -->
+<div id="moduloSocial">
 
 <!-- Panel superior: métrica + pastel -->
 <div class="panel">
@@ -274,7 +454,7 @@
     </div>
     <div class="pie-wrap">
       <svg class="pie" viewBox="0 0 42 42" id="pie">
-        <circle cx="21" cy="21" r="15.915" fill="#f1f5f9"/>
+        <circle cx="21" cy="21" r="15.915" fill="#e3e9f3"/>
       </svg>
       <div class="legend" id="legend"></div>
     </div>
@@ -344,6 +524,294 @@
   <div class="legend" id="legendRed" style="margin-top:10px"></div>
 </div>
 
+</div><!-- /moduloSocial -->
+
+<!-- ===================== MÓDULO TIEMPO ===================== -->
+<div id="moduloTiempo" style="display:none">
+
+  <!-- Sub-nav del módulo tiempo -->
+  <div class="view-switch">
+    <button id="twHoy" class="active">Hoy</button>
+    <button id="twHorario">Planeación</button>
+  </div>
+
+  <!-- ===== SUB-VISTA HOY ===== -->
+  <div id="tvHoy">
+    <div class="t-datebar">
+      <button class="t-navday" id="tPrevDay">‹</button>
+      <div class="t-datelabel" id="tDateLabel">—</div>
+      <button class="t-navday" id="tNextDay">›</button>
+    </div>
+
+    <!-- Agenda del día -->
+    <div class="t-card">
+      <div class="t-card-title">📅 Agenda de hoy</div>
+      <div id="tAgenda"></div>
+    </div>
+
+    <!-- Balance ROTI (jerarquía del tiempo) -->
+    <div class="t-card">
+      <div class="t-card-title">⚖️ Balance de hoy — Retorno de Inversión de Tiempo</div>
+      <div class="roti-bar" id="tRotiBar"></div>
+      <div class="roti-legend" id="tRotiLegend"></div>
+      <div class="roti-insight" id="tRotiInsight"></div>
+    </div>
+
+    <!-- 3 prioridades -->
+    <div class="t-card">
+      <div class="t-card-title">🎯 Mis 3 prioridades (una por mundo)</div>
+      <input class="t-input" id="tPrio0" placeholder="1 · Tesina / académico">
+      <input class="t-input" id="tPrio1" placeholder="2 · Oficina Familiar">
+      <input class="t-input" id="tPrio2" placeholder="3 · Vida personal">
+    </div>
+
+    <!-- Hábitos WOOP -->
+    <div class="t-card">
+      <div class="t-card-title">✅ Hábitos de hoy</div>
+      <div id="tHabitos"></div>
+    </div>
+
+    <!-- LO QUE REALMENTE HICE -->
+    <div class="t-card">
+      <div class="t-card-title">🕒 Lo que realmente hice hoy</div>
+      <div id="tRealList"></div>
+      <div class="real-form">
+        <div class="field-row">
+          <div><label class="t-label">Inicio</label><input class="t-input" id="rIni" type="time"></div>
+          <div><label class="t-label">Fin</label><input class="t-input" id="rFin" type="time"></div>
+        </div>
+        <label class="t-label">Actividad</label>
+        <input class="t-input" id="rAct" placeholder="Ej: conduje a Prohogar y revisé fuga">
+        <label class="t-label">Categoría de tiempo</label>
+        <select class="t-input" id="rRoti"></select>
+        <button class="t-btn t-btn-2" id="rAdd">+ Añadir actividad real</button>
+      </div>
+    </div>
+
+    <!-- COMPARACIÓN PLANEADO VS REAL -->
+    <div class="t-card">
+      <div class="t-card-title">📊 Planeado vs Real</div>
+      <div class="cmp-label">Planeado (ideal)</div>
+      <div class="roti-bar" id="tCmpPlan"></div>
+      <div class="cmp-label" style="margin-top:8px">Real (lo que hice)</div>
+      <div class="roti-bar" id="tCmpReal"></div>
+      <div class="roti-insight" id="tCmpInsight" style="margin-top:8px"></div>
+    </div>
+
+    <!-- PLANEAR (híbrido export/import) -->
+    <div class="t-card t-plan">
+      <div class="t-card-title">🧠 Planear mi día con Claude</div>
+      <label class="t-label">Cómo planeo mi día / pendientes / contexto</label>
+      <textarea class="t-input" id="tContexto" rows="3" placeholder="Ej: hoy Freddy reportó fuga en Prohogar, tengo que avanzar el capítulo 1, y quiero ver a Edmi…"></textarea>
+      <button class="t-btn" id="tExport">📤 Exportar para planear</button>
+      <div class="t-hint">Copia el texto, pégamelo en el chat, y te devuelvo el plan. Luego pégalo abajo.</div>
+      <textarea class="t-input" id="tImport" rows="3" placeholder="Pega aquí el plan que te devolví (JSON)…" style="margin-top:10px"></textarea>
+      <button class="t-btn t-btn-2" id="tImportBtn">📥 Importar plan</button>
+    </div>
+
+    <!-- Plan importado -->
+    <div class="t-card" id="tPlanCard" style="display:none">
+      <div class="t-card-title">🗓 Plan del día (de Claude)</div>
+      <div id="tPlanBody"></div>
+    </div>
+
+    <!-- Journal de cierre -->
+    <div class="t-card">
+      <div class="t-card-title">🌙 Journal de cierre</div>
+      <label class="t-label">¿Fui honesto conmigo y con los demás hoy?</label>
+      <textarea class="t-input" id="tJ0" rows="2"></textarea>
+      <label class="t-label">¿Actué desde la tranquilidad o la reactividad?</label>
+      <textarea class="t-input" id="tJ1" rows="2"></textarea>
+      <label class="t-label">¿Lo que hice hoy tiene sentido con quien quiero ser?</label>
+      <textarea class="t-input" id="tJ2" rows="2"></textarea>
+      <label class="t-label">3 agradecimientos (específicos)</label>
+      <input class="t-input" id="tG0" placeholder="Agradezco…">
+      <input class="t-input" id="tG1" placeholder="Agradezco…">
+      <input class="t-input" id="tG2" placeholder="Agradezco…">
+    </div>
+
+    <button class="t-btn t-btn-save" id="tGuardarDia">💾 Guardar el día</button>
+  </div>
+
+  <!-- ===== ÁREA DE PLANEACIÓN ===== -->
+  <div id="tvHorario" style="display:none">
+
+    <!-- Banner de recálculo -->
+    <div id="tRecalcBanner" class="recalc-banner" style="display:none"></div>
+
+    <!-- Vista semanal sintética -->
+    <div class="t-card">
+      <div class="t-card-title">🗓 Mi semana de un vistazo</div>
+      <div class="semana-nav">
+        <button class="t-navday" id="pgPrevWeek">‹</button>
+        <div id="pgSemLabel" style="flex:1;text-align:center;font-weight:600;font-size:13px"></div>
+        <button class="t-navday" id="pgNextWeek">›</button>
+      </div>
+      <div id="pgSemana" class="pg-semana"></div>
+    </div>
+
+    <!-- Editar eventos planificados -->
+    <div class="t-card">
+      <div class="t-card-title">✏️ Eventos planificados</div>
+      <div class="t-hint" style="margin-bottom:8px">Bloques fijos (con vigencia) o únicos. Toca uno para editarlo.</div>
+      <button class="t-btn" id="tAddBloque">+ Nuevo bloque</button>
+      <div id="tHorarioList" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Pendientes Eisenhower -->
+    <div class="t-card">
+      <div class="t-card-title">🧩 Pendientes (matriz Eisenhower)</div>
+      <div class="pend-form">
+        <input class="t-input" id="pdTexto" placeholder="Ej: entregar avance del capítulo 1 a la Dra. Isunza">
+        <div class="field-row">
+          <div><label class="t-label">Importancia: <span id="pdImpVal">3</span></label><input type="range" id="pdImp" min="1" max="5" value="3" class="pd-range"></div>
+          <div><label class="t-label">Urgencia: <span id="pdUrgVal">3</span></label><input type="range" id="pdUrg" min="1" max="5" value="3" class="pd-range"></div>
+        </div>
+        <div class="field-row">
+          <div><label class="t-label">Duración (min)</label><input class="t-input" id="pdDur" type="number" min="15" step="15" value="60"></div>
+          <div><label class="t-label">Mundo/WOOP</label><select class="t-input" id="pdWoop"></select></div>
+        </div>
+        <button class="t-btn t-btn-2" id="pdAdd">+ Añadir pendiente</button>
+      </div>
+      <div id="pgMatriz" class="pg-matriz"></div>
+    </div>
+
+    <!-- Recalcular -->
+    <div class="t-card t-plan">
+      <div class="t-card-title">♻️ Recalcular planeación de la semana</div>
+      <div class="t-hint">El algoritmo busca el máximo ROTI y se apega lo más posible a tu plan original. Se recalcula solo cuando reportas un desvío, o manualmente aquí.</div>
+      <button class="t-btn" id="pgRecalc" style="margin-top:8px">♻️ Recalcular ahora</button>
+      <div id="pgAjuste" style="margin-top:12px"></div>
+    </div>
+
+  </div>
+
+</div><!-- /moduloTiempo -->
+
+<!-- ===================== MÓDULO ALIMENTACIÓN ===================== -->
+<div id="moduloComida" style="display:none">
+  <div class="view-switch">
+    <button id="cwHoy" class="active">Hoy</button>
+    <button id="cwSemana">Semana</button>
+    <button id="cwBanco">Banco + Compras</button>
+  </div>
+
+  <!-- ===== HOY ===== -->
+  <div id="cvHoy">
+    <!-- Totales macros -->
+    <div class="t-card">
+      <div class="t-card-title">📊 Hoy — proteína e hidratación</div>
+      <div class="macro-row">
+        <div class="macro"><div class="macro-num" id="cProt">0</div><div class="macro-lbl">g proteína / 150</div></div>
+        <div class="macro"><div class="macro-num" id="cKcal">0</div><div class="macro-lbl">kcal / 2300</div></div>
+      </div>
+      <div class="macro-bar"><div id="cProtBar" class="macro-bar-fill" style="background:#16a34a"></div></div>
+      <div class="macro-bar" style="margin-top:6px"><div id="cKcalBar" class="macro-bar-fill" style="background:#f59e0b"></div></div>
+    </div>
+
+    <!-- Comidas -->
+    <div class="t-card">
+      <div class="t-card-title">🍽️ Comidas de hoy</div>
+      <label class="t-label">Desayuno (7:30)</label>
+      <select class="t-input" id="cMealD"></select>
+      <label class="t-label">Lunch (13:00)</label>
+      <select class="t-input" id="cMealL"></select>
+      <label class="t-label">Cena (19:30)</label>
+      <select class="t-input" id="cMealC"></select>
+    </div>
+
+    <!-- Hidratación -->
+    <div class="t-card">
+      <div class="t-card-title">💧 Hidratación</div>
+      <div class="agua-row">
+        <button class="agua-btn" id="cAguaMenos">−</button>
+        <div class="agua-count"><span id="cAgua">0</span> <span style="font-size:13px;color:var(--ink-mute)">/ <span id="cAguaMeta">8</span> vasos</span></div>
+        <button class="agua-btn" id="cAguaMas">+</button>
+      </div>
+      <div id="cAguaVasos" class="agua-vasos"></div>
+    </div>
+
+    <!-- Actividad deportiva -->
+    <div class="t-card">
+      <div class="t-card-title">🏃 Actividad deportiva de hoy</div>
+      <div class="field-row">
+        <div><label class="t-label">Tipo</label>
+          <select class="t-input" id="cEntrenoTipo">
+            <option value="">— ninguno —</option>
+            <option>Gym</option><option>Bici</option><option>Caminata</option><option>Otro</option>
+          </select></div>
+        <div><label class="t-label">Minutos</label><input class="t-input" id="cEntrenoMin" type="number" min="0" placeholder="0"></div>
+      </div>
+    </div>
+
+    <!-- Suplementos -->
+    <div class="t-card">
+      <div class="t-card-title">💊 Suplementos de hoy</div>
+      <div id="cSuplementos"></div>
+      <button class="t-btn t-btn-2" id="cAddSup" style="margin-top:8px">+ Añadir suplemento</button>
+    </div>
+
+    <button class="t-btn t-btn-save" id="cGuardar">💾 Guardar el día</button>
+  </div>
+
+  <!-- ===== SEMANA ===== -->
+  <div id="cvSemana" style="display:none">
+    <div class="t-hint" style="margin-bottom:10px">Planea comidas variadas para la semana. "Generar" arma una semana equilibrada evitando repetir.</div>
+    <button class="t-btn" id="cGenSemana">🎲 Generar semana variada</button>
+    <div id="cSemanaGrid" style="margin-top:12px"></div>
+    <button class="t-btn t-btn-save" id="cGuardarSemana" style="margin-top:10px">💾 Guardar semana</button>
+  </div>
+
+  <!-- ===== BANCO + COMPRAS ===== -->
+  <div id="cvBanco" style="display:none">
+    <div class="t-card">
+      <div class="t-card-title">🥗 Banco de comidas</div>
+      <div id="cBancoList"></div>
+    </div>
+    <div class="t-card">
+      <div class="t-card-title">🛒 Lista de compras dominical (~$930)</div>
+      <div id="cCompras"></div>
+    </div>
+  </div>
+</div><!-- /moduloComida -->
+
+<!-- ===================== MÓDULO FINANZAS ===================== -->
+<div id="moduloFin" style="display:none">
+  <!-- Resumen -->
+  <div class="t-card">
+    <div class="t-card-title">💰 Resumen</div>
+    <div class="fin-resumen">
+      <div class="fin-metric"><div class="fin-num" id="finDebito">$0</div><div class="macro-lbl">Débito (tengo)</div></div>
+      <div class="fin-metric"><div class="fin-num" id="finCredito" style="color:#dc2626">$0</div><div class="macro-lbl">Crédito a pagar</div></div>
+      <div class="fin-metric"><div class="fin-num" id="finNeto">$0</div><div class="macro-lbl">Neto</div></div>
+    </div>
+  </div>
+
+  <div class="actions-bar">
+    <button class="action-btn primary" id="finAdd">+ Nueva cuenta</button>
+    <button class="action-btn" id="finExport">⬇ Exportar XLSX</button>
+  </div>
+
+  <div class="t-card">
+    <div class="t-card-title">🏦 Cuentas de débito</div>
+    <div id="finListaDebito"></div>
+  </div>
+  <div class="t-card">
+    <div class="t-card-title">💳 Crédito a pagar</div>
+    <div id="finListaCredito"></div>
+  </div>
+</div><!-- /moduloFin -->
+
+<!-- Modal cuenta -->
+<div class="modal-bg" id="cuentaBg">
+  <div class="modal" id="cuentaModal"></div>
+</div>
+
+<!-- Modal editor de bloque -->
+<div class="modal-bg" id="bloqueBg">
+  <div class="modal" id="bloqueModal"></div>
+</div>
+
 <!-- Modal perfil -->
 <div class="modal-bg" id="modalBg">
   <div class="modal" id="modal"></div>
@@ -351,6 +819,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="module">
 // ============================================================
 // CRM SOCIAL — Gerardo
@@ -373,6 +842,7 @@ const firebaseConfig = {
 };
 
 const COLECCION = "crm_social_contactos";
+const COL_TIEMPO = "tiempo";
 
 // Datos semilla (los 39 contactos del CSV)
 const SEED = [{"id":"c001","nombre":"Edmi Jurado","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"N/A (contacto directo maestría)","sector":"Academia / economía urbana","rol":"Lider de proyectos","organizacion":"ATRAPPI","ciudad":"CDMX","temas":"Economía urbana, plusvalía, gestión municipal","apasiona":"Ayudar a las personas, estar en sintonía con su fe","hobbies":"Lectura, mentoría","habla_energia":"Cuando habla de sus tesistas exitosos","familia":"—","fechas_importantes":"—","humor":"Ironía académica fina","preocupa":"Que sus tesistas terminen y publiquen","aspiracion":"Formar una generación sólida de gestores urbanos","valora":"Rigor, compromiso, honestidad intelectual","logros":"Sus alumnos que llegan a puestos clave","ofrezco":"Datos de campo del corredor AIFA-Pachuca","compartido":"Mi avance de tesis y el Observatorio","puedo_presentar":"Contactos en gobierno de Hidalgo","ayuda":"Dirección de tesis, aval académico","ultimo_contacto":"2026-08-15","canal":"Correo / cita presencial","proxima_accion":"Enviar protocolo cap.1","frecuencia":"Semanal","fuerza":"9","capa":"3","ultima_actualizacion":"2026-08-17","notas":[{"id":"n001","fecha":"2026-08-15","texto":"Relación clave. Mantener ritmo semanal."}]},{"id":"c002","nombre":"Valeria Hérnandez","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañera CIDE","puente":"","sector":"","rol":"Subdirectora","organizacion":"Fiscalía","ciudad":"","temas":"","apasiona":"Sentirse parte de la comunidad","hobbies":"Lectura","habla_energia":"De los libros","familia":"dos papas, algunos gatos","fechas_importantes":"abril","humor":"chistes","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c003","nombre":"Joaquín Fosado","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"Estudiante","organizacion":"COLMEX","ciudad":"","temas":"","apasiona":"Retarse intelectualmente","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c004","nombre":"Dra. Georgina Isunza","categoria":"ciecas","estatus":"conocido","activo":true,"como_conocimos":"CIECAS","puente":"","sector":"","rol":"Directora de tesis","organizacion":"CIECAS","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c005","nombre":"Cecilia Méndez","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañera CIDE","puente":"","sector":"","rol":"Subdirectora","organizacion":"CRIT","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c006","nombre":"Anais Barrera","categoria":"tepeyac","estatus":"conocido","activo":true,"como_conocimos":"Compañera Tepeyac","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c007","nombre":"Johan Ferrer","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c008","nombre":"Edit Vargas","categoria":"inmobiliaria","estatus":"conocido","activo":true,"como_conocimos":"Inmobiliaria","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"Sentirse aceptada","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c009","nombre":"Sergio Maxhuiltle","categoria":"inmobiliaria","estatus":"conocido","activo":true,"como_conocimos":"Inmobiliaria","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"Proveer seguridad y tranquilidad","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c010","nombre":"Fredy","categoria":"inmobiliaria","estatus":"conocido","activo":true,"como_conocimos":"Inmobiliaria","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"No sentirse atacado","hobbies":"Tocar guitarra","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c011","nombre":"Fernanda Vega","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c012","nombre":"Aranza Guadarrama","categoria":"tepeyac","estatus":"conocido","activo":true,"como_conocimos":"Compañera Tepeyac","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c013","nombre":"Lu Aguilar","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c014","nombre":"Osvaldo Romo","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c015","nombre":"Alexis Torres","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c016","nombre":"Adrian Jurado","categoria":"personal","estatus":"conocido","activo":true,"como_conocimos":"Personal","puente":"Edmi Jurado","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c017","nombre":"Itzel","categoria":"ciecas","estatus":"conocido","activo":true,"como_conocimos":"CIECAS","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c018","nombre":"Karen","categoria":"ciecas","estatus":"conocido","activo":true,"como_conocimos":"CIECAS","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c019","nombre":"Isabel Mayo","categoria":"ciecas","estatus":"conocido","activo":true,"como_conocimos":"CIECAS","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c020","nombre":"Merari Hurtado","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c021","nombre":"Frida Vera","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c022","nombre":"Federico Morales","categoria":"otro","estatus":"conocido","activo":true,"como_conocimos":"Investigación","puente":"Edmi Jurado","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c023","nombre":"Mtro. Alvaro Mendoza","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c024","nombre":"Paquito Bañuelos","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c025","nombre":"Sofia Cuevas","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañera CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c026","nombre":"Isabel Aguirre","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c027","nombre":"Jorge Legal SEMOV","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabajo SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c028","nombre":"El novio de Karlita","categoria":"personal","estatus":"conocido","activo":true,"como_conocimos":"Personal","puente":"Edmi Jurado","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c029","nombre":"Neimy Girón","categoria":"otro","estatus":"conocido","activo":true,"como_conocimos":"GIZ","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c030","nombre":"Leon Heitler","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c031","nombre":"Leon Becker","categoria":"otro","estatus":"conocido","activo":true,"como_conocimos":"GIZ","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c032","nombre":"Brenda","categoria":"tepeyac","estatus":"conocido","activo":true,"como_conocimos":"Compañera Tepeyac","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c033","nombre":"Diego Micher","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c034","nombre":"Jaffet","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c035","nombre":"Ximena Millan","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c036","nombre":"Che Cide","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c037","nombre":"Ivana Medina","categoria":"otro","estatus":"conocido","activo":true,"como_conocimos":"GIZ","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c038","nombre":"Aiden Lisandro","categoria":"cide","estatus":"conocido","activo":true,"como_conocimos":"Compañero CIDE","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]},{"id":"c039","nombre":"Mauricio","categoria":"semov","estatus":"conocido","activo":true,"como_conocimos":"Trabaj SEMOV","puente":"","sector":"","rol":"","organizacion":"","ciudad":"","temas":"","apasiona":"","hobbies":"","habla_energia":"","familia":"","fechas_importantes":"","humor":"","preocupa":"","aspiracion":"","valora":"","logros":"","ofrezco":"","compartido":"","puedo_presentar":"","ayuda":"","ultimo_contacto":"","canal":"","proxima_accion":"","frecuencia":"","fuerza":"5","capa":"","ultima_actualizacion":"2026-08-17","notas":[]}]
@@ -383,7 +853,7 @@ const CATS = {
   cide:         { color: "#16a34a", label: "CIDE" },
   tepeyac:      { color: "#dc2626", label: "Tepeyac" },
   semov:        { color: "#881337", label: "SEMOV" },
-  ciecas:       { color: "#f1f5f9", label: "CIECAS", stroke: "#cbd5e1" },
+  ciecas:       { color: "#e3e9f3", label: "CIECAS", stroke: "#cbd5e1" },
   inmobiliaria: { color: "#2563eb", label: "Inmobiliaria" },
   personal:     { color: "#ec4899", label: "Personal" },
   otro:         { color: "#9333ea", label: "Otro" }
@@ -398,12 +868,28 @@ let currentModalId = null;
 let firebaseOK = false;
 let redVisible = false;
 
+// Estado módulo Tiempo
+let moduloActual = "social";
+let horario = [];           // bloques del horario editable
+let tDias = {};             // docs por fecha: prioridades, journal, habitos, plan
+let tFecha = hoyISO();      // fecha activa en vista Hoy
+let bloqueEditId = null;
+let pendientes = [];        // pendientes tipo Eisenhower
+let pgSemAncla = hoyISO();  // fecha ancla de la semana en el Área de Planeación
+let ajusteSemana = null;    // última planeación recalculada
+
 const $ = id => document.getElementById(id);
 
 // ---------- INIT: render inmediato, luego Firebase en segundo plano ----------
 async function init() {
   // 1) Cargar SIEMPRE datos locales primero → la app es interactuable al instante
   cargarLocal();
+  cargarTiempoLocal();
+  cargarComidaLocal();
+  cargarFinLocal();
+  initTiempoUI();
+  initComidaUI();
+  initFinUI();
 
   // 2) Intentar conectar Firebase en segundo plano (no bloquea la UI)
   const cfgOK = firebaseConfig.apiKey && firebaseConfig.apiKey !== "TU_API_KEY";
@@ -446,6 +932,11 @@ async function init() {
       $("status").className = "status err";
       firebaseOK = false;
     });
+
+    // Sincronizar módulo Tiempo
+    await sincronizarTiempo();
+    await sincronizarComida();
+    await sincronizarFin();
 
   } catch (e) {
     console.error("Firebase falló:", e);
@@ -1022,7 +1513,7 @@ function renderGrafo() {
       edges += `<line class="edge" x1="${CX}" y1="${CY}" x2="${n.x.toFixed(1)}" y2="${n.y.toFixed(1)}"/>`;
     }
     // nodo central
-    nodes += `<circle cx="${CX}" cy="${CY}" r="10" fill="#0f172a" stroke="#fff" stroke-width="2"/>`;
+    nodes += `<circle cx="${CX}" cy="${CY}" r="10" fill="#1e3a5f" stroke="#fff" stroke-width="2"/>`;
     nodes += `<text x="${CX}" y="${CY+22}" text-anchor="middle" class="node-label" style="font-size:8px;font-weight:700">YO</text>`;
     // nodos contacto
     for (let n of grafoNodos) {
@@ -1120,6 +1611,1275 @@ function toast(msg) {
   t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+// ============================================================
+// ================  MÓDULO TIEMPO  ===========================
+// ============================================================
+
+// WOOPs (colores para etiquetar bloques)
+const WOOPS = {
+  1: { label: "W1 · Oficina Familiar", color: "#881337" },
+  2: { label: "W2 · Cuerpo y mente",   color: "#16a34a" },
+  3: { label: "W3 · Red e identidad",  color: "#2563eb" },
+  4: { label: "W4 · Vida autónoma",    color: "#9333ea" },
+  0: { label: "Ritual / Personal",     color: "#64748b" },
+  5: { label: "Traslado",              color: "#a16207" },
+  6: { label: "Ocio",                  color: "#0d9488" }
+};
+
+// ROTI — Retorno de Inversión de Tiempo (jerarquía de tu tiempo)
+const ROTI = {
+  impacto:   { label: "Alto impacto", color: "#16a34a", desc: "Genera valor a largo plazo (tesis, gym, red, estratégico)" },
+  operativo: { label: "Operativo",    color: "#f59e0b", desc: "Mantiene la vida andando (traslados, admin, campo)" },
+  fuga:      { label: "Fuga",         color: "#dc2626", desc: "Consumo/pérdida (distracción, delegable)" }
+};
+
+// Días de la semana (0=Dom ... 6=Sáb)
+const DOW = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const DOW_LARGO = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+
+// Hábitos que se revisan a diario (derivados de tus WOOPs)
+const HABITOS_DEF = [
+  { id:"gym",     label:"🏋️ Gym" },
+  { id:"comidas", label:"🍽️ 3 comidas (7:30/13:00/19:30)" },
+  { id:"ritual",  label:"🧘 Ritual matutino" },
+  { id:"contacto",label:"🤝 1 contacto activado" },
+  { id:"tesina",  label:"📚 Avancé tesina" },
+  { id:"journal", label:"🌙 Journal de cierre" }
+];
+
+// --------- Semilla del horario (editable). Derivada de tu horario ancla. ---------
+function seedHorario() {
+  const LV = [1,2,3,4,5];
+  const b = (titulo, dias, ini, fin, woop, roti) => ({
+    id: "b" + Math.random().toString(36).slice(2,9),
+    titulo, dias, ini, fin, woop, roti,
+    tipo: "fijo", vigencia: "permanente", fecha: null
+  });
+  return [
+    b("Ritual matutino + limpieza", [0,1,2,3,4,5,6], "05:45", "06:15", 0, "impacto"),
+    b("Gym", LV, "06:15", "07:15", 2, "impacto"),
+    b("Desayuno + arranque tesina", LV, "07:30", "09:00", 1, "impacto"),
+    b("Freddy + inmob operativa", [2,3,4,5], "09:00", "11:00", 1, "operativo"),
+    b("Tesina profunda (lunes)", [1], "09:15", "13:00", 1, "impacto"),
+    b("Tesina", [2,3,4,5], "11:00", "13:00", 1, "impacto"),
+    b("Comida + pausa activa", LV, "13:00", "14:00", 0, "operativo"),
+    b("Oficina Familiar estratégica", LV, "14:00", "17:00", 1, "impacto"),
+    b("Lectura académica + red", LV, "17:00", "19:00", 3, "impacto"),
+    b("Cena con Edmi", [1,3,5], "20:00", "22:30", 0, "impacto"),
+    b("Cena en casa + lectura", [2,4], "19:30", "22:00", 0, "impacto"),
+    b("Journal de cierre", [0,1,2,3,4,5,6], "22:30", "23:00", 0, "impacto"),
+    // Sábado
+    b("Visitas a inmuebles (traslados)", [6], "09:00", "13:00", 1, "operativo"),
+    b("Conciliación financiera", [6], "14:00", "18:00", 4, "operativo"),
+    b("Planificación semanal", [6], "18:00", "20:00", 4, "impacto"),
+    // Domingo
+    b("Actividad física", [0], "07:00", "09:30", 2, "impacto"),
+    b("Reunión con mamá (inmob)", [0], "11:00", "13:30", 1, "impacto"),
+    b("Meal prep semanal", [0], "15:00", "16:30", 0, "operativo"),
+    b("Revisión WOOP semanal", [0], "16:30", "17:30", 0, "impacto"),
+    b("Tiempo con Edmi", [0], "17:30", "21:00", 0, "impacto"),
+  ];
+}
+
+// --------- Persistencia local del módulo Tiempo ---------
+function cargarTiempoLocal() {
+  const h = localStorage.getItem("tiempo_horario");
+  horario = h ? JSON.parse(h) : seedHorario();
+  const d = localStorage.getItem("tiempo_dias");
+  tDias = d ? JSON.parse(d) : {};
+  const p = localStorage.getItem("tiempo_pendientes");
+  pendientes = p ? JSON.parse(p) : [];
+  if (!h) guardarTiempoLocal();
+}
+function guardarTiempoLocal() {
+  localStorage.setItem("tiempo_horario", JSON.stringify(horario));
+  localStorage.setItem("tiempo_dias", JSON.stringify(tDias));
+  localStorage.setItem("tiempo_pendientes", JSON.stringify(pendientes));
+}
+
+// --------- Sincronización con Firebase (colección "tiempo") ---------
+async function sincronizarTiempo() {
+  if (!firebaseOK) return;
+  try {
+    const snap = await withTimeout(getDocs(collection(db, COL_TIEMPO)), 10000, "tiempo");
+    if (snap.empty) {
+      await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes });
+    }
+    onSnapshot(collection(db, COL_TIEMPO), (snap) => {
+      snap.docs.forEach(d => {
+        const data = d.data();
+        if (d.id === "config") { horario = data.horario || horario; pendientes = data.pendientes || pendientes; }
+        else if (d.id.startsWith("dia_")) tDias[d.id.slice(4)] = data;
+      });
+      if (moduloActual === "tiempo") renderTiempo();
+    });
+  } catch(e) { console.error("tiempo sync:", e); }
+}
+async function guardarConfigTiempo() {
+  guardarTiempoLocal();
+  if (firebaseOK) { try { await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes }); } catch(e){ console.error(e);} }
+}
+async function guardarHorarioRemoto() { await guardarConfigTiempo(); }
+async function guardarPendientesRemoto() { await guardarConfigTiempo(); }
+async function guardarDiaRemoto(fecha) {
+  guardarTiempoLocal();
+  if (firebaseOK) { try { await setDoc(doc(db, COL_TIEMPO, "dia_"+fecha), tDias[fecha] || {}); } catch(e){ console.error(e);} }
+}
+
+// --------- Fechas ---------
+function hoyISO() { return new Date().toISOString().slice(0,10); }
+function isoADate(iso){ const [y,m,d]=iso.split("-").map(Number); return new Date(y,m-1,d); }
+function fmtFecha(iso){
+  const dt = isoADate(iso);
+  return `${DOW_LARGO[dt.getDay()]} ${dt.getDate()}/${dt.getMonth()+1}`;
+}
+function mesDespues(iso, n){ const dt=isoADate(iso); dt.setMonth(dt.getMonth()+n); return dt.toISOString().slice(0,10); }
+
+// --------- ¿Aplica un bloque en una fecha? ---------
+function bloqueAplica(b, iso) {
+  const dt = isoADate(iso);
+  if (b.tipo === "unico") return b.fecha === iso;
+  // fijo: ¿coincide día de la semana?
+  if (!b.dias || !b.dias.includes(dt.getDay())) return false;
+  // vigencia
+  if (b.vigencia === "permanente") return true;
+  if (!b.vigenciaHasta) return true;
+  return iso <= b.vigenciaHasta;
+}
+
+// --------- Datos del día activo ---------
+function diaActivo() {
+  if (!tDias[tFecha]) tDias[tFecha] = { prioridades:["","",""], habitos:{}, journal:{}, agradecimientos:["","",""], plan:null, contexto:"", real:[] };
+  const d = tDias[tFecha];
+  d.prioridades = d.prioridades || ["","",""];
+  d.habitos = d.habitos || {};
+  d.journal = d.journal || {};
+  d.agradecimientos = d.agradecimientos || ["","",""];
+  d.real = d.real || [];
+  return d;
+}
+
+// ============ RENDER MÓDULO TIEMPO ============
+function renderTiempo() {
+  $("tDateLabel").textContent = fmtFecha(tFecha);
+  renderAgenda();
+  renderRotiBalance();
+  renderReal();
+  renderComparacion();
+  renderHabitos();
+  cargarCamposDia();
+  renderPlan();
+  renderHorarioList();
+  renderPlaneacion();
+}
+
+// Poblar select ROTI del formulario de actividad real (una vez)
+function llenarRotiSelect() {
+  const sel = $("rRoti");
+  if (sel && !sel.dataset.filled) {
+    sel.innerHTML = Object.entries(ROTI).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("");
+    sel.dataset.filled = "1";
+  }
+}
+
+function renderReal() {
+  llenarRotiSelect();
+  const d = diaActivo();
+  const cont = $("tRealList");
+  const items = (d.real||[]).slice().sort((a,b)=>(a.ini||"").localeCompare(b.ini||""));
+  if (items.length === 0) { cont.innerHTML = '<div class="t-empty">Aún no registras nada. Añade tus actividades grandes con horas aproximadas.</div>'; return; }
+  cont.innerHTML = "";
+  items.forEach(r => {
+    const ro = ROTI[r.roti] || ROTI.impacto;
+    const el = document.createElement("div");
+    el.className = "real-item";
+    el.innerHTML = `
+      <div class="real-time" style="color:${ro.color}">${r.ini||"—"}–${r.fin||"—"}</div>
+      <div class="real-body"><div class="real-name">${escapeHtml(r.act)}</div>
+      <span class="t-block-tag" style="background:${ro.color}">${ro.label}</span></div>
+      <button class="real-del" data-id="${r.id}">🗑</button>`;
+    el.querySelector(".real-del").onclick = async () => {
+      d.real = d.real.filter(x=>x.id!==r.id);
+      await guardarDiaRemoto(tFecha); renderTiempo();
+    };
+    cont.appendChild(el);
+  });
+}
+
+// Minutos ROTI a partir de las actividades reales
+function rotiMinutosReal(iso) {
+  const min = { impacto:0, operativo:0, fuga:0 };
+  const d = tDias[iso];
+  if (!d || !d.real) return min;
+  d.real.forEach(r => {
+    if (!r.roti || !min.hasOwnProperty(r.roti)) return;
+    const [h1,m1]=(r.ini||"0:0").split(":").map(Number);
+    const [h2,m2]=(r.fin||"0:0").split(":").map(Number);
+    let dur=(h2*60+m2)-(h1*60+m1); if(dur>0) min[r.roti]+=dur;
+  });
+  return min;
+}
+
+function barraRoti(el, min) {
+  const total = min.impacto+min.operativo+min.fuga;
+  if (total===0){ el.innerHTML='<div class="roti-seg" style="width:100%;background:#e2e8f0;color:#94a3b8">sin datos</div>'; return; }
+  el.innerHTML = ["impacto","operativo","fuga"].map(k=>{
+    const p=min[k]/total*100; if(p<0.5) return "";
+    return `<div class="roti-seg" style="width:${p}%;background:${ROTI[k].color}">${p>=12?Math.round(p)+'%':''}</div>`;
+  }).join("");
+}
+
+function renderComparacion() {
+  const plan = rotiMinutos(tFecha);
+  const real = rotiMinutosReal(tFecha);
+  barraRoti($("tCmpPlan"), plan);
+  barraRoti($("tCmpReal"), real);
+  const ins = $("tCmpInsight");
+  const tReal = real.impacto+real.operativo+real.fuga;
+  if (tReal===0){ ins.className="roti-insight"; ins.innerHTML='Registra tu día para ver la comparación y pedir recomendaciones de reenfoque.'; return; }
+  const pImpPlan = plan.impacto/((plan.impacto+plan.operativo+plan.fuga)||1)*100;
+  const pImpReal = real.impacto/tReal*100;
+  const dif = Math.round(pImpReal - pImpPlan);
+  if (dif >= 0) { ins.className="roti-insight ok"; ins.innerHTML = `Tu alto impacto real fue <b>${Math.round(pImpReal)}%</b> (planeado ${Math.round(pImpPlan)}%). Vas alineado o mejor. Exporta el día para afinar.`; }
+  else { ins.className="roti-insight warn"; ins.innerHTML = `Tu alto impacto real (<b>${Math.round(pImpReal)}%</b>) quedó ${Math.abs(dif)} pts abajo de lo planeado (${Math.round(pImpPlan)}%). Exporta el día y te digo dónde se fue el tiempo y cómo reenfocar.`; }
+}
+
+function renderAgenda() {
+  const cont = $("tAgenda");
+  const bloques = horario.filter(b => bloqueAplica(b, tFecha))
+    .sort((a,b) => (a.ini||"").localeCompare(b.ini||""));
+  if (bloques.length === 0) { cont.innerHTML = '<div class="t-empty">Sin bloques para este día. Ve a Horario para añadir.</div>'; return; }
+  cont.innerHTML = "";
+  bloques.forEach(b => {
+    const w = WOOPS[b.woop] || WOOPS[0];
+    const r = ROTI[b.roti];
+    const el = document.createElement("div");
+    el.className = "t-block";
+    if (r) el.style.borderLeftColor = r.color;
+    el.innerHTML = `
+      <div class="t-block-time">${b.ini}–${b.fin}</div>
+      <div class="t-block-body">
+        <div class="t-block-name">${escapeHtml(b.titulo)}</div>
+        <span class="t-block-tag" style="background:${w.color}">${w.label}</span>
+      </div>
+      <button class="t-block-edit" data-id="${b.id}">✎</button>`;
+    el.querySelector(".t-block-edit").onclick = () => abrirBloque(b.id);
+    cont.appendChild(el);
+  });
+}
+
+// Minutos por categoría ROTI en una fecha
+function rotiMinutos(iso) {
+  const min = { impacto:0, operativo:0, fuga:0 };
+  horario.filter(b => bloqueAplica(b, iso)).forEach(b => {
+    if (!b.roti || !min.hasOwnProperty(b.roti)) return;
+    const [h1,m1] = (b.ini||"0:0").split(":").map(Number);
+    const [h2,m2] = (b.fin||"0:0").split(":").map(Number);
+    let dur = (h2*60+m2) - (h1*60+m1);
+    if (dur > 0) min[b.roti] += dur;
+  });
+  return min;
+}
+
+function renderRotiBalance() {
+  const min = rotiMinutos(tFecha);
+  const total = min.impacto + min.operativo + min.fuga;
+  const bar = $("tRotiBar"), leg = $("tRotiLegend"), ins = $("tRotiInsight");
+  if (total === 0) { bar.innerHTML=""; leg.innerHTML='<span style="color:var(--ink-mute)">Sin bloques con categoría hoy.</span>'; ins.className="roti-insight"; ins.textContent=""; return; }
+  const pct = k => Math.round(min[k]/total*100);
+  bar.innerHTML = ["impacto","operativo","fuga"].map(k => {
+    const p = min[k]/total*100;
+    if (p < 0.5) return "";
+    return `<div class="roti-seg" style="width:${p}%;background:${ROTI[k].color}">${pct(k)>=10?pct(k)+'%':''}</div>`;
+  }).join("");
+  const hm = m => `${Math.floor(m/60)}h${m%60?(' '+(m%60)+'m'):''}`;
+  leg.innerHTML = ["impacto","operativo","fuga"].map(k =>
+    `<span><span class="swatch" style="background:${ROTI[k].color}"></span>${ROTI[k].label}: ${hm(min[k])}</span>`
+  ).join("");
+
+  // Insight de jerarquía
+  const pImp = pct("impacto"), pOp = pct("operativo");
+  if (pImp >= 55) { ins.className="roti-insight ok"; ins.innerHTML = `Buen día de inversión: <b>${pImp}%</b> en alto impacto. Protégelo — agenda ya la próxima sesión de lo que más valió.`; }
+  else if (pOp >= 55) { ins.className="roti-insight warn"; ins.innerHTML = `Estás pagando <b>deuda temporal</b>: ${pOp}% en operativo (traslados, admin) vs ${pImp}% de alto impacto. Agrupa traslados por zona y recupera un bloque para tesis.`; }
+  else { ins.className="roti-insight warn"; ins.innerHTML = `Alto impacto en <b>${pImp}%</b>. La meta es que la tesis y lo estratégico pesen más que conducir de un lado a otro — sube al menos un bloque hoy.`; }
+}
+
+function renderHabitos() {
+  const cont = $("tHabitos");
+  const d = diaActivo();
+  cont.innerHTML = "";
+  HABITOS_DEF.forEach(h => {
+    const el = document.createElement("label");
+    el.className = "t-habito";
+    const chk = d.habitos[h.id] ? "checked" : "";
+    el.innerHTML = `<input type="checkbox" ${chk}><span>${h.label}</span>`;
+    el.querySelector("input").onchange = (e) => {
+      d.habitos[h.id] = e.target.checked;
+      guardarDiaRemoto(tFecha);
+    };
+    cont.appendChild(el);
+  });
+}
+
+function cargarCamposDia() {
+  const d = diaActivo();
+  $("tPrio0").value = d.prioridades[0] || "";
+  $("tPrio1").value = d.prioridades[1] || "";
+  $("tPrio2").value = d.prioridades[2] || "";
+  $("tContexto").value = d.contexto || "";
+  $("tJ0").value = d.journal.p0 || "";
+  $("tJ1").value = d.journal.p1 || "";
+  $("tJ2").value = d.journal.p2 || "";
+  $("tG0").value = d.agradecimientos[0] || "";
+  $("tG1").value = d.agradecimientos[1] || "";
+  $("tG2").value = d.agradecimientos[2] || "";
+}
+
+function renderPlan() {
+  const d = diaActivo();
+  const card = $("tPlanCard"), body = $("tPlanBody");
+  if (!d.plan) { card.style.display = "none"; return; }
+  card.style.display = "";
+  const p = d.plan;
+  let html = "";
+  if (p.diagnostico) html += `<div style="font-size:13px;margin-bottom:10px">${escapeHtml(p.diagnostico)}</div>`;
+  if (p.agenda && p.agenda.length) {
+    html += `<div class="t-label">Agenda ajustada</div>`;
+    p.agenda.forEach(a => {
+      const w = WOOPS[a.woop] || WOOPS[0];
+      html += `<div class="t-plan-agenda"><b style="color:${w.color};min-width:78px">${escapeHtml(a.inicio||"")}${a.fin?"–"+escapeHtml(a.fin):""}</b><span>${escapeHtml(a.actividad||"")}${a.nota?` · <i>${escapeHtml(a.nota)}</i>`:""}</span></div>`;
+    });
+  }
+  if (p.sugerencias && p.sugerencias.length) {
+    html += `<div class="t-label" style="margin-top:10px">Sugerencias</div>`;
+    p.sugerencias.forEach(s => {
+      const w = WOOPS[s.woop] || WOOPS[0];
+      html += `<div class="t-plan-sug">• ${escapeHtml(s.texto||s)}${s.woop?` <span class="t-block-tag" style="background:${w.color}">${w.label}</span>`:""}</div>`;
+    });
+  }
+  if (p.woopDelDia) {
+    const w = WOOPS[p.woopDelDia.numero] || WOOPS[0];
+    html += `<div class="t-plan-woop"><b>WOOP del día:</b> ${w.label}${p.woopDelDia.razon?` — ${escapeHtml(p.woopDelDia.razon)}`:""}</div>`;
+  }
+  if (p.alerta) html += `<div class="t-plan-alerta">⚠️ ${escapeHtml(p.alerta)}</div>`;
+  body.innerHTML = html;
+}
+
+// ============ HORARIO (editor) ============
+function renderHorarioList() {
+  const cont = $("tHorarioList");
+  if (!cont) return;
+  const orden = horario.slice().sort((a,b) => {
+    const da = Math.min(...(a.dias||[7])), db_ = Math.min(...(b.dias||[7]));
+    return da - db_ || (a.ini||"").localeCompare(b.ini||"");
+  });
+  cont.innerHTML = "";
+  orden.forEach(b => {
+    const w = WOOPS[b.woop] || WOOPS[0];
+    let cuando;
+    if (b.tipo === "unico") cuando = `Único · ${b.fecha}`;
+    else cuando = (b.dias||[]).map(d=>DOW[d]).join(" ") + " · " + ({permanente:"permanente",mensual:"este mes",semestral:"este semestre"}[b.vigencia]||"");
+    const el = document.createElement("div");
+    el.className = "t-hblock";
+    el.innerHTML = `
+      <span class="dot" style="background:${w.color};width:12px;height:12px"></span>
+      <div class="t-hblock-info">
+        <div class="t-hblock-name">${escapeHtml(b.titulo)}</div>
+        <div class="t-hblock-meta">${b.ini}–${b.fin} · ${cuando}</div>
+      </div>
+      <button class="t-block-edit" data-id="${b.id}">✎</button>`;
+    el.querySelector(".t-block-edit").onclick = () => abrirBloque(b.id);
+    cont.appendChild(el);
+  });
+}
+
+// ============ ÁREA DE PLANEACIÓN ============
+const MIN_H = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`;
+const H_MIN = hhmm => { const [h,m]=(hhmm||"0:0").split(":").map(Number); return h*60+(m||0); };
+
+function lunesDe(iso) {
+  const dt = isoADate(iso);
+  const dow = dt.getDay();
+  const diff = (dow === 0 ? -6 : 1 - dow);
+  dt.setDate(dt.getDate() + diff);
+  return dt.toISOString().slice(0,10);
+}
+function diasSemana(ancla) {
+  const lun = isoADate(lunesDe(ancla));
+  return Array.from({length:7}, (_,i) => { const d=new Date(lun); d.setDate(lun.getDate()+i); return d.toISOString().slice(0,10); });
+}
+function bloquesDe(iso) {
+  return horario.filter(b => bloqueAplica(b, iso)).sort((a,b)=>(a.ini||"").localeCompare(b.ini||""));
+}
+
+function renderPlaneacion() {
+  renderSemanaSintetica();
+  renderMatriz();
+  renderAjuste();
+}
+
+function renderSemanaSintetica() {
+  const cont = $("pgSemana");
+  if (!cont) return;
+  const dias = diasSemana(pgSemAncla);
+  $("pgSemLabel").textContent = `${fmtFecha(dias[0])} — ${fmtFecha(dias[6])}`;
+  cont.innerHTML = "";
+  dias.forEach(iso => {
+    const bloques = bloquesDe(iso);
+    const min = rotiMinutos(iso); const tot = min.impacto+min.operativo+min.fuga || 1;
+    const el = document.createElement("div");
+    el.className = "pg-dia" + (iso===hoyISO() ? " hoy" : "");
+    let chips = bloques.map(b => {
+      const r = ROTI[b.roti] || ROTI.impacto;
+      return `<span class="pg-chip" style="background:${r.color}">${b.ini} ${escapeHtml(b.titulo.slice(0,22))}</span>`;
+    }).join("");
+    if (!bloques.length) chips = `<span class="pg-dia-empty">Libre</span>`;
+    // Bloques SUGERIDOS por el algoritmo (Eisenhower / recuperación)
+    let sug = "";
+    if (ajusteSemana && ajusteSemana.semana === lunesDe(pgSemAncla) && ajusteSemana.propuestas[iso]) {
+      sug = ajusteSemana.propuestas[iso].slice().sort((a,b)=>a.ini.localeCompare(b.ini)).map(p =>
+        `<span class="pg-chip sug">✦ ${p.ini} ${escapeHtml((p.texto||"").replace(/^⚡ /,"").slice(0,20))} · SUGERIDO</span>`
+      ).join("");
+    }
+    el.innerHTML = `
+      <div class="pg-dia-head">
+        <span class="pg-dia-nombre">${fmtFecha(iso)}</span>
+        <span class="pg-dia-roti">${Math.round(min.impacto/tot*100)}% alto impacto</span>
+      </div>
+      <div class="pg-mini">${chips}${sug}</div>`;
+    el.onclick = () => { tFecha = iso; $("twHoy").click(); };
+    cont.appendChild(el);
+  });
+}
+
+function cuadrante(p) {
+  const imp = p.imp>=4, urg = p.urg>=4;
+  if (imp && urg) return 1;
+  if (imp && !urg) return 2;
+  if (!imp && urg) return 3;
+  return 4;
+}
+const QUAD = {1:{t:"Q1 · Hacer ya",c:"pg-q1"},2:{t:"Q2 · Planificar",c:"pg-q2"},3:{t:"Q3 · Delegar",c:"pg-q3"},4:{t:"Q4 · Eliminar",c:"pg-q4"}};
+
+function renderMatriz() {
+  const cont = $("pgMatriz");
+  if (!cont) return;
+  cont.innerHTML = "";
+  [1,2,3,4].forEach(q => {
+    const items = pendientes.filter(p => cuadrante(p)===q);
+    const box = document.createElement("div");
+    box.className = "pg-quad " + QUAD[q].c;
+    let html = `<h5>${QUAD[q].t}</h5>`;
+    if (!items.length) html += `<div style="font-size:11px;color:var(--ink-mute)">—</div>`;
+    items.forEach(p => {
+      const slot = p.propuesta ? `<div class="pend-slot">→ ${p.propuesta}</div>` : (q===3?`<div class="pend-slot">Delegar en Freddy/Jeni</div>`:q===4?`<div class="pend-slot">Considera eliminar</div>`:``);
+      html += `<div class="pend-item">
+        <input type="checkbox" class="pend-chk" ${p.done?'checked':''} data-id="${p.id}">
+        <div class="pend-txt ${p.done?'done':''}">${escapeHtml(p.texto)} <span style="color:var(--ink-mute)">(${p.dur}m)</span>${slot}</div>
+        <button class="pend-del" data-id="${p.id}">🗑</button></div>`;
+    });
+    box.innerHTML = html;
+    box.querySelectorAll(".pend-chk").forEach(chk => chk.onchange = async () => {
+      const p = pendientes.find(x=>x.id===chk.dataset.id); if(p){ p.done=chk.checked; await guardarPendientesRemoto(); renderMatriz(); }
+    });
+    box.querySelectorAll(".pend-del").forEach(btn => btn.onclick = async () => {
+      pendientes = pendientes.filter(x=>x.id!==btn.dataset.id); await guardarPendientesRemoto(); renderMatriz();
+    });
+    cont.appendChild(box);
+  });
+}
+
+// ===== ALGORITMO DE RECÁLCULO: #1 máximo ROTI, #2 apego al plan original =====
+function recalcularSemana(auto) {
+  const dias = diasSemana(pgSemAncla);
+  const hoy = hoyISO();
+  const ahoraMin = new Date().getHours()*60 + new Date().getMinutes();
+
+  let deuda = 0; const detalleDeuda = [];
+  dias.forEach(iso => {
+    if (iso > hoy) return;
+    const d = tDias[iso];
+    if (!d || !(d.real||[]).length) return;
+    const falta = Math.max(0, rotiMinutos(iso).impacto - rotiMinutosReal(iso).impacto);
+    if (falta >= 30) { deuda += falta; detalleDeuda.push({iso, falta}); }
+  });
+
+  const restantes = dias.filter(iso => iso >= hoy);
+  function huecosDia(iso) {
+    const desde = (iso===hoy) ? Math.max(ahoraMin, 6*60) : 6*60;
+    const hasta = 22*60;
+    const imp = bloquesDe(iso).filter(b=>b.roti==="impacto").map(b=>[H_MIN(b.ini),H_MIN(b.fin)]).sort((a,b)=>a[0]-b[0]);
+    const libres = []; let cursor = desde;
+    imp.forEach(([s,e])=>{ if (s>cursor) libres.push([cursor, Math.min(s,hasta)]); cursor = Math.max(cursor,e); });
+    if (cursor < hasta) libres.push([cursor, hasta]);
+    return libres.filter(([s,e])=>e-s>=30);
+  }
+  const cap = {}; restantes.forEach(iso => cap[iso] = huecosDia(iso));
+  function colocar(iso, dur) {
+    const h = cap[iso]; if(!h) return null;
+    for (let i=0;i<h.length;i++){ const [s,e]=h[i]; if(e-s>=dur){ h[i]=[s+dur,e]; return [s,s+dur]; } }
+    return null;
+  }
+  const propuestas = {};
+  const push = (iso, s, e, texto, tipo) => { (propuestas[iso]=propuestas[iso]||[]).push({ini:MIN_H(s),fin:MIN_H(e),texto,tipo}); };
+
+  // limpiar propuestas previas
+  pendientes.forEach(p => { if(!p.done) p.propuesta = null; });
+
+  // 1) Q1 (urgente + importante) → LO MÁS PRONTO posible (día y hueco más temprano)
+  const q1 = pendientes.filter(p=>!p.done && cuadrante(p)===1).sort((a,b)=>(b.imp+b.urg)-(a.imp+a.urg));
+  q1.forEach(p => {
+    for (const iso of restantes) {                 // restantes ya está en orden de fecha
+      const slot = colocar(iso, p.dur||60);
+      if (slot) { push(iso, slot[0], slot[1], "⚡ "+p.texto, "q1");
+        p.propuesta = `${fmtFecha(iso).split(" ")[0]} ${MIN_H(slot[0])}`; break; }
+    }
+  });
+
+  // 2) Recuperar deuda de alto impacto en los huecos más grandes (máximo ROTI)
+  let restanteDeuda = deuda;
+  restantes.slice().sort((a,b)=>{
+    const ma = Math.max(0,...huecosDia(a).map(([s,e])=>e-s)); const mb = Math.max(0,...huecosDia(b).map(([s,e])=>e-s));
+    return mb-ma;
+  }).forEach(iso => {
+    if (restanteDeuda < 30) return;
+    const bloque = Math.min(120, restanteDeuda);
+    const slot = colocar(iso, bloque);
+    if (slot) { push(iso, slot[0], slot[1], "Recuperar alto impacto (tesis/estratégico)", "recuperar"); restanteDeuda -= bloque; }
+  });
+
+  // 3) Q2 (importante, no urgente) → en cuanto haya hueco, pero puede ir después
+  const q2 = pendientes.filter(p=>!p.done && cuadrante(p)===2).sort((a,b)=>(b.imp+b.urg)-(a.imp+a.urg));
+  q2.forEach(p => {
+    for (const iso of restantes) {
+      const slot = colocar(iso, p.dur||60);
+      if (slot) { push(iso, slot[0], slot[1], p.texto, "q2");
+        p.propuesta = `${fmtFecha(iso).split(" ")[0]} ${MIN_H(slot[0])}`; break; }
+    }
+  });
+  // Q3 (delegar) y Q4 (eliminar) NO se agendan.
+
+  ajusteSemana = { generado:new Date().toISOString(), deuda, detalleDeuda, propuestas, semana:lunesDe(pgSemAncla) };
+  guardarPendientesRemoto();
+  renderMatriz(); renderAjuste();
+
+  const banner = $("tRecalcBanner");
+  if (banner) {
+    if (deuda>0 || Object.keys(propuestas).length) {
+      banner.style.display = "";
+      banner.innerHTML = `♻️ <b>Semana recalculada.</b> ${deuda>0?`Detecté ${MIN_H(deuda)} h de alto impacto perdido y propuse cómo recuperarlo`:`Acomodé tus pendientes`} sin mover tu alto impacto original. Revisa el plan ajustado abajo.`;
+    } else banner.style.display = "none";
+  }
+  if (!auto) toast("Semana recalculada ✓");
+}
+
+function renderAjuste() {
+  const cont = $("pgAjuste");
+  if (!cont) return;
+  if (!ajusteSemana || ajusteSemana.semana !== lunesDe(pgSemAncla)) {
+    cont.innerHTML = `<div class="t-hint">Aún no hay recálculo para esta semana. Reporta tu día o pulsa "Recalcular ahora".</div>`;
+    return;
+  }
+  const a = ajusteSemana;
+  let html = "";
+  if (a.deuda>0) html += `<div class="ajuste-note">Perdiste ~<b>${MIN_H(a.deuda)} h</b> de alto impacto en días con desvío. Este plan prioriza recuperarlo (máximo ROTI) sin mover tus bloques de alto impacto ya establecidos.</div>`;
+  const dias = Object.keys(a.propuestas).sort();
+  if (!dias.length) { cont.innerHTML = html + `<div class="t-hint">Sin desvíos ni pendientes por agendar. Vas alineado con tu plan.</div>`; return; }
+  dias.forEach(iso => {
+    html += `<div class="ajuste-dia"><h5>${fmtFecha(iso)}</h5>`;
+    a.propuestas[iso].sort((x,y)=>x.ini.localeCompare(y.ini)).forEach(p => {
+      html += `<div class="ajuste-row"><span class="hora">${p.ini}–${p.fin}</span><span class="ajuste-nuevo">${escapeHtml(p.texto)}</span></div>`;
+    });
+    html += `</div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function abrirBloque(id) {
+  bloqueEditId = id;
+  const b = id ? horario.find(x=>x.id===id) : {
+    id:null, titulo:"", dias:[1], ini:"09:00", fin:"10:00", woop:0, roti:"impacto",
+    tipo:"fijo", vigencia:"permanente", fecha: tFecha
+  };
+  const m = $("bloqueModal");
+  const diasBtns = DOW.map((d,i)=>`<button type="button" class="dia-btn ${b.dias&&b.dias.includes(i)?'on':''}" data-d="${i}">${d}</button>`).join("");
+  const woopOpts = Object.entries(WOOPS).map(([k,v])=>`<option value="${k}" ${b.woop==k?'selected':''}>${v.label}</option>`).join("");
+  const rotiOpts = Object.entries(ROTI).map(([k,v])=>`<option value="${k}" ${(b.roti||'impacto')===k?'selected':''}>${v.label} — ${v.desc}</option>`).join("");
+  m.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-name" style="font-size:18px">${id?'Editar':'Nuevo'} bloque</div>
+      <button class="modal-close" id="bqClose">×</button>
+    </div>
+    <label class="t-label">Título</label>
+    <input class="t-input" id="bqTitulo" value="${escapeHtml(b.titulo)}">
+    <div class="field-row">
+      <div><label class="t-label">Inicio</label><input class="t-input" id="bqIni" type="time" value="${b.ini}"></div>
+      <div><label class="t-label">Fin</label><input class="t-input" id="bqFin" type="time" value="${b.fin}"></div>
+    </div>
+    <label class="t-label">Mundo / WOOP</label>
+    <select class="t-input" id="bqWoop">${woopOpts}</select>
+    <label class="t-label">Categoría de tiempo (ROTI)</label>
+    <select class="t-input" id="bqRoti">${rotiOpts}</select>
+    <label class="t-label">Tipo</label>
+    <select class="t-input" id="bqTipo">
+      <option value="fijo" ${b.tipo==='fijo'?'selected':''}>Fijo semanal (se repite)</option>
+      <option value="unico" ${b.tipo==='unico'?'selected':''}>Único (una sola fecha)</option>
+    </select>
+    <div id="bqFijoWrap" style="display:${b.tipo==='unico'?'none':'block'}">
+      <label class="t-label">Días</label>
+      <div class="dias-row" id="bqDias">${diasBtns}</div>
+      <label class="t-label">Vigencia</label>
+      <select class="t-input" id="bqVig">
+        <option value="permanente" ${b.vigencia==='permanente'?'selected':''}>Permanente</option>
+        <option value="mensual" ${b.vigencia==='mensual'?'selected':''}>Este mes</option>
+        <option value="semestral" ${b.vigencia==='semestral'?'selected':''}>Este semestre</option>
+      </select>
+    </div>
+    <div id="bqUnicoWrap" style="display:${b.tipo==='unico'?'block':'none'}">
+      <label class="t-label">Fecha</label>
+      <input class="t-input" id="bqFecha" type="date" value="${b.fecha||tFecha}">
+    </div>
+    <div class="modal-actions">
+      ${id?'<button class="btn btn-danger" id="bqDel">Eliminar</button>':''}
+      <button class="btn btn-primary" id="bqSave">Guardar</button>
+    </div>`;
+  $("bloqueBg").classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  // día toggles
+  m.querySelectorAll(".dia-btn").forEach(btn => btn.onclick = () => btn.classList.toggle("on"));
+  $("bqTipo").onchange = (e) => {
+    const u = e.target.value === "unico";
+    $("bqFijoWrap").style.display = u ? "none" : "block";
+    $("bqUnicoWrap").style.display = u ? "block" : "none";
+  };
+  $("bqClose").onclick = cerrarBloque;
+  $("bqSave").onclick = () => guardarBloque();
+  if (id) $("bqDel").onclick = async () => {
+    if (!confirm("¿Eliminar este bloque?")) return;
+    horario = horario.filter(x=>x.id!==id);
+    await guardarHorarioRemoto();
+    cerrarBloque(); renderTiempo(); toast("Bloque eliminado");
+  };
+}
+
+function cerrarBloque() {
+  $("bloqueBg").classList.remove("open");
+  document.body.style.overflow = "";
+  bloqueEditId = null;
+}
+
+async function guardarBloque() {
+  const tipo = $("bqTipo").value;
+  const dias = [...document.querySelectorAll("#bqDias .dia-btn.on")].map(b=>+b.dataset.d);
+  if (tipo==="fijo" && dias.length===0) { toast("Elige al menos un día"); return; }
+  const vig = $("bqVig").value;
+  const nuevo = {
+    id: bloqueEditId || "b"+Math.random().toString(36).slice(2,9),
+    titulo: $("bqTitulo").value.trim() || "(sin título)",
+    ini: $("bqIni").value, fin: $("bqFin").value,
+    woop: +$("bqWoop").value,
+    roti: $("bqRoti").value,
+    tipo,
+    dias: tipo==="fijo" ? dias : [],
+    vigencia: tipo==="fijo" ? vig : null,
+    vigenciaHasta: (tipo==="fijo" && vig==="mensual") ? mesDespues(hoyISO(),1)
+                 : (tipo==="fijo" && vig==="semestral") ? mesDespues(hoyISO(),6) : null,
+    fecha: tipo==="unico" ? $("bqFecha").value : null
+  };
+  const idx = horario.findIndex(x=>x.id===nuevo.id);
+  if (idx>=0) horario[idx]=nuevo; else horario.push(nuevo);
+  await guardarHorarioRemoto();
+  cerrarBloque(); renderTiempo(); toast("Bloque guardado");
+}
+
+// ============ EXPORTAR / IMPORTAR (híbrido) ============
+function construirExport() {
+  const d = diaActivo();
+  const bloques = horario.filter(b=>bloqueAplica(b,tFecha)).sort((a,b)=>(a.ini||"").localeCompare(b.ini||""));
+  let t = `=== PLANEACIÓN DE MI DÍA · ${fmtFecha(tFecha)} (${tFecha}) ===\n\n`;
+  t += `MIS 4 WOOPS (horizonte 24m):\n`;
+  t += `W1 Oficina Familiar · W2 Cuerpo y mente · W3 Red e identidad · W4 Vida autónoma\n\n`;
+  t += `BLOQUES FIJOS DE HOY:\n`;
+  bloques.forEach(b => t += `${b.ini}-${b.fin} ${b.titulo} [W${b.woop}] [${b.roti||'?'}]\n`);
+  if (!bloques.length) t += `(ninguno definido)\n`;
+  // Balance ROTI del día
+  const min = rotiMinutos(tFecha); const tot = min.impacto+min.operativo+min.fuga || 1;
+  t += `\nBALANCE ROTI PLANEADO: Alto impacto ${Math.round(min.impacto/tot*100)}% · Operativo ${Math.round(min.operativo/tot*100)}% · Fuga ${Math.round(min.fuga/tot*100)}%\n`;
+  t += `\nMIS 3 PRIORIDADES:\n`;
+  d.prioridades.forEach((p,i)=> t += `${i+1}. ${p||"(vacío)"}\n`);
+  t += `\nCÓMO PLANEO MI DÍA / PENDIENTES / CONTEXTO:\n${$("tContexto").value || "(sin notas)"}\n`;
+
+  // Reporte real (si hay)
+  const real = (d.real||[]).slice().sort((a,b)=>(a.ini||"").localeCompare(b.ini||""));
+  const hayReal = real.length > 0;
+  if (hayReal) {
+    t += `\nLO QUE REALMENTE HICE (horarios aproximados):\n`;
+    real.forEach(r => t += `${r.ini||"?"}-${r.fin||"?"} ${r.act} [${r.roti}]\n`);
+    const rm = rotiMinutosReal(tFecha); const rtot = rm.impacto+rm.operativo+rm.fuga || 1;
+    t += `BALANCE ROTI REAL: Alto impacto ${Math.round(rm.impacto/rtot*100)}% · Operativo ${Math.round(rm.operativo/rtot*100)}% · Fuga ${Math.round(rm.fuga/rtot*100)}%\n`;
+  }
+
+  t += `\n--- INSTRUCCIÓN PARA CLAUDE ---\n`;
+  if (hayReal) {
+    t += `Este es un REPORTE RETROSPECTIVO de mi día. Compara lo PLANEADO (ideal) contra lo REAL que hice. `;
+    t += `Dime concretamente: (1) dónde se me fue el tiempo, (2) qué actividades operativas/traslados me comieron alto impacto, (3) 3 recomendaciones específicas para reenfocar los próximos días priorizando tesis y lo estratégico sobre conducir de un lado a otro, (4) qué delegar en Freddy o eliminar. `;
+  } else {
+    t += `Actúa como mi gestor de tiempo estratégico. Diagnostica mi día vs mis WOOPs y patrones de sabotaje (sacrificar cuerpo, olvidar comer, cargar por inercia). `;
+    t += `JERARQUIZA mi tiempo con ROTI: prioriza y protege el ALTO IMPACTO (tesis, gym, red, estratégico) sobre lo OPERATIVO (traslados/conducir, admin, campo); agrupa traslados y sugiere qué delegar o eliminar. `;
+  }
+  t += `Devuélveme SOLO un bloque JSON (sin texto extra) con este formato exacto para que mi app lo lea:\n`;
+  t += `{"fecha":"${tFecha}","diagnostico":"2-3 oraciones comparando planeado vs real si aplica","agenda":[{"inicio":"07:30","fin":"09:00","actividad":"...","woop":1,"nota":"opcional"}],"prioridades":["...","...","..."],"sugerencias":[{"texto":"recomendación de reenfoque","woop":1}],"woopDelDia":{"numero":1,"razon":"..."},"alerta":"dónde se fue el tiempo o vacío"}`;
+  return t;
+}
+
+async function copiar(texto) {
+  try { await navigator.clipboard.writeText(texto); return true; }
+  catch(e){ return false; }
+}
+
+function importarPlan() {
+  const raw = $("tImport").value.trim();
+  if (!raw) { toast("Pega primero el plan"); return; }
+  try {
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("no json");
+    const plan = JSON.parse(match[0]);
+    const d = diaActivo();
+    d.plan = plan;
+    // aplicar prioridades si vienen
+    if (Array.isArray(plan.prioridades)) {
+      plan.prioridades.forEach((p,i)=>{ if(i<3 && p) d.prioridades[i]=p; });
+    }
+    guardarDiaRemoto(tFecha);
+    $("tImport").value = "";
+    renderTiempo();
+    toast("Plan importado ✓");
+  } catch(e) {
+    toast("No pude leer el plan. Revisa que sea el JSON completo.");
+  }
+}
+
+// ============ INIT UI TIEMPO ============
+function initTiempoUI() {
+  // Cambio de módulo
+  $("modSocialBtn").onclick = () => cambiarModulo("social");
+  $("modTiempoBtn").onclick = () => cambiarModulo("tiempo");
+
+  // Sub-nav tiempo
+  $("twHoy").onclick = () => { $("twHoy").classList.add("active"); $("twHorario").classList.remove("active"); $("tvHoy").style.display=""; $("tvHorario").style.display="none"; renderTiempo(); };
+  $("twHorario").onclick = () => { $("twHorario").classList.add("active"); $("twHoy").classList.remove("active"); $("tvHorario").style.display=""; $("tvHoy").style.display="none"; renderPlaneacion(); };
+
+  // Navegación de días
+  $("tPrevDay").onclick = () => { const dt=isoADate(tFecha); dt.setDate(dt.getDate()-1); tFecha=dt.toISOString().slice(0,10); renderTiempo(); };
+  $("tNextDay").onclick = () => { const dt=isoADate(tFecha); dt.setDate(dt.getDate()+1); tFecha=dt.toISOString().slice(0,10); renderTiempo(); };
+
+  // Guardar campos al escribir (autosave ligero)
+  ["tPrio0","tPrio1","tPrio2"].forEach((id,i)=> $(id).oninput = () => { diaActivo().prioridades[i]=$(id).value; });
+  $("tContexto").oninput = () => { diaActivo().contexto = $("tContexto").value; };
+
+  // Nuevo bloque
+  $("tAddBloque").onclick = () => abrirBloque(null);
+
+  // ---- Área de planeación ----
+  // WOOP select de pendientes
+  $("pdWoop").innerHTML = Object.entries(WOOPS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("");
+  // sliders
+  $("pdImp").oninput = () => $("pdImpVal").textContent = $("pdImp").value;
+  $("pdUrg").oninput = () => $("pdUrgVal").textContent = $("pdUrg").value;
+  // añadir pendiente
+  $("pdAdd").onclick = async () => {
+    const texto = $("pdTexto").value.trim();
+    if (!texto) { toast("Escribe el pendiente"); return; }
+    pendientes.push({ id:"p"+Date.now(), texto, imp:+$("pdImp").value, urg:+$("pdUrg").value, dur:+$("pdDur").value||60, woop:+$("pdWoop").value, done:false, propuesta:null });
+    $("pdTexto").value=""; $("pdImp").value=3; $("pdUrg").value=3; $("pdImpVal").textContent="3"; $("pdUrgVal").textContent="3"; $("pdDur").value=60;
+    await guardarPendientesRemoto();
+    // el algoritmo sugiere de inmediato dónde realizarlo (según su cuadrante)
+    if (lunesDe(pgSemAncla) < lunesDe(hoyISO())) pgSemAncla = hoyISO();
+    recalcularSemana(true);
+    const q = cuadrante(pendientes[pendientes.length-1]);
+    toast(q===4 ? "Añadido a Q4 (eliminar) — no se agenda" : q===3 ? "Añadido a Q3 (delegar)" : "Pendiente añadido y sugerido en tu semana");
+  };
+  // navegación de semana
+  $("pgPrevWeek").onclick = () => { const dt=isoADate(pgSemAncla); dt.setDate(dt.getDate()-7); pgSemAncla=dt.toISOString().slice(0,10); renderPlaneacion(); };
+  $("pgNextWeek").onclick = () => { const dt=isoADate(pgSemAncla); dt.setDate(dt.getDate()+7); pgSemAncla=dt.toISOString().slice(0,10); renderPlaneacion(); };
+  // recalcular manual
+  $("pgRecalc").onclick = () => recalcularSemana(false);
+
+  // Añadir actividad REAL (con auto-recálculo si hay desvío)
+  $("rAdd").onclick = async () => {
+    const act = $("rAct").value.trim();
+    if (!act) { toast("Escribe la actividad"); return; }
+    const d = diaActivo();
+    const nuevaRoti = $("rRoti").value||"impacto";
+    d.real.push({ id:"r"+Date.now(), ini:$("rIni").value, fin:$("rFin").value, act, roti:nuevaRoti });
+    $("rAct").value=""; $("rIni").value=""; $("rFin").value="";
+    await guardarDiaRemoto(tFecha);
+    renderTiempo();
+    // ¿desvío? si el alto impacto real quedó por debajo del planeado, recalcular la semana
+    const falta = rotiMinutos(tFecha).impacto - rotiMinutosReal(tFecha).impacto;
+    if (falta >= 30) { pgSemAncla = tFecha; recalcularSemana(true); toast("Desvío detectado · semana recalculada"); }
+    else toast("Actividad registrada");
+  };
+
+  // Export / import
+  $("tExport").onclick = async () => {
+    const txt = construirExport();
+    const ok = await copiar(txt);
+    if (ok) toast("Copiado ✓ pégamelo en el chat");
+    else { // fallback: mostrar en prompt para copiar manual
+      window.prompt("Copia este texto y pégamelo en el chat:", txt);
+    }
+  };
+  $("tImportBtn").onclick = importarPlan;
+
+  // Guardar día completo
+  $("tGuardarDia").onclick = async () => {
+    const d = diaActivo();
+    d.prioridades = [$("tPrio0").value,$("tPrio1").value,$("tPrio2").value];
+    d.contexto = $("tContexto").value;
+    d.journal = { p0:$("tJ0").value, p1:$("tJ1").value, p2:$("tJ2").value };
+    d.agradecimientos = [$("tG0").value,$("tG1").value,$("tG2").value];
+    await guardarDiaRemoto(tFecha);
+    toast("Día guardado ✓");
+  };
+
+  // Cerrar modal bloque al tocar fondo
+  $("bloqueBg").addEventListener("click", (e)=>{ if(e.target.id==="bloqueBg") cerrarBloque(); });
+
+  renderTiempo();
+}
+
+function cambiarModulo(m) {
+  moduloActual = m;
+  $("moduloSocial").style.display = m==="social" ? "" : "none";
+  $("moduloTiempo").style.display = m==="tiempo" ? "" : "none";
+  $("moduloComida").style.display  = m==="comida" ? "" : "none";
+  $("moduloFin").style.display     = m==="fin" ? "" : "none";
+  $("modSocialBtn").classList.toggle("active", m==="social");
+  $("modTiempoBtn").classList.toggle("active", m==="tiempo");
+  $("modComidaBtn").classList.toggle("active", m==="comida");
+  $("modFinBtn").classList.toggle("active", m==="fin");
+  const titulos = { social:"CRM Social", tiempo:"Gestión de Tiempo", comida:"Alimentación", fin:"Finanzas" };
+  $("appTitle").innerHTML = titulos[m] + " <span>Gerardo</span>";
+  if (m==="tiempo") renderTiempo();
+  if (m==="comida") renderComida();
+  if (m==="fin") renderFinanzas();
+}
+
+// ============================================================
+// ================  MÓDULO ALIMENTACIÓN  =====================
+// ============================================================
+const COL_COMIDA = "alimentacion";
+
+// Banco de comidas (de tu perfil: 2,300 kcal, 130-150g proteína)
+function seedBanco() {
+  return {
+    D: [
+      {cod:"D1", nombre:"Huevos revueltos + pan integral + leche", prot:30, kcal:480},
+      {cod:"D2", nombre:"Avena microondas (avena+leche+plátano+nueces)", prot:20, kcal:420},
+      {cod:"D3", nombre:"Licuado proteico (leche+plátano+avena+cacahuate)", prot:28, kcal:500},
+      {cod:"D4", nombre:"Quesadillas de queso + huevo + frijoles", prot:35, kcal:520},
+      {cod:"D5", nombre:"Smoothie emergencia (leche+avena+plátano)", prot:18, kcal:380},
+    ],
+    L: [
+      {cod:"L1", nombre:"Arroz + pollo al limón + verduras", prot:45, kcal:600},
+      {cod:"L2", nombre:"Ensalada de atún + frijoles + tostadas", prot:38, kcal:520},
+      {cod:"L3", nombre:"Pasta integral + atún + tomate", prot:35, kcal:580},
+      {cod:"L4", nombre:"Arroz + huevo cocido + aguacate + salsa", prot:30, kcal:560},
+      {cod:"L5", nombre:"Sopa de lentejas + pan integral", prot:28, kcal:500},
+    ],
+    C: [
+      {cod:"C1", nombre:"Atún + pan integral + yogur", prot:45, kcal:450},
+      {cod:"C2", nombre:"Quesadillas de queso + frijoles", prot:30, kcal:480},
+      {cod:"C3", nombre:"Huevos estrellados + arroz + frijoles", prot:32, kcal:520},
+      {cod:"C4", nombre:"Sardinas + tostadas + aguacate", prot:35, kcal:480},
+      {cod:"C5", nombre:"Yogur griego + nueces + avena + miel", prot:20, kcal:380},
+      {cod:"C6", nombre:"Sopa Maruchan + 2 huevos cocidos", prot:25, kcal:420},
+    ]
+  };
+}
+const LISTA_COMPRAS = [
+  { store:"TRES B (proteínas y básicos)", items:[
+    ["Huevos 30 pz",110],["Pechuga de pollo 1 kg",90],["Leche 2 L",50],["Avena 1 kg",35],["Arroz 1 kg",25],["Tortillas 1 kg",25] ]},
+  { store:"BODEGA AURRERA / WALMART", items:[
+    ["Atún en lata x6",90],["Yogur griego x4",80],["Pan integral",45],["Pasta integral 500g",30],["Sardinas x3",45],
+    ["Mantequilla cacahuate 400g",55],["Nueces mixtas 200g",60],["Aguacate x3",40],["Brócoli/espinaca",35],
+    ["Plátanos 1 kg",20],["Jitomate 500g",20],["Frijoles",30],["Aceite canola 500ml",45] ]}
+];
+const SEM_DIAS = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+let banco = seedBanco();
+let comidaConfig = { suplementos:[{n:"Proteína en polvo",id:"s1"},{n:"Creatina",id:"s2"},{n:"Omega-3",id:"s3"},{n:"Multivitamínico",id:"s4"}], aguaMeta:8, semana:{} };
+let comidaDias = {};
+let cFecha = hoyISO();
+
+function cargarComidaLocal() {
+  const b = localStorage.getItem("comida_banco");
+  banco = b ? JSON.parse(b) : seedBanco();
+  const c = localStorage.getItem("comida_config");
+  if (c) comidaConfig = JSON.parse(c);
+  const d = localStorage.getItem("comida_dias");
+  comidaDias = d ? JSON.parse(d) : {};
+  if (!b || !c) guardarComidaLocal();
+}
+function guardarComidaLocal() {
+  localStorage.setItem("comida_banco", JSON.stringify(banco));
+  localStorage.setItem("comida_config", JSON.stringify(comidaConfig));
+  localStorage.setItem("comida_dias", JSON.stringify(comidaDias));
+}
+async function sincronizarComida() {
+  if (!firebaseOK) return;
+  try {
+    const snap = await withTimeout(getDocs(collection(db, COL_COMIDA)), 10000, "comida");
+    if (snap.empty) await setDoc(doc(db, COL_COMIDA, "config"), { banco, config: comidaConfig });
+    onSnapshot(collection(db, COL_COMIDA), (snap) => {
+      snap.docs.forEach(dd => {
+        const data = dd.data();
+        if (dd.id === "config") { banco = data.banco || banco; comidaConfig = data.config || comidaConfig; }
+        else if (dd.id.startsWith("dia_")) comidaDias[dd.id.slice(4)] = data;
+      });
+      if (moduloActual === "comida") renderComida();
+    });
+  } catch(e) { console.error("comida sync", e); }
+}
+async function guardarComidaConfigRemoto() {
+  guardarComidaLocal();
+  if (firebaseOK) { try { await setDoc(doc(db, COL_COMIDA, "config"), { banco, config: comidaConfig }); } catch(e){console.error(e);} }
+}
+async function guardarComidaDiaRemoto(f) {
+  guardarComidaLocal();
+  if (firebaseOK) { try { await setDoc(doc(db, COL_COMIDA, "dia_"+f), comidaDias[f]||{}); } catch(e){console.error(e);} }
+}
+
+function comidaDiaActivo() {
+  if (!comidaDias[cFecha]) comidaDias[cFecha] = { comidas:{D:"",L:"",C:""}, agua:0, suplementos:{}, entreno:{tipo:"",min:""} };
+  const d = comidaDias[cFecha];
+  d.comidas = d.comidas || {D:"",L:"",C:""};
+  d.suplementos = d.suplementos || {};
+  d.entreno = d.entreno || {tipo:"",min:""};
+  return d;
+}
+function buscarComida(grupo, cod) { return (banco[grupo]||[]).find(x=>x.cod===cod); }
+
+// ---------- RENDER COMIDA ----------
+function renderComida() {
+  llenarSelectsComida();
+  renderMacros();
+  renderAgua();
+  renderSuplementos();
+  const d = comidaDiaActivo();
+  $("cEntrenoTipo").value = d.entreno.tipo || "";
+  $("cEntrenoMin").value = d.entreno.min || "";
+  renderSemana();
+  renderBanco();
+  renderCompras();
+}
+
+function optsGrupo(grupo, sel) {
+  return `<option value="">— elegir —</option>` + (banco[grupo]||[]).map(x =>
+    `<option value="${x.cod}" ${sel===x.cod?'selected':''}>${x.cod} · ${x.nombre} (${x.prot}g)</option>`).join("");
+}
+function llenarSelectsComida() {
+  const d = comidaDiaActivo();
+  $("cMealD").innerHTML = optsGrupo("D", d.comidas.D);
+  $("cMealL").innerHTML = optsGrupo("L", d.comidas.L);
+  $("cMealC").innerHTML = optsGrupo("C", d.comidas.C);
+}
+function renderMacros() {
+  const d = comidaDiaActivo();
+  let prot=0, kcal=0;
+  [["D",d.comidas.D],["L",d.comidas.L],["C",d.comidas.C]].forEach(([g,cod])=>{
+    const m = buscarComida(g,cod); if(m){prot+=m.prot; kcal+=m.kcal;}
+  });
+  $("cProt").textContent = prot;
+  $("cKcal").textContent = kcal;
+  $("cProtBar").style.width = Math.min(100, prot/150*100)+"%";
+  $("cKcalBar").style.width = Math.min(100, kcal/2300*100)+"%";
+}
+function renderAgua() {
+  const d = comidaDiaActivo();
+  const meta = comidaConfig.aguaMeta || 8;
+  $("cAgua").textContent = d.agua||0;
+  $("cAguaMeta").textContent = meta;
+  let v = "";
+  for (let i=0;i<Math.max(meta,d.agua);i++) v += `<span class="vaso">${i<(d.agua||0)?'💧':'▫️'}</span>`;
+  $("cAguaVasos").innerHTML = v;
+}
+function renderSuplementos() {
+  const d = comidaDiaActivo();
+  const cont = $("cSuplementos");
+  cont.innerHTML = "";
+  (comidaConfig.suplementos||[]).forEach(s => {
+    const el = document.createElement("div");
+    el.className = "sup-item";
+    el.innerHTML = `<input type="checkbox" ${d.suplementos[s.id]?'checked':''}><span>${escapeHtml(s.n)}</span><button class="sup-del" data-id="${s.id}">🗑</button>`;
+    el.querySelector("input").onchange = e => { d.suplementos[s.id]=e.target.checked; guardarComidaDiaRemoto(cFecha); };
+    el.querySelector(".sup-del").onclick = async () => {
+      if(!confirm("¿Quitar "+s.n+" de tu lista de suplementos?")) return;
+      comidaConfig.suplementos = comidaConfig.suplementos.filter(x=>x.id!==s.id);
+      await guardarComidaConfigRemoto(); renderSuplementos();
+    };
+    cont.appendChild(el);
+  });
+}
+function renderSemana() {
+  const cont = $("cSemanaGrid");
+  cont.innerHTML = "";
+  SEM_DIAS.forEach(dia => {
+    const plan = comidaConfig.semana[dia] || {D:"",L:"",C:""};
+    let prot=0;
+    [["D",plan.D],["L",plan.L],["C",plan.C]].forEach(([g,cod])=>{const m=buscarComida(g,cod); if(m)prot+=m.prot;});
+    const el = document.createElement("div");
+    el.className = "sem-day";
+    el.innerHTML = `<h4>${dia} <span class="sem-prot">· ${prot}g proteína</span></h4>
+      <select data-dia="${dia}" data-g="D">${optsGrupo("D",plan.D)}</select>
+      <select data-dia="${dia}" data-g="L">${optsGrupo("L",plan.L)}</select>
+      <select data-dia="${dia}" data-g="C">${optsGrupo("C",plan.C)}</select>`;
+    el.querySelectorAll("select").forEach(sel => sel.onchange = () => {
+      const dd = sel.dataset.dia, g = sel.dataset.g;
+      comidaConfig.semana[dd] = comidaConfig.semana[dd] || {D:"",L:"",C:""};
+      comidaConfig.semana[dd][g] = sel.value;
+      renderSemana();
+    });
+    cont.appendChild(el);
+  });
+}
+function renderBanco() {
+  const cont = $("cBancoList");
+  const grupos = {D:"Desayunos", L:"Lunches", C:"Cenas"};
+  cont.innerHTML = "";
+  Object.entries(grupos).forEach(([g,titulo]) => {
+    let html = `<div class="banco-grupo"><h4>${titulo}</h4>`;
+    (banco[g]||[]).forEach(x => {
+      html += `<div class="banco-item"><span>${x.cod} · ${escapeHtml(x.nombre)}</span><span class="macros">${x.prot}g · ${x.kcal}kcal</span></div>`;
+    });
+    html += `</div>`;
+    cont.innerHTML += html;
+  });
+}
+function renderCompras() {
+  const cont = $("cCompras");
+  let html = "", total = 0;
+  LISTA_COMPRAS.forEach(grp => {
+    html += `<div class="compra-store">📍 ${grp.store}</div>`;
+    grp.items.forEach(([nombre,precio]) => {
+      total += precio;
+      html += `<label class="compra-item"><input type="checkbox"><span>${nombre}</span><span class="precio">$${precio}</span></label>`;
+    });
+  });
+  html += `<div class="compra-total">Total estimado: ~$${total} MXN</div>`;
+  cont.innerHTML = html;
+}
+
+// Generar semana variada (rota el banco sin repetir seguido)
+function generarSemanaVariada() {
+  const rot = (arr, offset) => arr[(offset) % arr.length].cod;
+  SEM_DIAS.forEach((dia, i) => {
+    comidaConfig.semana[dia] = {
+      D: rot(banco.D, i),
+      L: rot(banco.L, i),
+      C: rot(banco.C, i)
+    };
+  });
+  renderSemana();
+  toast("Semana generada ✓");
+}
+
+function initComidaUI() {
+  $("modComidaBtn").onclick = () => cambiarModulo("comida");
+
+  // sub-nav
+  const sub = (btn, view) => {
+    ["cwHoy","cwSemana","cwBanco"].forEach(b=>$(b).classList.toggle("active", b===btn));
+    $("cvHoy").style.display = view==="cvHoy"?"":"none";
+    $("cvSemana").style.display = view==="cvSemana"?"":"none";
+    $("cvBanco").style.display = view==="cvBanco"?"":"none";
+  };
+  $("cwHoy").onclick = () => sub("cwHoy","cvHoy");
+  $("cwSemana").onclick = () => { sub("cwSemana","cvSemana"); renderSemana(); };
+  $("cwBanco").onclick = () => { sub("cwBanco","cvBanco"); renderBanco(); renderCompras(); };
+
+  // selects comida
+  ["D","L","C"].forEach(g => {
+    $("cMeal"+g).onchange = (e) => { comidaDiaActivo().comidas[g]=e.target.value; renderMacros(); guardarComidaDiaRemoto(cFecha); };
+  });
+
+  // agua
+  $("cAguaMas").onclick = () => { const d=comidaDiaActivo(); d.agua=(d.agua||0)+1; renderAgua(); guardarComidaDiaRemoto(cFecha); };
+  $("cAguaMenos").onclick = () => { const d=comidaDiaActivo(); d.agua=Math.max(0,(d.agua||0)-1); renderAgua(); guardarComidaDiaRemoto(cFecha); };
+
+  // entreno
+  $("cEntrenoTipo").onchange = () => { comidaDiaActivo().entreno.tipo=$("cEntrenoTipo").value; };
+  $("cEntrenoMin").oninput = () => { comidaDiaActivo().entreno.min=$("cEntrenoMin").value; };
+
+  // suplementos add
+  $("cAddSup").onclick = async () => {
+    const n = prompt("Nombre del suplemento:");
+    if(!n||!n.trim()) return;
+    comidaConfig.suplementos = comidaConfig.suplementos||[];
+    comidaConfig.suplementos.push({n:n.trim(), id:"s"+Date.now()});
+    await guardarComidaConfigRemoto(); renderSuplementos();
+  };
+
+  // guardar día
+  $("cGuardar").onclick = async () => {
+    const d = comidaDiaActivo();
+    d.entreno = { tipo:$("cEntrenoTipo").value, min:$("cEntrenoMin").value };
+    await guardarComidaDiaRemoto(cFecha);
+    toast("Día guardado ✓");
+  };
+
+  // semana
+  $("cGenSemana").onclick = generarSemanaVariada;
+  $("cGuardarSemana").onclick = async () => { await guardarComidaConfigRemoto(); toast("Semana guardada ✓"); };
+
+  renderComida();
+}
+
+// ============================================================
+// ==================  MÓDULO FINANZAS  =======================
+// ============================================================
+const COL_FIN = "finanzas";
+let cuentas = [];
+let cuentaEditId = null;
+
+function cargarFinLocal() {
+  const c = localStorage.getItem("fin_cuentas");
+  cuentas = c ? JSON.parse(c) : [];
+}
+function guardarFinLocal() { localStorage.setItem("fin_cuentas", JSON.stringify(cuentas)); }
+
+async function sincronizarFin() {
+  if (!firebaseOK) return;
+  try {
+    onSnapshot(doc(db, COL_FIN, "data"), (snap) => {
+      if (snap.exists()) { cuentas = snap.data().cuentas || []; if (moduloActual==="fin") renderFinanzas(); }
+    }, (e)=>console.error("fin snap", e));
+  } catch(e){ console.error("fin sync", e); }
+}
+async function guardarFinRemoto() {
+  guardarFinLocal();
+  if (firebaseOK) { try { await setDoc(doc(db, COL_FIN, "data"), { cuentas }); } catch(e){ console.error(e);} }
+}
+
+const fmtMoney = n => "$" + (Number(n)||0).toLocaleString("es-MX", {minimumFractionDigits:2, maximumFractionDigits:2});
+
+function renderFinanzas() {
+  const deb = cuentas.filter(c=>c.tipo==="debito");
+  const cred = cuentas.filter(c=>c.tipo==="credito");
+  const totDeb = deb.reduce((s,c)=>s+(Number(c.saldo)||0),0);
+  const totCred = cred.reduce((s,c)=>s+(Number(c.saldo)||0),0);
+  $("finDebito").textContent = fmtMoney(totDeb);
+  $("finCredito").textContent = fmtMoney(totCred);
+  $("finNeto").textContent = fmtMoney(totDeb - totCred);
+  $("finNeto").style.color = (totDeb-totCred) >= 0 ? "#16a34a" : "#dc2626";
+  pintarLista("finListaDebito", deb);
+  pintarLista("finListaCredito", cred);
+}
+function pintarLista(contId, lista) {
+  const cont = $(contId);
+  if (lista.length === 0) { cont.innerHTML = '<div class="fin-empty">Sin cuentas todavía.</div>'; return; }
+  cont.innerHTML = "";
+  lista.forEach(c => {
+    const el = document.createElement("div");
+    el.className = "fin-item";
+    el.innerHTML = `
+      <div class="fin-info">
+        <div class="fin-nombre">${escapeHtml(c.nombre)}</div>
+        <div class="fin-obj">${escapeHtml(c.objetivo||"")}${c.corte?` · corte ${c.corte}`:""}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="fin-saldo" style="color:${c.tipo==='credito'?'#dc2626':'var(--ink)'}">${fmtMoney(c.saldo)}</div>
+      </div>
+      <button class="t-block-edit" data-id="${c.id}">✎</button>`;
+    el.querySelector(".t-block-edit").onclick = () => abrirCuenta(c.id);
+    cont.appendChild(el);
+  });
+}
+
+function abrirCuenta(id) {
+  cuentaEditId = id;
+  const c = id ? cuentas.find(x=>x.id===id) : { id:null, nombre:"", tipo:"debito", objetivo:"", saldo:"", corte:"" };
+  const m = $("cuentaModal");
+  m.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-name" style="font-size:18px">${id?'Editar':'Nueva'} cuenta</div>
+      <button class="modal-close" id="cuClose">×</button>
+    </div>
+    <label class="t-label">Nombre</label>
+    <input class="t-input" id="cuNombre" value="${escapeHtml(c.nombre)}" placeholder="Ej: BBVA débito, Nu crédito">
+    <label class="t-label">Tipo</label>
+    <select class="t-input" id="cuTipo">
+      <option value="debito" ${c.tipo==='debito'?'selected':''}>Débito (dinero que tengo)</option>
+      <option value="credito" ${c.tipo==='credito'?'selected':''}>Crédito a pagar (dinero que debo)</option>
+    </select>
+    <label class="t-label">Objetivo de la cuenta</label>
+    <input class="t-input" id="cuObjetivo" value="${escapeHtml(c.objetivo||'')}" placeholder="Ej: Fondo de emergencia, gasto corriente…">
+    <label class="t-label">Saldo al corte</label>
+    <input class="t-input" id="cuSaldo" type="number" step="0.01" value="${c.saldo}" placeholder="0.00">
+    <label class="t-label">Fecha de corte (opcional)</label>
+    <input class="t-input" id="cuCorte" type="date" value="${c.corte||''}">
+    <div class="modal-actions">
+      ${id?'<button class="btn btn-danger" id="cuDel">Eliminar</button>':''}
+      <button class="btn btn-primary" id="cuSave">Guardar</button>
+    </div>`;
+  $("cuentaBg").classList.add("open");
+  document.body.style.overflow = "hidden";
+  $("cuClose").onclick = cerrarCuenta;
+  $("cuSave").onclick = guardarCuenta;
+  if (id) $("cuDel").onclick = async () => {
+    if(!confirm("¿Eliminar esta cuenta?")) return;
+    cuentas = cuentas.filter(x=>x.id!==id);
+    await guardarFinRemoto(); cerrarCuenta(); renderFinanzas(); toast("Cuenta eliminada");
+  };
+}
+function cerrarCuenta(){ $("cuentaBg").classList.remove("open"); document.body.style.overflow=""; cuentaEditId=null; }
+async function guardarCuenta() {
+  const nombre = $("cuNombre").value.trim();
+  if (!nombre) { toast("Ponle nombre a la cuenta"); return; }
+  const nueva = {
+    id: cuentaEditId || "cu"+Date.now(),
+    nombre, tipo: $("cuTipo").value,
+    objetivo: $("cuObjetivo").value.trim(),
+    saldo: parseFloat($("cuSaldo").value)||0,
+    corte: $("cuCorte").value
+  };
+  const idx = cuentas.findIndex(x=>x.id===nueva.id);
+  if (idx>=0) cuentas[idx]=nueva; else cuentas.push(nueva);
+  await guardarFinRemoto(); cerrarCuenta(); renderFinanzas(); toast("Cuenta guardada");
+}
+
+function exportarFinXLSX() {
+  if (typeof XLSX === "undefined") { toast("Librería XLSX no cargó; revisa tu conexión"); return; }
+  const rows = cuentas.map(c => ({
+    Nombre: c.nombre,
+    Tipo: c.tipo==="debito" ? "Débito" : "Crédito a pagar",
+    Objetivo: c.objetivo||"",
+    "Saldo al corte": Number(c.saldo)||0,
+    "Fecha de corte": c.corte||""
+  }));
+  const totDeb = cuentas.filter(c=>c.tipo==="debito").reduce((s,c)=>s+(Number(c.saldo)||0),0);
+  const totCred = cuentas.filter(c=>c.tipo==="credito").reduce((s,c)=>s+(Number(c.saldo)||0),0);
+  rows.push({});
+  rows.push({ Nombre:"TOTAL DÉBITO", "Saldo al corte": totDeb });
+  rows.push({ Nombre:"TOTAL CRÉDITO A PAGAR", "Saldo al corte": totCred });
+  rows.push({ Nombre:"NETO", "Saldo al corte": totDeb-totCred });
+  const ws = XLSX.utils.json_to_sheet(rows, { header:["Nombre","Tipo","Objetivo","Saldo al corte","Fecha de corte"] });
+  ws["!cols"] = [{wch:24},{wch:16},{wch:28},{wch:16},{wch:16}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Cuentas");
+  XLSX.writeFile(wb, `finanzas_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast("XLSX descargado ✓");
+}
+
+function initFinUI() {
+  $("modFinBtn").onclick = () => cambiarModulo("fin");
+  $("finAdd").onclick = () => abrirCuenta(null);
+  $("finExport").onclick = exportarFinXLSX;
+  $("cuentaBg").addEventListener("click", (e)=>{ if(e.target.id==="cuentaBg") cerrarCuenta(); });
 }
 
 // Arrancar
