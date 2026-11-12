@@ -348,6 +348,19 @@
   .db-rep { background:#e7f0fa!important; color:#2f7cc2!important; border-color:#c3dbf2!important; }
   .tipo-dot { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.1); display:inline-block; vertical-align:middle; }
 
+  /* Timeline tipo Google Calendar */
+  .tl-wrap { position:relative; }
+  .tl-grid { position:relative; }
+  .tl-hour { position:relative; height:44px; border-top:1px solid var(--line); }
+  .tl-hour:last-child { border-bottom:1px solid var(--line); }
+  .tl-hlabel { position:absolute; left:0; top:-7px; width:42px; font-size:10px; color:var(--ink-mute); text-align:right; padding-right:6px; font-variant-numeric:tabular-nums; }
+  .tl-lane { position:absolute; left:48px; right:0; top:0; bottom:0; }
+  .tl-block { position:absolute; border-radius:6px; padding:3px 6px; color:#fff; font-size:10.5px; overflow:hidden; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.12); line-height:1.2; }
+  .tl-block b { font-weight:700; }
+  .tl-block.st-hecho { opacity:.55; }
+  .tl-block.st-nohare { opacity:.4; text-decoration:line-through; }
+  .tl-empty { font-size:12px; color:var(--ink-mute); padding:8px 0 0 48px; }
+
   /* ROTI */
   .roti-bar { display:flex; height:22px; border-radius:8px; overflow:hidden; background:#e3e9f3; margin-bottom:8px; }
   .roti-seg { display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; font-weight:700; min-width:0; }
@@ -580,18 +593,13 @@
       <button class="t-navday" id="tNextDay">›</button>
     </div>
 
-    <!-- Agenda del día -->
+    <!-- Agenda del día (estilo calendario por horas) -->
     <div class="t-card">
-      <div class="t-card-title">📅 Agenda de hoy</div>
-      <div id="tAgenda"></div>
-    </div>
-
-    <!-- Balance ROTI (jerarquía del tiempo) -->
-    <div class="t-card">
-      <div class="t-card-title">⚖️ Balance de hoy — Retorno de Inversión de Tiempo</div>
-      <div class="roti-bar" id="tRotiBar"></div>
-      <div class="roti-legend" id="tRotiLegend"></div>
-      <div class="roti-insight" id="tRotiInsight"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="t-card-title" style="margin:0">📅 Agenda de hoy</div>
+        <button class="t-navday" id="tAddHoy" style="width:auto;padding:0 12px;font-size:13px">+ Bloque</button>
+      </div>
+      <div id="tTimeline" class="tl-wrap"></div>
     </div>
 
     <!-- 3 prioridades -->
@@ -633,23 +641,6 @@
       <div class="cmp-label" style="margin-top:8px">Real (lo que hice)</div>
       <div class="roti-bar" id="tCmpReal"></div>
       <div class="roti-insight" id="tCmpInsight" style="margin-top:8px"></div>
-    </div>
-
-    <!-- PLANEAR (híbrido export/import) -->
-    <div class="t-card t-plan">
-      <div class="t-card-title">🧠 Planear mi día con Claude</div>
-      <label class="t-label">Cómo planeo mi día / pendientes / contexto</label>
-      <textarea class="t-input" id="tContexto" rows="3" placeholder="Ej: hoy Freddy reportó fuga en Prohogar, tengo que avanzar el capítulo 1, y quiero ver a Edmi…"></textarea>
-      <button class="t-btn" id="tExport">📤 Exportar para planear</button>
-      <div class="t-hint">Copia el texto, pégamelo en el chat, y te devuelvo el plan. Luego pégalo abajo.</div>
-      <textarea class="t-input" id="tImport" rows="3" placeholder="Pega aquí el plan que te devolví (JSON)…" style="margin-top:10px"></textarea>
-      <button class="t-btn t-btn-2" id="tImportBtn">📥 Importar plan</button>
-    </div>
-
-    <!-- Plan importado -->
-    <div class="t-card" id="tPlanCard" style="display:none">
-      <div class="t-card-title">🗓 Plan del día (de Claude)</div>
-      <div id="tPlanBody"></div>
     </div>
 
     <!-- Journal de cierre -->
@@ -698,22 +689,14 @@
       </div>
     </div>
 
-    <!-- Vista semanal sintética (compacta) -->
-    <div class="t-card">
-      <div class="t-card-title">🗓 Semana de un vistazo</div>
-      <div class="semana-nav">
-        <button class="t-navday" id="pgPrevWeek">‹</button>
-        <div id="pgSemLabel" style="flex:1;text-align:center;font-weight:600;font-size:13px"></div>
-        <button class="t-navday" id="pgNextWeek">›</button>
-      </div>
-      <div id="pgSemana" class="pg-semana"></div>
-    </div>
-
     <!-- Editar eventos planificados -->
     <div class="t-card">
       <div class="t-card-title">✏️ Eventos planificados</div>
       <div class="t-hint" style="margin-bottom:8px">Bloques fijos (con vigencia) o únicos. Toca uno para editarlo.</div>
-      <button class="t-btn" id="tAddBloque">+ Nuevo bloque</button>
+      <div style="display:flex;gap:8px">
+        <button class="t-btn" id="tAddBloque" style="flex:1">+ Nuevo bloque</button>
+        <button class="t-btn t-btn-2" id="tDescargaJSON" style="flex:0 0 auto">⬇ JSON</button>
+      </div>
       <div id="tHorarioList" style="margin-top:12px"></div>
     </div>
 
@@ -1162,15 +1145,12 @@ function renderPanel() {
   // Limpiar (excepto el círculo base)
   while (pie.children.length > 1) pie.removeChild(pie.lastChild);
 
-  // Si hay inactivos, incluirlos en gris
+  // Solo activos en el pastel (los inactivos no cuentan ni se ven)
   const segments = [
     ...Object.entries(conteo).filter(([,v]) => v > 0).map(([k,v]) => ({
       key: k, count: v, color: CATS[k].color, stroke: CATS[k].stroke
     }))
   ];
-  if (inactivos.length > 0) {
-    segments.push({ key: "inactivo", count: inactivos.length, color: INACTIVO_COLOR });
-  }
   const totalSeg = segments.reduce((s,x) => s + x.count, 0) || 1;
 
   const CIRC = 2 * Math.PI * 15.915; // ≈ 100
@@ -1202,12 +1182,6 @@ function renderPanel() {
     el.innerHTML = `<span class="swatch" style="background:${meta.color};${meta.stroke?'border-color:'+meta.stroke:''}"></span>${meta.label} ${conteo[k]}`;
     legend.appendChild(el);
   });
-  if (inactivos.length > 0) {
-    const el = document.createElement("div");
-    el.className = "legend-item";
-    el.innerHTML = `<span class="swatch" style="background:${INACTIVO_COLOR}"></span>Inactivo ${inactivos.length}`;
-    legend.appendChild(el);
-  }
 }
 
 function renderChips() {
@@ -1231,11 +1205,13 @@ function renderLista() {
   list.innerHTML = "";
 
   let filtrados = contactos.slice();
-  // filtro chip
+  // filtro chip — los inactivos solo se ven al elegir "Inactivos"
   if (filtroCat === "inactivo") {
     filtrados = filtrados.filter(c => c.activo === false);
   } else if (filtroCat !== "todos") {
     filtrados = filtrados.filter(c => c.categoria === filtroCat && c.activo !== false);
+  } else {
+    filtrados = filtrados.filter(c => c.activo !== false);
   }
   // filtro búsqueda
   if (q) {
@@ -1253,13 +1229,13 @@ function renderLista() {
   filtrados.forEach(c => {
     const el = document.createElement("div");
     el.className = "contact";
-    const color = c.activo === false ? INACTIVO_COLOR : CATS[c.categoria].color;
+    const color = c.activo === false ? INACTIVO_COLOR : (CATS[c.categoria]?.color || INACTIVO_COLOR);
     const inactBadge = c.activo === false ? '<span class="inactivo-badge">inactivo</span>' : '';
     el.innerHTML = `
       <span class="dot" style="background:${color}"></span>
       <div class="contact-info">
         <div class="contact-name">${escapeHtml(c.nombre)} ${inactBadge}</div>
-        <div class="contact-meta">${CATS[c.categoria].label} · ${escapeHtml(c.estatus || 'conocido')} · fuerza ${c.fuerza || '–'}</div>
+        <div class="contact-meta">${CATS[c.categoria]?.label || c.categoria} · ${escapeHtml(c.estatus || 'conocido')} · fuerza ${c.fuerza || '–'}</div>
       </div>
       <span class="fuerza">${(c.notas || []).length} nota${(c.notas||[]).length===1?'':'s'}</span>
     `;
@@ -1285,7 +1261,7 @@ function cerrarModal() {
 
 function renderModal(c) {
   const modal = $("modal");
-  const color = c.activo === false ? INACTIVO_COLOR : CATS[c.categoria].color;
+  const color = c.activo === false ? INACTIVO_COLOR : (CATS[c.categoria]?.color || INACTIVO_COLOR);
   modal.innerHTML = `
     <div class="modal-header">
       <span class="dot" style="background:${color};width:14px;height:14px"></span>
@@ -1895,15 +1871,56 @@ function diaActivo() {
 // ============ RENDER MÓDULO TIEMPO ============
 function renderTiempo() {
   $("tDateLabel").textContent = fmtFecha(tFecha);
-  renderAgenda();
-  renderRotiBalance();
+  renderDiaTimeline();
   renderReal();
   renderComparacion();
   renderHabitos();
   cargarCamposDia();
-  renderPlan();
   renderHorarioList();
   renderPlaneacion();
+}
+
+// ===== Timeline del día tipo Google Calendar (4:00 → 24:00) =====
+const TL_INI = 4, TL_FIN = 24, TL_H = 44; // hora inicio/fin y px por hora
+function renderDiaTimeline() {
+  const cont = $("tTimeline");
+  if (!cont) return;
+  const bloques = bloquesDe(tFecha);
+  const d = tDias[tFecha] || {};
+  const estados = d.estados || {};
+
+  // rejilla de horas
+  let horas = "";
+  for (let h = TL_INI; h < TL_FIN; h++) {
+    const et = h===0?"12am": h<12?h+"am": h===12?"12pm": (h-12)+"pm";
+    horas += `<div class="tl-hour"><span class="tl-hlabel">${et}</span></div>`;
+  }
+  // asignar carriles a bloques que se traslapan
+  const items = bloques.map(b => ({ b, s:H_MIN(b.ini), e:Math.max(H_MIN(b.ini)+15, H_MIN(b.fin)) }))
+    .sort((a,b)=>a.s-b.s);
+  const laneEnd = []; // fin de cada carril
+  items.forEach(it => {
+    let lane = laneEnd.findIndex(end => end <= it.s);
+    if (lane === -1) { lane = laneEnd.length; laneEnd.push(it.e); } else laneEnd[lane] = it.e;
+    it.lane = lane;
+  });
+  const nLanes = Math.max(1, laneEnd.length);
+  let blocksHtml = "";
+  items.forEach(it => {
+    const b = it.b;
+    const top = ((it.s - TL_INI*60)/60) * TL_H;
+    const hgt = Math.max(16, ((it.e - it.s)/60) * TL_H - 2);
+    const w = 100/nLanes;
+    const left = it.lane * w;
+    const color = colorActividad(b);
+    const est = estados[b.id];
+    const stcls = est==="hecho" ? "st-hecho" : (est && (est==="nohare"||(est.startsWith&&est.startsWith("reprog:")))) ? "st-nohare" : "";
+    blocksHtml += `<div class="tl-block ${stcls}" data-id="${b.id}" style="top:${top.toFixed(1)}px;height:${hgt.toFixed(1)}px;left:calc(${left}% + 1px);width:calc(${w}% - 2px);background:${color}">
+      <b>${b.ini}</b> ${escapeHtml(b.titulo)}</div>`;
+  });
+  cont.innerHTML = `<div class="tl-grid" style="height:${(TL_FIN-TL_INI)*TL_H}px">${horas}<div class="tl-lane">${blocksHtml}</div></div>`
+    + (bloques.length? "" : `<div class="tl-empty">Sin bloques hoy. Usa “+ Bloque”.</div>`);
+  cont.querySelectorAll(".tl-block").forEach(el => el.onclick = () => abrirBloque(el.dataset.id));
 }
 
 // Poblar select ROTI del formulario de actividad real (una vez)
@@ -2061,7 +2078,6 @@ function cargarCamposDia() {
   $("tPrio0").value = d.prioridades[0] || "";
   $("tPrio1").value = d.prioridades[1] || "";
   $("tPrio2").value = d.prioridades[2] || "";
-  $("tContexto").value = d.contexto || "";
   $("tJ0").value = d.journal.p0 || "";
   $("tJ1").value = d.journal.p1 || "";
   $("tJ2").value = d.journal.p2 || "";
@@ -2150,7 +2166,6 @@ function bloquesDe(iso) {
 function renderPlaneacion() {
   renderCalendario();
   renderTipos();
-  renderSemanaSintetica();
   renderMatriz();
   renderAjuste();
 }
@@ -2697,6 +2712,24 @@ function importarPlan() {
   }
 }
 
+// ============ DESCARGAR ACTIVIDADES (JSON) ============
+function descargarActividadesJSON() {
+  const data = {
+    exportado: new Date().toISOString(),
+    horario,                 // bloques planificados (fijos y únicos)
+    tipos: tiposActividad,   // tipos de actividad y colores
+    pendientes,              // pendientes Eisenhower
+    dias: tDias              // estados por día (hecho/no haré/reprogramado), journal, prioridades
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `actividades_${hoyISO()}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast("Actividades descargadas (JSON) ✓");
+}
+
 // ============ INIT UI TIEMPO ============
 function initTiempoUI() {
   // Cambio de módulo
@@ -2713,10 +2746,14 @@ function initTiempoUI() {
 
   // Guardar campos al escribir (autosave ligero)
   ["tPrio0","tPrio1","tPrio2"].forEach((id,i)=> $(id).oninput = () => { diaActivo().prioridades[i]=$(id).value; });
-  $("tContexto").oninput = () => { diaActivo().contexto = $("tContexto").value; };
 
-  // Nuevo bloque
+  // Añadir bloque desde Hoy (día actual, único)
+  $("tAddHoy").onclick = () => abrirBloque(null, { tipo:"unico", fecha:tFecha });
+
+  // Nuevo bloque (Planeación)
   $("tAddBloque").onclick = () => abrirBloque(null);
+  // Descargar actividades en JSON
+  $("tDescargaJSON").onclick = () => descargarActividadesJSON();
 
   // ---- Área de planeación ----
   // WOOP select de pendientes
@@ -2737,9 +2774,6 @@ function initTiempoUI() {
     const q = cuadrante(pendientes[pendientes.length-1]);
     toast(q===4 ? "Añadido a Q4 (eliminar) — no se agenda" : q===3 ? "Añadido a Q3 (delegar)" : "Pendiente añadido y sugerido en tu semana");
   };
-  // navegación de semana
-  $("pgPrevWeek").onclick = () => { const dt=isoADate(pgSemAncla); dt.setDate(dt.getDate()-7); pgSemAncla=dt.toISOString().slice(0,10); renderPlaneacion(); };
-  $("pgNextWeek").onclick = () => { const dt=isoADate(pgSemAncla); dt.setDate(dt.getDate()+7); pgSemAncla=dt.toISOString().slice(0,10); renderPlaneacion(); };
   // recalcular manual
   $("pgRecalc").onclick = () => recalcularSemana(false);
 
@@ -2759,22 +2793,10 @@ function initTiempoUI() {
     else toast("Actividad registrada");
   };
 
-  // Export / import
-  $("tExport").onclick = async () => {
-    const txt = construirExport();
-    const ok = await copiar(txt);
-    if (ok) toast("Copiado ✓ pégamelo en el chat");
-    else { // fallback: mostrar en prompt para copiar manual
-      window.prompt("Copia este texto y pégamelo en el chat:", txt);
-    }
-  };
-  $("tImportBtn").onclick = importarPlan;
-
   // Guardar día completo
   $("tGuardarDia").onclick = async () => {
     const d = diaActivo();
     d.prioridades = [$("tPrio0").value,$("tPrio1").value,$("tPrio2").value];
-    d.contexto = $("tContexto").value;
     d.journal = { p0:$("tJ0").value, p1:$("tJ1").value, p2:$("tJ2").value };
     d.agradecimientos = [$("tG0").value,$("tG1").value,$("tG2").value];
     await guardarDiaRemoto(tFecha);
