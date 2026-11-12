@@ -313,6 +313,41 @@
   .dia-btn { flex:1; padding:8px 0; border:1px solid var(--line); background:var(--card); border-radius:8px; font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer; font-family:inherit; }
   .dia-btn.on { background:var(--ink); color:#fff; border-color:var(--ink); }
 
+  /* Gestor de grupos / tipos de actividad */
+  .grupo-row { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px dashed var(--line); }
+  .grupo-row:last-child { border-bottom:none; }
+  .grupo-color { width:34px; height:34px; border:1px solid var(--line); border-radius:8px; padding:0; background:none; cursor:pointer; flex-shrink:0; }
+  .grupo-n { font-size:11px; color:var(--ink-mute); min-width:20px; text-align:center; }
+  .grupo-del { background:none; border:none; color:var(--ink-mute); cursor:pointer; font-size:15px; }
+
+  /* Calendario mensual */
+  .cal-dow { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:3px; }
+  .cal-dow div { text-align:center; font-size:9px; color:var(--ink-mute); font-weight:700; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+  .cal-cell { background:var(--card); border:1px solid var(--line); border-radius:7px; min-height:52px; padding:3px 4px; cursor:pointer; display:flex; flex-direction:column; gap:2px; }
+  .cal-cell.hoy { border-color:var(--navy); box-shadow:0 0 0 1px var(--navy); }
+  .cal-cell.empty { background:transparent; border:none; cursor:default; }
+  .cal-num { font-size:11px; font-weight:700; }
+  .cal-dots { display:flex; flex-wrap:wrap; gap:2px; }
+  .cal-dot { width:6px; height:6px; border-radius:2px; display:inline-block; }
+  .cal-cnt { font-size:8px; color:var(--ink-mute); margin-top:auto; }
+
+  /* Día modal */
+  .dia-act { background:var(--card); border:1px solid var(--line); border-left:4px solid #999; border-radius:9px; padding:9px 11px; margin-bottom:7px; }
+  .dia-act .hora { font-size:12px; font-weight:700; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .dia-act .tit { font-size:14px; font-weight:600; margin-top:1px; }
+  .dia-act .sub { font-size:11px; color:var(--ink-mute); }
+  .dia-act.hecho { opacity:.6; }
+  .dia-act.nohare { opacity:.5; }
+  .dia-act.nohare .tit { text-decoration:line-through; }
+  .dia-badge { font-size:10px; font-weight:700; margin-top:3px; display:inline-block; }
+  .dia-btns { display:flex; gap:6px; margin-top:8px; }
+  .dia-btns button { flex:1; padding:7px; border-radius:8px; border:1px solid var(--line); background:var(--card); font-size:14px; cursor:pointer; font-family:inherit; }
+  .db-hecho { background:#e8f5ec!important; color:#2e7d46!important; border-color:#bfe3cc!important; }
+  .db-no { background:#fbeaea!important; color:#c0392b!important; border-color:#f1c9c9!important; }
+  .db-rep { background:#e7f0fa!important; color:#2f7cc2!important; border-color:#c3dbf2!important; }
+  .tipo-dot { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.1); display:inline-block; vertical-align:middle; }
+
   /* ROTI */
   .roti-bar { display:flex; height:22px; border-radius:8px; overflow:hidden; background:#e3e9f3; margin-bottom:8px; }
   .roti-seg { display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; font-weight:700; min-width:0; }
@@ -412,6 +447,7 @@
   .pend-txt.done { text-decoration:line-through; color:var(--ink-mute); }
   .pend-slot { font-size:10px; color:var(--navy); font-weight:600; }
   .pend-del { background:none; border:none; color:var(--ink-mute); cursor:pointer; font-size:12px; padding:0; }
+  .pend-ag { background:none; border:none; cursor:pointer; font-size:12px; padding:0; }
   .pend-chk { width:15px; height:15px; accent-color:#16a34a; margin-top:1px; }
 
   .ajuste-dia { border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-bottom:8px; background:var(--card); }
@@ -485,6 +521,7 @@
 <!-- Acciones globales -->
 <div class="actions-bar">
   <button class="action-btn primary" id="btnNuevo">+ Nuevo contacto</button>
+  <button class="action-btn" id="btnGrupos">🏷 Grupos</button>
   <button class="action-btn" id="btnExport">⬇ Exportar CSV</button>
 </div>
 
@@ -517,7 +554,7 @@
 
 <!-- Vista red -->
 <div id="viewRed" style="display:none">
-  <div class="red-hint">Cada nodo es un contacto, coloreado por categoría y unido a ti. El tamaño refleja la fuerza de la relación. Toca un nodo para abrir su perfil.</div>
+  <div class="red-hint">Anillos por fuerza de relación: <b>Amigos</b> (7-10), <b>Profesional</b> (4-6), <b>Conocidos</b> (inmobiliaria 4-6) y <b>Por cultivar</b> (1-3). El color es el grupo; el aro dorado ✦ marca relaciones que quieres retomar. Toca un nodo para abrir su perfil.</div>
   <div class="red-wrap">
     <svg id="grafo" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet"></svg>
   </div>
@@ -639,9 +676,31 @@
     <!-- Banner de recálculo -->
     <div id="tRecalcBanner" class="recalc-banner" style="display:none"></div>
 
-    <!-- Vista semanal sintética -->
+    <!-- Calendario mensual -->
     <div class="t-card">
-      <div class="t-card-title">🗓 Mi semana de un vistazo</div>
+      <div class="semana-nav">
+        <button class="t-navday" id="calPrev">‹</button>
+        <div id="calLabel" style="flex:1;text-align:center;font-weight:700;font-size:15px;text-transform:capitalize"></div>
+        <button class="t-navday" id="calNext">›</button>
+        <button class="t-navday" id="calHoy" style="width:auto;padding:0 10px;font-size:12px">Hoy</button>
+      </div>
+      <div id="calGrid"></div>
+      <div class="t-hint" style="margin-top:8px">Toca un día para ver y marcar sus actividades por hora.</div>
+    </div>
+
+    <!-- Tipos de actividad (colores editables) -->
+    <div class="t-card">
+      <div class="t-card-title">🎨 Tipos de actividad (color)</div>
+      <div id="tiposList"></div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <input type="text" id="tipoNuevo" class="t-input" placeholder="Nuevo tipo… (ej. Ejercicio)" style="flex:1;margin:0">
+        <button class="btn btn-secondary" id="tipoAdd" style="flex:0 0 auto">+ Añadir</button>
+      </div>
+    </div>
+
+    <!-- Vista semanal sintética (compacta) -->
+    <div class="t-card">
+      <div class="t-card-title">🗓 Semana de un vistazo</div>
       <div class="semana-nav">
         <button class="t-navday" id="pgPrevWeek">‹</button>
         <div id="pgSemLabel" style="flex:1;text-align:center;font-weight:600;font-size:13px"></div>
@@ -817,6 +876,14 @@
   <div class="modal" id="modal"></div>
 </div>
 
+<div class="modal-bg" id="gruposBg">
+  <div class="modal" id="gruposModal"></div>
+</div>
+
+<div class="modal-bg" id="diaBg">
+  <div class="modal" id="diaModal"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -849,7 +916,7 @@ const SEED = [{"id":"c001","nombre":"Edmi Jurado","categoria":"semov","estatus":
 ;
 
 // Categorías → colores + labels
-const CATS = {
+const CATS_DEFAULT = {
   cide:         { color: "#16a34a", label: "CIDE" },
   tepeyac:      { color: "#dc2626", label: "Tepeyac" },
   semov:        { color: "#881337", label: "SEMOV" },
@@ -858,6 +925,7 @@ const CATS = {
   personal:     { color: "#ec4899", label: "Personal" },
   otro:         { color: "#9333ea", label: "Otro" }
 };
+let CATS = JSON.parse(JSON.stringify(CATS_DEFAULT)); // editable (grupos)
 const INACTIVO_COLOR = "#94a3b8";
 
 // Estado en memoria
@@ -877,6 +945,8 @@ let bloqueEditId = null;
 let pendientes = [];        // pendientes tipo Eisenhower
 let pgSemAncla = hoyISO();  // fecha ancla de la semana en el Área de Planeación
 let ajusteSemana = null;    // última planeación recalculada
+let tiposActividad = [];    // tipos de actividad con color editable
+let calMes = new Date();    // mes activo en el calendario
 
 const $ = id => document.getElementById(id);
 
@@ -924,7 +994,9 @@ async function init() {
 
     // Tiempo real
     onSnapshot(collection(db, COLECCION), (snap) => {
-      contactos = snap.docs.map(d => d.data());
+      const gdoc = snap.docs.find(d => d.id === "__config_grupos__");
+      if (gdoc && gdoc.data().grupos) CATS = gdoc.data().grupos;
+      contactos = snap.docs.filter(d => d.id !== "__config_grupos__").map(d => d.data());
       render();
     }, (err) => {
       console.error("onSnapshot error:", err);
@@ -970,10 +1042,24 @@ function withTimeout(promise, ms, label) {
 function cargarLocal() {
   const stored = localStorage.getItem("crm_social");
   contactos = stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(SEED));
+  const g = localStorage.getItem("social_grupos");
+  if (g) { try { CATS = JSON.parse(g); } catch(e){} }
   render();
 }
 function guardarLocal() {
   localStorage.setItem("crm_social", JSON.stringify(contactos));
+}
+function guardarGruposLocal() { localStorage.setItem("social_grupos", JSON.stringify(CATS)); }
+async function guardarGruposRemoto() {
+  guardarGruposLocal();
+  if (firebaseOK) { try { await setDoc(doc(db, COLECCION, "__config_grupos__"), { grupos: CATS }); } catch(e){ console.error(e);} }
+}
+// slug para clave de grupo nuevo
+function slugGrupo(label) {
+  let base = (label||"grupo").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"") || "grupo";
+  let k = base, i = 2;
+  while (CATS[k]) k = base + "_" + (i++);
+  return k;
 }
 
 // ---------- GUARDAR UN CONTACTO ----------
@@ -1156,7 +1242,8 @@ function renderLista() {
     filtrados = filtrados.filter(c => c.nombre.toLowerCase().includes(q));
   }
   // ordenar por nombre
-  filtrados.sort((a,b) => a.nombre.localeCompare(b.nombre, "es"));
+  // Orden por fuerza de relación (10 primero, bajos al final); empata por nombre
+  filtrados.sort((a,b) => (parseFloat(b.fuerza)||0) - (parseFloat(a.fuerza)||0) || a.nombre.localeCompare(b.nombre, "es"));
 
   if (filtrados.length === 0) {
     list.innerHTML = '<div class="empty">Sin resultados</div>';
@@ -1239,6 +1326,10 @@ function renderModal(c) {
     </div>
 
     <div class="field">
+      <label><input type="checkbox" id="f_retomar" ${c.retomar ? 'checked' : ''} style="width:auto;margin-right:6px;vertical-align:middle">✦ Quiero retomar / mejorar esta relación</label>
+    </div>
+
+    <div class="field">
       <label>¿Qué temas le interesan / apasionan?</label>
       <textarea id="f_temas" rows="2">${escapeHtml(c.apasiona || c.temas || '')}</textarea>
     </div>
@@ -1309,6 +1400,7 @@ function renderModal(c) {
       estatus: $("f_estatus").value,
       activo: $("f_activo").value === "true",
       fuerza: $("f_fuerza").value,
+      retomar: $("f_retomar").checked,
       apasiona: $("f_temas").value,
       hobbies: $("f_hobbies").value,
       familia: $("f_familia").value,
@@ -1368,6 +1460,65 @@ $("searchTL").addEventListener("input", renderTimeline);
 $("tipsHeader").onclick = () => {
   $("tipsPanel").classList.toggle("open");
 };
+
+// ---------- GESTOR DE GRUPOS ----------
+$("btnGrupos").onclick = () => abrirGrupos();
+$("gruposBg").addEventListener("click", (e)=>{ if(e.target.id==="gruposBg"){ $("gruposBg").classList.remove("open"); document.body.style.overflow=""; } });
+
+function abrirGrupos() {
+  const m = $("gruposModal");
+  const filas = Object.entries(CATS).map(([k,v]) => {
+    const n = contactos.filter(c=>c.categoria===k).length;
+    const borrable = k!=="otro";
+    return `<div class="grupo-row">
+      <input type="color" value="${v.color && v.color.startsWith('#') ? v.color : '#999999'}" data-k="${k}" class="grupo-color">
+      <input type="text" value="${escapeHtml(v.label)}" data-k="${k}" class="grupo-label t-input" style="margin:0;flex:1">
+      <span class="grupo-n">${n}</span>
+      ${borrable ? `<button class="grupo-del" data-k="${k}">🗑</button>` : '<span style="width:24px"></span>'}
+    </div>`;
+  }).join("");
+  m.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-name" style="font-size:18px">🏷 Grupos</div>
+      <button class="modal-close" id="grClose">×</button>
+    </div>
+    <div class="t-hint" style="margin-bottom:10px">Edita nombre y color, o elimina. Al borrar un grupo, sus contactos pasan a "Otro". El número es cuántos contactos tiene.</div>
+    <div id="gruposList">${filas}</div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input type="text" id="grNuevo" class="t-input" placeholder="Nuevo grupo…" style="flex:1;margin:0">
+      <button class="btn btn-secondary" id="grAdd" style="flex:0 0 auto">+ Añadir</button>
+    </div>
+    <div class="modal-actions"><button class="btn btn-primary" id="grSave">Guardar</button></div>`;
+  $("gruposBg").classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  $("grClose").onclick = () => { $("gruposBg").classList.remove("open"); document.body.style.overflow=""; };
+  $("grAdd").onclick = () => {
+    const label = $("grNuevo").value.trim();
+    if (!label) { toast("Escribe un nombre"); return; }
+    const k = slugGrupo(label);
+    CATS[k] = { color:"#64748b", label };
+    abrirGrupos(); // re-render manteniendo abierto
+  };
+  m.querySelectorAll(".grupo-del").forEach(b => b.onclick = async () => {
+    const k = b.dataset.k;
+    const n = contactos.filter(c=>c.categoria===k).length;
+    if (!confirm(`¿Eliminar el grupo "${CATS[k].label}"?${n?` Sus ${n} contacto(s) pasarán a "Otro".`:''}`)) return;
+    delete CATS[k];
+    // reasignar contactos
+    const afectados = contactos.filter(c=>c.categoria===k);
+    for (const c of afectados) { c.categoria = "otro"; await guardarContacto(c); }
+    await guardarGruposRemoto();
+    abrirGrupos();
+  });
+  $("grSave").onclick = async () => {
+    m.querySelectorAll(".grupo-color").forEach(inp => { if(CATS[inp.dataset.k]) CATS[inp.dataset.k].color = inp.value; });
+    m.querySelectorAll(".grupo-label").forEach(inp => { if(CATS[inp.dataset.k]) CATS[inp.dataset.k].label = inp.value.trim()||CATS[inp.dataset.k].label; });
+    await guardarGruposRemoto();
+    $("gruposBg").classList.remove("open"); document.body.style.overflow="";
+    render(); toast("Grupos guardados ✓");
+  };
+}
 
 // ---------- NUEVO CONTACTO ----------
 $("btnNuevo").onclick = async () => {
@@ -1442,104 +1593,70 @@ $("vwTimeline").onclick  = () => setView("timeline");
 $("vwRed").onclick       = () => setView("red");
 
 // ---------- GRAFO DE RED (force-directed simple) ----------
-let grafoNodos = [];
-let grafoAnim = null;
+// Zona de cada contacto según fuerza (y el indicador inmobiliaria)
+function zonaRed(c) {
+  const f = parseFloat(c.fuerza) || 0;
+  if (f >= 7) return "amigos";
+  if (f >= 4) return (c.categoria === "inmobiliaria") ? "conocidos" : "profesional";
+  return "lejanos";
+}
+const ZONAS_RED = [
+  { k:"amigos",      label:"Amigos",        r:62 },
+  { k:"profesional", label:"Profesional",   r:112 },
+  { k:"conocidos",   label:"Conocidos",     r:156 },
+  { k:"lejanos",     label:"",              r:190 }
+];
 function renderGrafo() {
   const svg = $("grafo");
   if (!svg) return;
-  const W = 400, H = 400, CX = W/2, CY = H/2;
-
-  // Nodo central "Yo" + contactos activos
+  const CX = 200, CY = 200;
   const activos = contactos.filter(c => c.activo !== false);
 
-  // Inicializar posiciones si cambió el conjunto
-  const ids = activos.map(c => c.id).join(",");
-  if (!grafoNodos._ids || grafoNodos._ids !== ids) {
-    grafoNodos = activos.map((c, i) => {
-      const ang = (i / Math.max(activos.length,1)) * Math.PI * 2;
-      return {
-        id: c.id, nombre: c.nombre, categoria: c.categoria,
-        fuerza: parseFloat(c.fuerza) || 5,
-        x: CX + Math.cos(ang) * 120 + (Math.random()-0.5)*20,
-        y: CY + Math.sin(ang) * 120 + (Math.random()-0.5)*20,
-        vx: 0, vy: 0
-      };
+  // Guías concéntricas + etiquetas de zona
+  let rings = "", labels = "";
+  ZONAS_RED.forEach(z => {
+    rings += `<circle cx="${CX}" cy="${CY}" r="${z.r}" fill="none" stroke="#b9c6dc" stroke-width="1" stroke-dasharray="3 4"/>`;
+    if (z.label) labels += `<text x="${CX}" y="${CY - z.r + 12}" text-anchor="middle" style="font-size:8.5px;fill:#5a6b8a;font-weight:700">${z.label}</text>`;
+  });
+
+  // Repartir nodos por zona en su anillo
+  const porZona = { amigos:[], profesional:[], conocidos:[], lejanos:[] };
+  activos.forEach(c => porZona[zonaRed(c)].push(c));
+  let edges = "", nodes = "";
+  ZONAS_RED.forEach(z => {
+    const arr = porZona[z.k], nz = arr.length;
+    arr.forEach((c, i) => {
+      const ang = (i / Math.max(nz,1)) * Math.PI * 2 - Math.PI/2;
+      const rr = z.r + (z.k==="lejanos" ? ((i%2)*14 - 7) : 0);
+      const x = CX + Math.cos(ang)*rr, y = CY + Math.sin(ang)*rr;
+      const color = CATS[c.categoria]?.color || INACTIVO_COLOR;
+      const f = parseFloat(c.fuerza) || 0;
+      const r = 3.5 + f*0.55;
+      const first = (c.nombre||"").split(" ")[0];
+      edges += `<line class="edge" x1="${CX}" y1="${CY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;
+      if (c.retomar) nodes += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r+3).toFixed(1)}" fill="none" stroke="#C9A227" stroke-width="1.6"/>`;
+      nodes += `<circle class="node-circle" data-id="${c.id}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${color}"/>`;
+      nodes += `<text x="${x.toFixed(1)}" y="${(y - r - 2).toFixed(1)}" text-anchor="middle" class="node-label">${escapeHtml(first)}${c.retomar?' ✦':''}</text>`;
     });
-    grafoNodos._ids = ids;
-    // correr simulación
-    if (grafoAnim) cancelAnimationFrame(grafoAnim);
-    simular(0);
-  } else {
-    pintarGrafo();
-  }
+  });
+  // Nodo central YO
+  nodes += `<circle cx="${CX}" cy="${CY}" r="12" fill="#1e3a5f" stroke="#fff" stroke-width="2"/>`;
+  nodes += `<text x="${CX}" y="${CY+3}" text-anchor="middle" style="font-size:8px;fill:#fff;font-weight:700">YO</text>`;
 
-  function simular(step) {
-    // Fuerzas: repulsión entre nodos, atracción al centro según fuerza de relación
-    for (let a of grafoNodos) {
-      let fx = 0, fy = 0;
-      // repulsión
-      for (let b of grafoNodos) {
-        if (a === b) continue;
-        let dx = a.x - b.x, dy = a.y - b.y;
-        let d2 = dx*dx + dy*dy + 0.01;
-        let f = 380 / d2;
-        fx += dx * f; fy += dy * f;
-      }
-      // atracción al centro (Yo): más fuerte = más cerca
-      let dxc = CX - a.x, dyc = CY - a.y;
-      let distIdeal = 150 - (a.fuerza * 9); // fuerza 10 → ~60px, fuerza 1 → ~140px
-      let dc = Math.sqrt(dxc*dxc + dyc*dyc) || 1;
-      let pull = (dc - distIdeal) * 0.012;
-      fx += (dxc/dc) * pull * dc;
-      fy += (dyc/dc) * pull * dc;
+  svg.innerHTML = rings + labels + edges + nodes;
+  svg.querySelectorAll(".node-circle").forEach(el => el.onclick = () => abrirModal(el.dataset.id));
 
-      a.vx = (a.vx + fx) * 0.82;
-      a.vy = (a.vy + fy) * 0.82;
-    }
-    for (let a of grafoNodos) {
-      a.x += Math.max(-8, Math.min(8, a.vx));
-      a.y += Math.max(-8, Math.min(8, a.vy));
-      a.x = Math.max(20, Math.min(W-20, a.x));
-      a.y = Math.max(20, Math.min(H-20, a.y));
-    }
-    pintarGrafo();
-    if (step < 120 && redVisible) grafoAnim = requestAnimationFrame(() => simular(step+1));
-  }
-
-  function pintarGrafo() {
-    let edges = "", nodes = "";
-    // aristas al centro
-    for (let n of grafoNodos) {
-      edges += `<line class="edge" x1="${CX}" y1="${CY}" x2="${n.x.toFixed(1)}" y2="${n.y.toFixed(1)}"/>`;
-    }
-    // nodo central
-    nodes += `<circle cx="${CX}" cy="${CY}" r="10" fill="#1e3a5f" stroke="#fff" stroke-width="2"/>`;
-    nodes += `<text x="${CX}" y="${CY+22}" text-anchor="middle" class="node-label" style="font-size:8px;font-weight:700">YO</text>`;
-    // nodos contacto
-    for (let n of grafoNodos) {
-      const color = CATS[n.categoria]?.color || "#94a3b8";
-      const r = 3.5 + n.fuerza * 0.55;
-      const first = n.nombre.split(" ")[0];
-      nodes += `<circle class="node-circle" data-id="${n.id}" cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${r.toFixed(1)}" fill="${color}"/>`;
-      nodes += `<text x="${n.x.toFixed(1)}" y="${(n.y - r - 2).toFixed(1)}" text-anchor="middle" class="node-label">${escapeHtml(first)}</text>`;
-    }
-    svg.innerHTML = edges + nodes;
-    svg.querySelectorAll(".node-circle").forEach(el => {
-      el.onclick = () => abrirModal(el.dataset.id);
-    });
-  }
-
-  // Leyenda de red
+  // Leyenda
   const lg = $("legendRed");
   lg.innerHTML = "";
-  Object.entries(CATS).forEach(([k, meta]) => {
-    const count = activos.filter(c => c.categoria === k).length;
-    if (count === 0) return;
-    const el = document.createElement("div");
-    el.className = "legend-item";
-    el.innerHTML = `<span class="swatch" style="background:${meta.color};${meta.stroke?'border-color:'+meta.stroke:''}"></span>${meta.label} ${count}`;
+  [["amigos","Amigos (7-10)"],["profesional","Profesional (4-6)"],["conocidos","Conocidos · inmob. (4-6)"],["lejanos","Por cultivar (1-3)"]].forEach(([k,lab]) => {
+    const n = porZona[k].length; if (!n) return;
+    const el = document.createElement("div"); el.className = "legend-item";
+    el.innerHTML = `<span class="swatch" style="background:transparent;border:1px dashed #5a6b8a"></span>${lab}: ${n}`;
     lg.appendChild(el);
   });
+  const nr = activos.filter(c => c.retomar).length;
+  if (nr) { const el = document.createElement("div"); el.className="legend-item"; el.innerHTML = `<span class="swatch" style="background:transparent;border:1.6px solid #C9A227;border-radius:50%"></span>✦ Retomar: ${nr}`; lg.appendChild(el); }
 }
 
 // ---------- TIMELINE ----------
@@ -1684,6 +1801,15 @@ function seedHorario() {
 }
 
 // --------- Persistencia local del módulo Tiempo ---------
+function seedTipos() {
+  return [
+    { id:"trabajo",  nombre:"Trabajo",        color:"#166534" },
+    { id:"limpieza", nombre:"Limpieza / ropa", color:"#7c3aed" },
+    { id:"traslado", nombre:"Traslado",       color:"#ea580c" },
+    { id:"tesis",    nombre:"Tesis / estudio", color:"#1e3a5f" },
+    { id:"personal", nombre:"Personal",       color:"#0d9488" }
+  ];
+}
 function cargarTiempoLocal() {
   const h = localStorage.getItem("tiempo_horario");
   horario = h ? JSON.parse(h) : seedHorario();
@@ -1691,12 +1817,15 @@ function cargarTiempoLocal() {
   tDias = d ? JSON.parse(d) : {};
   const p = localStorage.getItem("tiempo_pendientes");
   pendientes = p ? JSON.parse(p) : [];
+  const t = localStorage.getItem("tiempo_tipos");
+  tiposActividad = t ? JSON.parse(t) : seedTipos();
   if (!h) guardarTiempoLocal();
 }
 function guardarTiempoLocal() {
   localStorage.setItem("tiempo_horario", JSON.stringify(horario));
   localStorage.setItem("tiempo_dias", JSON.stringify(tDias));
   localStorage.setItem("tiempo_pendientes", JSON.stringify(pendientes));
+  localStorage.setItem("tiempo_tipos", JSON.stringify(tiposActividad));
 }
 
 // --------- Sincronización con Firebase (colección "tiempo") ---------
@@ -1705,12 +1834,12 @@ async function sincronizarTiempo() {
   try {
     const snap = await withTimeout(getDocs(collection(db, COL_TIEMPO)), 10000, "tiempo");
     if (snap.empty) {
-      await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes });
+      await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes, tipos: tiposActividad });
     }
     onSnapshot(collection(db, COL_TIEMPO), (snap) => {
       snap.docs.forEach(d => {
         const data = d.data();
-        if (d.id === "config") { horario = data.horario || horario; pendientes = data.pendientes || pendientes; }
+        if (d.id === "config") { horario = data.horario || horario; pendientes = data.pendientes || pendientes; if (data.tipos) tiposActividad = data.tipos; }
         else if (d.id.startsWith("dia_")) tDias[d.id.slice(4)] = data;
       });
       if (moduloActual === "tiempo") renderTiempo();
@@ -1719,8 +1848,10 @@ async function sincronizarTiempo() {
 }
 async function guardarConfigTiempo() {
   guardarTiempoLocal();
-  if (firebaseOK) { try { await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes }); } catch(e){ console.error(e);} }
+  if (firebaseOK) { try { await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes, tipos: tiposActividad }); } catch(e){ console.error(e);} }
 }
+function tipoColor(id) { const t = tiposActividad.find(x=>x.id===id); return t ? t.color : null; }
+function tipoNombre(id) { const t = tiposActividad.find(x=>x.id===id); return t ? t.nombre : null; }
 async function guardarHorarioRemoto() { await guardarConfigTiempo(); }
 async function guardarPendientesRemoto() { await guardarConfigTiempo(); }
 async function guardarDiaRemoto(fecha) {
@@ -1855,14 +1986,16 @@ function renderAgenda() {
   bloques.forEach(b => {
     const w = WOOPS[b.woop] || WOOPS[0];
     const r = ROTI[b.roti];
+    const tc = b.tipoId ? tipoColor(b.tipoId) : null;
     const el = document.createElement("div");
     el.className = "t-block";
-    if (r) el.style.borderLeftColor = r.color;
+    el.style.borderLeftColor = tc || (r ? r.color : "transparent");
+    const tnom = b.tipoId ? tipoNombre(b.tipoId) : null;
     el.innerHTML = `
       <div class="t-block-time">${b.ini}–${b.fin}</div>
       <div class="t-block-body">
         <div class="t-block-name">${escapeHtml(b.titulo)}</div>
-        <span class="t-block-tag" style="background:${w.color}">${w.label}</span>
+        <span class="t-block-tag" style="background:${w.color}">${w.label}</span>${tnom?` <span class="t-block-tag" style="background:${tc}">${escapeHtml(tnom)}</span>`:''}
       </div>
       <button class="t-block-edit" data-id="${b.id}">✎</button>`;
     el.querySelector(".t-block-edit").onclick = () => abrirBloque(b.id);
@@ -2015,9 +2148,205 @@ function bloquesDe(iso) {
 }
 
 function renderPlaneacion() {
+  renderCalendario();
+  renderTipos();
   renderSemanaSintetica();
   renderMatriz();
   renderAjuste();
+}
+
+// ============ TIPOS DE ACTIVIDAD (colores editables) ============
+function renderTipos() {
+  const cont = $("tiposList");
+  if (!cont) return;
+  cont.innerHTML = "";
+  tiposActividad.forEach(t => {
+    const nBloques = horario.filter(b=>b.tipoId===t.id).length;
+    const el = document.createElement("div");
+    el.className = "grupo-row";
+    el.innerHTML = `
+      <input type="color" value="${t.color}" data-id="${t.id}" class="tipo-color grupo-color">
+      <input type="text" value="${escapeHtml(t.nombre)}" data-id="${t.id}" class="tipo-label t-input" style="margin:0;flex:1">
+      <span class="grupo-n">${nBloques}</span>
+      <button class="grupo-del" data-id="${t.id}">🗑</button>`;
+    el.querySelector(".tipo-color").onchange = async (e) => { t.color = e.target.value; await guardarConfigTiempo(); renderTiempo(); };
+    el.querySelector(".tipo-label").onchange = async (e) => { t.nombre = e.target.value.trim()||t.nombre; await guardarConfigTiempo(); };
+    el.querySelector(".grupo-del").onclick = async () => {
+      if (!confirm(`¿Eliminar el tipo "${t.nombre}"? Los bloques que lo usan quedan sin color de tipo.`)) return;
+      tiposActividad = tiposActividad.filter(x=>x.id!==t.id);
+      horario.forEach(b=>{ if(b.tipoId===t.id) b.tipoId=null; });
+      await guardarConfigTiempo(); renderTiempo();
+    };
+    cont.appendChild(el);
+  });
+}
+
+// ============ CALENDARIO MENSUAL ============
+const CAL_MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const CAL_DOW = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+// color de una actividad: tipo si tiene, si no el WOOP
+function colorActividad(b) {
+  const tc = b.tipoId ? tipoColor(b.tipoId) : null;
+  return tc || (WOOPS[b.woop]?.color) || "#64748b";
+}
+// estado de un bloque en un día concreto
+function estadoBloque(iso, bid) {
+  const d = tDias[iso];
+  return d && d.estados ? d.estados[bid] : null;
+}
+
+function renderCalendario() {
+  const grid = $("calGrid"); if (!grid) return;
+  const y = calMes.getFullYear(), m = calMes.getMonth();
+  $("calLabel").textContent = `${CAL_MESES[m]} ${y}`;
+  const primero = new Date(y, m, 1), ultimo = new Date(y, m+1, 0);
+  const startPad = (primero.getDay()+6)%7; // 0=Lun
+  const hoy = hoyISO();
+  let dows = `<div class="cal-dow">${CAL_DOW.map(d=>`<div>${d}</div>`).join("")}</div>`;
+  let cells = "";
+  for (let i=0;i<startPad;i++) cells += `<div class="cal-cell empty"></div>`;
+  for (let dd=new Date(primero); dd<=ultimo; dd.setDate(dd.getDate()+1)) {
+    const iso = dd.toISOString().slice(0,10);
+    const bloques = bloquesDe(iso);
+    const colores = [...new Set(bloques.map(colorActividad))].slice(0,4);
+    const dots = colores.map(c=>`<span class="cal-dot" style="background:${c}"></span>`).join("");
+    cells += `<div class="cal-cell ${iso===hoy?'hoy':''}" data-iso="${iso}">
+      <div class="cal-num">${dd.getDate()}</div>
+      <div class="cal-dots">${dots}</div>
+      ${bloques.length?`<div class="cal-cnt">${bloques.length} act.</div>`:''}
+    </div>`;
+  }
+  grid.innerHTML = dows + `<div class="cal-grid">${cells}</div>`;
+  grid.querySelectorAll(".cal-cell[data-iso]").forEach(el => el.onclick = () => abrirDiaCal(el.dataset.iso));
+}
+
+// ============ MODAL DEL DÍA ============
+function ensureEstados(iso) {
+  if (!tDias[iso]) tDias[iso] = { prioridades:["","",""], habitos:{}, journal:{}, agradecimientos:["","",""], plan:null, contexto:"", real:[] };
+  if (!tDias[iso].estados) tDias[iso].estados = {};
+  return tDias[iso];
+}
+function abrirDiaCal(iso) {
+  const m = $("diaModal");
+  const bloques = bloquesDe(iso);
+  const d = ensureEstados(iso);
+  let items = bloques.map(b => {
+    const est = d.estados[b.id] || null;
+    const color = colorActividad(b);
+    const tnom = b.tipoId ? tipoNombre(b.tipoId) : (WOOPS[b.woop]?.label || "");
+    let badge = "", cls = "";
+    if (est === "hecho") { badge = `<span class="dia-badge" style="color:#2e7d46">✓ Hecho</span>`; cls="hecho"; }
+    else if (est === "nohare") { badge = `<span class="dia-badge" style="color:#c0392b">✗ No lo haré</span>`; cls="nohare"; }
+    else if (est && est.startsWith && est.startsWith("reprog:")) { badge = `<span class="dia-badge" style="color:#2f7cc2">⏰ Reprogramada → ${est.slice(7)}</span>`; cls="nohare"; }
+    const botones = (est)
+      ? `<button data-bid="${b.id}" data-act="deshacer">↩︎ Deshacer</button>`
+      : `<button class="db-hecho" data-bid="${b.id}" data-act="hecho">✓ Hice</button>
+         <button class="db-no" data-bid="${b.id}" data-act="nohare">✗ No haré</button>
+         <button class="db-rep" data-bid="${b.id}" data-act="reprog">⏰ Reprog.</button>`;
+    return `<div class="dia-act ${cls}" style="border-left-color:${color}">
+      <div class="hora">${b.ini}–${b.fin}</div>
+      <div class="tit">${escapeHtml(b.titulo)}</div>
+      <div class="sub">${tnom?`<span class="tipo-dot" style="background:${color};width:9px;height:9px"></span> ${escapeHtml(tnom)}`:''}${b.tipo==='unico'?' · único':''}</div>
+      ${badge}
+      <div class="dia-btns">${botones}</div>
+    </div>`;
+  }).join("");
+  if (!bloques.length) items = `<div class="t-empty">Sin actividades este día.</div>`;
+  m.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-name" style="font-size:18px">${fmtFecha(iso)}</div>
+      <button class="modal-close" id="diaClose">×</button>
+    </div>
+    <div id="diaItems">${items}</div>
+    <button class="t-btn t-btn-2" id="diaAdd" style="margin-top:10px">+ Añadir actividad a este día</button>
+    <div class="modal-actions"><button class="btn btn-secondary" id="diaCerrar">Cerrar</button></div>`;
+  $("diaBg").classList.add("open");
+  document.body.style.overflow = "hidden";
+  const cerrar = () => { $("diaBg").classList.remove("open"); document.body.style.overflow=""; };
+  $("diaClose").onclick = cerrar; $("diaCerrar").onclick = cerrar;
+  $("diaAdd").onclick = () => { cerrar(); abrirBloque(null, { tipo:"unico", fecha:iso }); };
+  // enlazar botones de cada actividad
+  m.querySelectorAll("#diaItems button[data-act]").forEach(btn => {
+    const bid = btn.dataset.bid, act = btn.dataset.act;
+    btn.onclick = () => {
+      if (act === "deshacer") deshacerAct(iso, bid);
+      else if (act === "reprog") reprogramarAct(iso, bid);
+      else marcarAct(iso, bid, act);
+    };
+  });
+  diaAbierto = iso;
+}
+// Agendar un pendiente: fecha + hora → crea bloque único coloreado
+function agendarPendiente(pid) {
+  const p = pendientes.find(x=>x.id===pid); if(!p) return;
+  const m = $("diaModal");
+  const tipoOpts = `<option value="">— sin tipo —</option>` + tiposActividad.map(t=>`<option value="${t.id}">${escapeHtml(t.nombre)}</option>`).join("");
+  m.innerHTML = `
+    <div class="modal-header"><div class="modal-name" style="font-size:17px">📅 Agendar pendiente</div><button class="modal-close" id="agClose">×</button></div>
+    <div style="font-size:13px;margin-bottom:10px">${escapeHtml(p.texto)} · ${p.dur} min</div>
+    <label class="t-label">Fecha</label><input class="t-input" type="date" id="agFecha" value="${hoyISO()}">
+    <label class="t-label">Hora de inicio</label><input class="t-input" type="time" id="agHora" value="09:00">
+    <label class="t-label">Tipo de actividad (color)</label><select class="t-input" id="agTipo">${tipoOpts}</select>
+    <div class="modal-actions"><button class="btn btn-secondary" id="agCancel">Cancelar</button><button class="btn btn-primary" id="agOk">Agendar</button></div>`;
+  $("diaBg").classList.add("open"); document.body.style.overflow="hidden";
+  const cerrar = () => { $("diaBg").classList.remove("open"); document.body.style.overflow=""; };
+  $("agClose").onclick = cerrar; $("agCancel").onclick = cerrar;
+  $("agOk").onclick = async () => {
+    const fecha = $("agFecha").value, hora = $("agHora").value || "09:00";
+    const fin = MIN_H(Math.min(23*60+59, H_MIN(hora) + (p.dur||60)));
+    horario.push({ id:"b"+Math.random().toString(36).slice(2,9), titulo:p.texto, ini:hora, fin, woop:p.woop||0, roti:"impacto", tipoId:$("agTipo").value||null, tipo:"unico", vigencia:null, fecha });
+    await guardarHorarioRemoto();
+    p.propuesta = `${fmtFecha(fecha).split(" ")[0]} ${hora}`;
+    await guardarPendientesRemoto();
+    cerrar(); renderTiempo(); toast("Pendiente agendado ✓");
+  };
+}
+let diaAbierto = null;
+async function marcarAct(iso, bid, estado) {
+  const d = ensureEstados(iso);
+  d.estados[bid] = estado;
+  await guardarDiaRemoto(iso);
+  renderCalendario();
+  if (diaAbierto) abrirDiaCal(diaAbierto);
+}
+async function deshacerAct(iso, bid) {
+  const d = ensureEstados(iso);
+  delete d.estados[bid];
+  await guardarDiaRemoto(iso);
+  renderCalendario();
+  if (diaAbierto) abrirDiaCal(diaAbierto);
+}
+async function reprogramarAct(iso, bid) {
+  const b = horario.find(x=>x.id===bid); if(!b) return;
+  const m = $("diaModal");
+  const man = isoADate(iso); man.setDate(man.getDate()+1); const manISO = man.toISOString().slice(0,10);
+  const sem = isoADate(iso); sem.setDate(sem.getDate()+7); const semISO = sem.toISOString().slice(0,10);
+  m.innerHTML = `
+    <div class="modal-header"><div class="modal-name" style="font-size:17px">⏰ Reprogramar</div><button class="modal-close" id="rpClose">×</button></div>
+    <div style="font-size:13px;margin-bottom:12px">${escapeHtml(b.titulo)} · ${b.ini}–${b.fin}</div>
+    <button class="t-btn" id="rpMan">📅 Mañana (${fmtFecha(manISO)})</button>
+    <button class="t-btn" id="rpSem" style="margin-top:8px">📆 En 7 días (${fmtFecha(semISO)})</button>
+    <label class="t-label" style="margin-top:10px">O elige fecha</label>
+    <input class="t-input" type="date" id="rpFecha" value="${manISO}">
+    <button class="t-btn t-btn-2" id="rpOk" style="margin-top:6px">Reprogramar a esa fecha</button>
+    <div class="modal-actions"><button class="btn btn-secondary" id="rpBack">‹ Volver</button></div>`;
+  const hacer = async (destISO) => {
+    const d = ensureEstados(iso);
+    d.estados[bid] = "reprog:" + destISO;
+    await guardarDiaRemoto(iso);
+    // crear copia única en destino
+    horario.push({ id:"b"+Math.random().toString(36).slice(2,9), titulo:b.titulo, ini:b.ini, fin:b.fin, woop:b.woop, roti:b.roti, tipoId:b.tipoId||null, tipo:"unico", vigencia:null, fecha:destISO });
+    await guardarHorarioRemoto();
+    renderCalendario();
+    abrirDiaCal(iso);
+    toast("Reprogramada → " + fmtFecha(destISO));
+  };
+  $("rpClose").onclick = () => abrirDiaCal(iso);
+  $("rpBack").onclick = () => abrirDiaCal(iso);
+  $("rpMan").onclick = () => hacer(manISO);
+  $("rpSem").onclick = () => hacer(semISO);
+  $("rpOk").onclick = () => hacer($("rpFecha").value || manISO);
 }
 
 function renderSemanaSintetica() {
@@ -2075,10 +2404,11 @@ function renderMatriz() {
     if (!items.length) html += `<div style="font-size:11px;color:var(--ink-mute)">—</div>`;
     items.forEach(p => {
       const slot = p.propuesta ? `<div class="pend-slot">→ ${p.propuesta}</div>` : (q===3?`<div class="pend-slot">Delegar en Freddy/Jeni</div>`:q===4?`<div class="pend-slot">Considera eliminar</div>`:``);
+      const agendarBtn = (q!==4) ? `<button class="pend-ag" data-id="${p.id}" title="Agendar en un día">📅</button>` : '';
       html += `<div class="pend-item">
         <input type="checkbox" class="pend-chk" ${p.done?'checked':''} data-id="${p.id}">
         <div class="pend-txt ${p.done?'done':''}">${escapeHtml(p.texto)} <span style="color:var(--ink-mute)">(${p.dur}m)</span>${slot}</div>
-        <button class="pend-del" data-id="${p.id}">🗑</button></div>`;
+        ${agendarBtn}<button class="pend-del" data-id="${p.id}">🗑</button></div>`;
     });
     box.innerHTML = html;
     box.querySelectorAll(".pend-chk").forEach(chk => chk.onchange = async () => {
@@ -2087,6 +2417,7 @@ function renderMatriz() {
     box.querySelectorAll(".pend-del").forEach(btn => btn.onclick = async () => {
       pendientes = pendientes.filter(x=>x.id!==btn.dataset.id); await guardarPendientesRemoto(); renderMatriz();
     });
+    box.querySelectorAll(".pend-ag").forEach(btn => btn.onclick = () => agendarPendiente(btn.dataset.id));
     cont.appendChild(box);
   });
 }
@@ -2197,16 +2528,17 @@ function renderAjuste() {
   cont.innerHTML = html;
 }
 
-function abrirBloque(id) {
+function abrirBloque(id, preset) {
   bloqueEditId = id;
-  const b = id ? horario.find(x=>x.id===id) : {
+  const b = id ? horario.find(x=>x.id===id) : Object.assign({
     id:null, titulo:"", dias:[1], ini:"09:00", fin:"10:00", woop:0, roti:"impacto",
-    tipo:"fijo", vigencia:"permanente", fecha: tFecha
-  };
+    tipo:"fijo", vigencia:"permanente", fecha: tFecha, tipoId:null
+  }, preset || {});
   const m = $("bloqueModal");
   const diasBtns = DOW.map((d,i)=>`<button type="button" class="dia-btn ${b.dias&&b.dias.includes(i)?'on':''}" data-d="${i}">${d}</button>`).join("");
   const woopOpts = Object.entries(WOOPS).map(([k,v])=>`<option value="${k}" ${b.woop==k?'selected':''}>${v.label}</option>`).join("");
   const rotiOpts = Object.entries(ROTI).map(([k,v])=>`<option value="${k}" ${(b.roti||'impacto')===k?'selected':''}>${v.label} — ${v.desc}</option>`).join("");
+  const tipoActOpts = `<option value="">— sin tipo —</option>` + tiposActividad.map(t=>`<option value="${t.id}" ${b.tipoId===t.id?'selected':''}>${escapeHtml(t.nombre)}</option>`).join("");
   m.innerHTML = `
     <div class="modal-header">
       <div class="modal-name" style="font-size:18px">${id?'Editar':'Nuevo'} bloque</div>
@@ -2218,6 +2550,8 @@ function abrirBloque(id) {
       <div><label class="t-label">Inicio</label><input class="t-input" id="bqIni" type="time" value="${b.ini}"></div>
       <div><label class="t-label">Fin</label><input class="t-input" id="bqFin" type="time" value="${b.fin}"></div>
     </div>
+    <label class="t-label">Tipo de actividad (color)</label>
+    <select class="t-input" id="bqTipoAct">${tipoActOpts}</select>
     <label class="t-label">Mundo / WOOP</label>
     <select class="t-input" id="bqWoop">${woopOpts}</select>
     <label class="t-label">Categoría de tiempo (ROTI)</label>
@@ -2282,6 +2616,7 @@ async function guardarBloque() {
     ini: $("bqIni").value, fin: $("bqFin").value,
     woop: +$("bqWoop").value,
     roti: $("bqRoti").value,
+    tipoId: $("bqTipoAct").value || null,
     tipo,
     dias: tipo==="fijo" ? dias : [],
     vigencia: tipo==="fijo" ? vig : null,
@@ -2448,6 +2783,24 @@ function initTiempoUI() {
 
   // Cerrar modal bloque al tocar fondo
   $("bloqueBg").addEventListener("click", (e)=>{ if(e.target.id==="bloqueBg") cerrarBloque(); });
+  $("diaBg").addEventListener("click", (e)=>{ if(e.target.id==="diaBg"){ $("diaBg").classList.remove("open"); document.body.style.overflow=""; } });
+
+  // Calendario mensual
+  $("calPrev").onclick = () => { calMes = new Date(calMes.getFullYear(), calMes.getMonth()-1, 1); renderCalendario(); };
+  $("calNext").onclick = () => { calMes = new Date(calMes.getFullYear(), calMes.getMonth()+1, 1); renderCalendario(); };
+  $("calHoy").onclick  = () => { calMes = new Date(); renderCalendario(); };
+
+  // Tipos de actividad: añadir
+  $("tipoAdd").onclick = async () => {
+    const nombre = $("tipoNuevo").value.trim();
+    if (!nombre) { toast("Escribe un nombre"); return; }
+    let base = nombre.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"")||"tipo";
+    let idk = base, i=2; while (tiposActividad.some(t=>t.id===idk)) idk = base+"_"+(i++);
+    tiposActividad.push({ id:idk, nombre, color:"#64748b" });
+    $("tipoNuevo").value="";
+    await guardarConfigTiempo(); renderTipos();
+    toast("Tipo añadido — elige su color");
+  };
 
   renderTiempo();
 }
