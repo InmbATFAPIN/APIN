@@ -956,42 +956,40 @@ async function init() {
   try {
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    firebaseOK = true;  // los writes ya van a la nube de inmediato
 
-    // getDocs con timeout de 10s para no colgarse si la base no existe
-    const snap = await withTimeout(
-      getDocs(collection(db, COLECCION)), 10000, "conexión Firestore"
-    );
-
-    firebaseOK = true;
-    $("status").textContent = "☁ Sincronizado con Firebase";
-    $("status").className = "status ok";
-
-    // Sembrar si está vacía
-    if (snap.empty) {
-      $("status").textContent = "Cargando datos iniciales…";
-      for (const c of SEED) {
-        await setDoc(doc(db, COLECCION, c.id), c);
-      }
-      $("status").textContent = "☁ Sincronizado con Firebase";
-    }
-
-    // Tiempo real
+    // ESCUCHA EN VIVO de una vez (sin getDocs previo) → la nube llega mucho más rápido.
+    let seededContactos = false;
     onSnapshot(collection(db, COLECCION), (snap) => {
+      // Sembrar solo si el primer snapshot viene vacío
+      if (!seededContactos && snap.empty) {
+        seededContactos = true;
+        SEED.forEach(c => setDoc(doc(db, COLECCION, c.id), c).catch(()=>{}));
+        return; // el próximo snapshot traerá los datos sembrados
+      }
+      seededContactos = true;
       const gdoc = snap.docs.find(d => d.id === "__config_grupos__");
       if (gdoc && gdoc.data().grupos) CATS = gdoc.data().grupos;
       contactos = snap.docs.filter(d => d.id !== "__config_grupos__").map(d => d.data());
+      $("status").textContent = "☁ Sincronizado con Firebase";
+      $("status").className = "status ok";
       render();
     }, (err) => {
       console.error("onSnapshot error:", err);
-      $("status").textContent = "⚠ Se perdió la sincronización. Trabajando en local.";
-      $("status").className = "status err";
       firebaseOK = false;
+      let msg = "⚠ Firebase no disponible — trabajando en modo local. ";
+      const m = (err.message || err.code || "").toString();
+      if (m.includes("permission") || m.includes("PERMISSION")) msg += "(Permiso denegado: revisa las Reglas de Firestore.)";
+      else if (m.includes("not been used") || m.includes("disabled") || m.includes("unavailable")) msg += "(Firestore no habilitado o sin conexión.)";
+      $("status").textContent = msg;
+      $("status").className = "status err";
     });
 
-    // Sincronizar módulo Tiempo
-    await sincronizarTiempo();
-    await sincronizarComida();
-    await sincronizarFin();
+    // Módulos en PARALELO (cada uno engancha su propia escucha en vivo; no se esperan en serie)
+    sincronizarTiempo();
+    sincronizarComida();
+    sincronizarFin();
+    return;
 
   } catch (e) {
     console.error("Firebase falló:", e);
@@ -1805,22 +1803,23 @@ function guardarTiempoLocal() {
 }
 
 // --------- Sincronización con Firebase (colección "tiempo") ---------
-async function sincronizarTiempo() {
+function sincronizarTiempo() {
   if (!firebaseOK) return;
-  try {
-    const snap = await withTimeout(getDocs(collection(db, COL_TIEMPO)), 10000, "tiempo");
-    if (snap.empty) {
-      await setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes, tipos: tiposActividad });
+  let seeded = false;
+  onSnapshot(collection(db, COL_TIEMPO), (snap) => {
+    if (!seeded && snap.empty) {
+      seeded = true;
+      setDoc(doc(db, COL_TIEMPO, "config"), { horario, pendientes, tipos: tiposActividad }).catch(()=>{});
+      return;
     }
-    onSnapshot(collection(db, COL_TIEMPO), (snap) => {
-      snap.docs.forEach(d => {
-        const data = d.data();
-        if (d.id === "config") { horario = data.horario || horario; pendientes = data.pendientes || pendientes; if (data.tipos) tiposActividad = data.tipos; }
-        else if (d.id.startsWith("dia_")) tDias[d.id.slice(4)] = data;
-      });
-      if (moduloActual === "tiempo") renderTiempo();
+    seeded = true;
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if (d.id === "config") { horario = data.horario || horario; pendientes = data.pendientes || pendientes; if (data.tipos) tiposActividad = data.tipos; }
+      else if (d.id.startsWith("dia_")) tDias[d.id.slice(4)] = data;
     });
-  } catch(e) { console.error("tiempo sync:", e); }
+    if (moduloActual === "tiempo") renderTiempo();
+  }, (e) => console.error("tiempo sync:", e));
 }
 async function guardarConfigTiempo() {
   guardarTiempoLocal();
@@ -2905,20 +2904,23 @@ function guardarComidaLocal() {
   localStorage.setItem("comida_config", JSON.stringify(comidaConfig));
   localStorage.setItem("comida_dias", JSON.stringify(comidaDias));
 }
-async function sincronizarComida() {
+function sincronizarComida() {
   if (!firebaseOK) return;
-  try {
-    const snap = await withTimeout(getDocs(collection(db, COL_COMIDA)), 10000, "comida");
-    if (snap.empty) await setDoc(doc(db, COL_COMIDA, "config"), { banco, config: comidaConfig });
-    onSnapshot(collection(db, COL_COMIDA), (snap) => {
-      snap.docs.forEach(dd => {
-        const data = dd.data();
-        if (dd.id === "config") { banco = data.banco || banco; comidaConfig = data.config || comidaConfig; }
-        else if (dd.id.startsWith("dia_")) comidaDias[dd.id.slice(4)] = data;
-      });
-      if (moduloActual === "comida") renderComida();
+  let seeded = false;
+  onSnapshot(collection(db, COL_COMIDA), (snap) => {
+    if (!seeded && snap.empty) {
+      seeded = true;
+      setDoc(doc(db, COL_COMIDA, "config"), { banco, config: comidaConfig }).catch(()=>{});
+      return;
+    }
+    seeded = true;
+    snap.docs.forEach(dd => {
+      const data = dd.data();
+      if (dd.id === "config") { banco = data.banco || banco; comidaConfig = data.config || comidaConfig; }
+      else if (dd.id.startsWith("dia_")) comidaDias[dd.id.slice(4)] = data;
     });
-  } catch(e) { console.error("comida sync", e); }
+    if (moduloActual === "comida") renderComida();
+  }, (e) => console.error("comida sync", e));
 }
 async function guardarComidaConfigRemoto() {
   guardarComidaLocal();
