@@ -566,6 +566,9 @@
   <button class="action-btn" id="btnGrupos">🏷 Grupos</button>
   <button class="action-btn" id="btnExport">⬇ Exportar CSV</button>
 </div>
+<div class="actions-bar" style="margin-top:-6px">
+  <button class="action-btn" id="btnPush" style="background:#1e3a5f;color:#fff;border-color:#1e3a5f">⟳ Subir todo a la nube (desde este dispositivo)</button>
+</div>
 
 <!-- Switch vista -->
 <div class="view-switch">
@@ -1520,6 +1523,33 @@ $("tipsHeader").onclick = () => {
 
 // ---------- GESTOR DE GRUPOS ----------
 $("btnGrupos").onclick = () => abrirGrupos();
+
+// ---------- FORZAR SUBIDA DE TODO A LA NUBE ----------
+$("btnPush").onclick = async () => {
+  if (!firebaseOK || !db) { toast("No hay conexión a Firebase (¿iniciaste sesión?)"); return; }
+  if (!confirm("Esto sube los datos de ESTE dispositivo a la nube y reemplaza lo que haya allá. Hazlo solo desde el dispositivo que tiene la información correcta. ¿Continuar?")) return;
+  $("btnPush").textContent = "Subiendo…";
+  let ok = 0, fail = 0, err1 = "";
+  const put = async (col, id, data) => {
+    try { await setDoc(doc(db, col, id), data); ok++; }
+    catch(e){ fail++; if(!err1) err1 = (e.code || e.message || "").toString(); }
+  };
+  // Social
+  for (const c of contactos) await put(COLECCION, c.id, c);
+  await put(COLECCION, "__config_grupos__", { grupos: CATS });
+  // Tiempo
+  await put(COL_TIEMPO, "config", { horario, pendientes, tipos: tiposActividad });
+  for (const f in tDias) await put(COL_TIEMPO, "dia_"+f, tDias[f]);
+  // Comida
+  await put(COL_COMIDA, "config", { banco, config: comidaConfig });
+  for (const f in comidaDias) await put(COL_COMIDA, "dia_"+f, comidaDias[f]);
+  // Finanzas
+  await put(COL_FIN, "data", { cuentas });
+
+  $("btnPush").textContent = "⟳ Subir todo a la nube (desde este dispositivo)";
+  if (fail === 0) toast(`✓ Subido todo a la nube (${ok} registros)`);
+  else toast(`⚠ ${ok} subidos, ${fail} fallaron. Error: ${err1}`);
+};
 $("gruposBg").addEventListener("click", (e)=>{ if(e.target.id==="gruposBg"){ $("gruposBg").classList.remove("open"); document.body.style.overflow=""; } });
 
 function abrirGrupos() {
