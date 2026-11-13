@@ -1135,33 +1135,30 @@ async function guardarContacto(c) {
   // actualizar en memoria
   const idx = contactos.findIndex(x => x.id === c.id);
   if (idx >= 0) contactos[idx] = c; else contactos.push(c);
-
+  guardarLocal();
+  render();                 // refresco inmediato (optimista), no esperamos a la nube
   if (firebaseOK) {
     try {
       await setDoc(doc(db, COLECCION, c.id), c);
     } catch (e) {
-      console.error(e);
-      toast("Error al guardar en Firebase");
+      console.error("guardarContacto:", e);
+      toast("⚠ No se guardó en la nube: " + (e.code || e.message));
     }
-  } else {
-    guardarLocal();
-    render();
   }
 }
 
 // ---------- ELIMINAR UN CONTACTO ----------
 async function eliminarContacto(id) {
   contactos = contactos.filter(x => x.id !== id);
+  guardarLocal();
+  render();                 // refresco inmediato
   if (firebaseOK) {
     try {
       await deleteDoc(doc(db, COLECCION, id));
     } catch (e) {
-      console.error(e);
-      toast("Error al eliminar en Firebase");
+      console.error("eliminarContacto:", e);
+      toast("⚠ No se borró en la nube: " + (e.code || e.message));
     }
-  } else {
-    guardarLocal();
-    render();
   }
 }
 
