@@ -913,7 +913,7 @@ import {
   getFirestore, collection, doc, getDocs, setDoc, deleteDoc, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
 // ⚠️ CONFIGURA AQUÍ TU FIREBASE (ver instrucciones al final del archivo README)
@@ -1060,23 +1060,41 @@ function conectarFirebase() {
 }
 
 // Botones de la puerta de login
+// ¿dispositivo móvil? → usar redirección en vez de popup
+const esMovil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+function mostrarErrorLogin(e) {
+  console.error("login:", e);
+  let msg = "No se pudo iniciar sesión. ";
+  const c = (e.code || "").toString();
+  if (c.includes("unauthorized-domain")) msg += "Agrega este dominio en Firebase → Authentication → Settings → Dominios autorizados.";
+  else if (c.includes("operation-not-allowed")) msg += "Habilita Google en Firebase → Authentication → Sign-in method.";
+  else if (c.includes("popup-blocked")) msg += "El navegador bloqueó la ventana; permite ventanas emergentes e intenta de nuevo.";
+  else if (c.includes("popup-closed") || c.includes("cancelled-popup")) msg += "Toca una sola vez el botón e intenta de nuevo.";
+  else msg += (e.message || c);
+  $("authErr").textContent = msg;
+  $("authErr").style.display = "";
+}
+
 function configurarAuthUI() {
+  // Si volvemos de una redirección (móvil), recoge el resultado
+  getRedirectResult(auth).catch(mostrarErrorLogin);
+
+  let intentando = false;
   $("authGoogle").onclick = async () => {
+    if (intentando) return;              // evita doble toque → cancelled-popup-request
+    intentando = true;
     $("authErr").style.display = "none";
     try {
-      await signInWithPopup(auth, authProvider);
-      // onAuthStateChanged hará el resto
+      if (esMovil) {
+        await signInWithRedirect(auth, authProvider); // en móvil: redirección (la página se recarga)
+      } else {
+        await signInWithPopup(auth, authProvider);
+        // onAuthStateChanged hará el resto
+      }
     } catch (e) {
-      console.error("login:", e);
-      let msg = "No se pudo iniciar sesión. ";
-      const c = (e.code || "").toString();
-      if (c.includes("unauthorized-domain")) msg += "Agrega este dominio en Firebase → Authentication → Settings → Dominios autorizados.";
-      else if (c.includes("operation-not-allowed")) msg += "Habilita Google en Firebase → Authentication → Sign-in method.";
-      else if (c.includes("popup-blocked")) msg += "El navegador bloqueó la ventana; permite ventanas emergentes e intenta de nuevo.";
-      else if (c.includes("popup-closed")) msg += "Se cerró la ventana antes de terminar.";
-      else msg += (e.message || c);
-      $("authErr").textContent = msg;
-      $("authErr").style.display = "";
+      intentando = false;
+      mostrarErrorLogin(e);
     }
   };
   $("authLocal").onclick = () => {
