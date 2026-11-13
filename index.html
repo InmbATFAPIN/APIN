@@ -1060,41 +1060,64 @@ function conectarFirebase() {
 }
 
 // Botones de la puerta de login
-// ¿dispositivo móvil? → usar redirección en vez de popup
 const esMovil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
 function mostrarErrorLogin(e) {
   console.error("login:", e);
+  const c = (e.code || e.message || "").toString();
   let msg = "No se pudo iniciar sesión. ";
-  const c = (e.code || "").toString();
-  if (c.includes("unauthorized-domain")) msg += "Agrega este dominio en Firebase → Authentication → Settings → Dominios autorizados.";
+  if (c.includes("unauthorized-domain")) msg += "Falta autorizar este dominio en Firebase → Authentication → Settings → Dominios autorizados.";
   else if (c.includes("operation-not-allowed")) msg += "Habilita Google en Firebase → Authentication → Sign-in method.";
-  else if (c.includes("popup-blocked")) msg += "El navegador bloqueó la ventana; permite ventanas emergentes e intenta de nuevo.";
-  else if (c.includes("popup-closed") || c.includes("cancelled-popup")) msg += "Toca una sola vez el botón e intenta de nuevo.";
-  else msg += (e.message || c);
+  else if (c.includes("popup-blocked")) msg += "El navegador bloqueó la ventana; probando con redirección…";
+  else if (c.includes("popup-closed") || c.includes("cancelled-popup")) msg += "Toca el botón una sola vez.";
+  else if (c.includes("network")) msg += "Revisa tu conexión a internet.";
+  else msg += c;
   $("authErr").textContent = msg;
   $("authErr").style.display = "";
 }
 
+// errores de popup que ameritan caer a redirección
+function esErrorDePopup(e) {
+  const c = (e.code || "").toString();
+  return c.includes("popup-blocked") || c.includes("popup-closed") ||
+         c.includes("cancelled-popup") || c.includes("operation-not-supported") ||
+         c.includes("web-storage-unsupported") || c.includes("internal-error");
+}
+
 function configurarAuthUI() {
-  // Si volvemos de una redirección (móvil), recoge el resultado
-  getRedirectResult(auth).catch(mostrarErrorLogin);
+  // Elegir siempre la cuenta (evita quedar atorado en una sesión de Google vieja)
+  authProvider.setCustomParameters({ prompt: "select_account" });
+
+  // CRÍTICO (móvil/Safari): al volver de una redirección hay que recoger el resultado,
+  // o la sesión queda en el aire y el login se cuelga para siempre.
+  getRedirectResult(auth).catch((e) => {
+    // solo molestar si fue un error real, no "no había redirect pendiente"
+    if (e && e.code && !e.code.includes("no-auth-event")) mostrarErrorLogin(e);
+  });
 
   let intentando = false;
   $("authGoogle").onclick = async () => {
-    if (intentando) return;              // evita doble toque → cancelled-popup-request
+    if (intentando) return;              // un solo intento → evita cancelled-popup-request
     intentando = true;
     $("authErr").style.display = "none";
     try {
-      if (esMovil) {
-        await signInWithRedirect(auth, authProvider); // en móvil: redirección (la página se recarga)
-      } else {
-        await signInWithPopup(auth, authProvider);
-        // onAuthStateChanged hará el resto
-      }
+      // Intentar popup primero (rápido y sin recargar). Si el navegador lo bloquea
+      // o no lo soporta (típico en móvil), caer automáticamente a redirección.
+      await signInWithPopup(auth, authProvider);
+      // onAuthStateChanged hace el resto
     } catch (e) {
-      intentando = false;
-      mostrarErrorLogin(e);
+      if (esErrorDePopup(e)) {
+        try {
+          await signInWithRedirect(auth, authProvider); // la página se va a Google y regresa
+          return; // no reseteamos: la página navega
+        } catch (e2) {
+          intentando = false;
+          mostrarErrorLogin(e2);
+        }
+      } else {
+        intentando = false;
+        mostrarErrorLogin(e);
+      }
     }
   };
   $("authLocal").onclick = () => {
